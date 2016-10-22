@@ -1,6 +1,22 @@
 work in progress, proof of concept.
 Mostly `fish` shell.
 
+# Scaleway CLI
+
+## build scaleway-cli from HEAD
+
+Current release of scaleway-cli is [buggy](https://github.com/scaleway/scaleway-cli/issues/395). Build from master: 
+
+```bash
+docker run --rm -ti \
+  --volume $PWD/_out:/go/bin \
+  golang:1.7 \
+    bash -c "go get -d github.com/scaleway/scaleway-cli/... && cd /go/src/github.com/scaleway/scaleway-cli && make && cp scw /go/bin"
+
+_out/scw version
+sudo cp _out/scw /usr/local/bin/
+```
+
 
 ## scw login
 
@@ -64,9 +80,6 @@ end
 ```
 
 
-```
-done
-```
 ## master
 
 ```bash
@@ -102,9 +115,6 @@ end
 ```
 
 
-```
-done
-```
 ## remote
 
 ```bash
@@ -125,19 +135,7 @@ Fri Oct 21 19:25:19 CEST 2016
 
 
 
-# Scaleway CLI
 
-## build scaleway-cli from HEAD
-
-```bash
-docker run --rm -ti \
-  --volume $PWD/_out:/go/bin \
-  golang:1.7 \
-    bash -c "go get -d github.com/scaleway/scaleway-cli/... && cd /go/src/github.com/scaleway/scaleway-cli && make && cp scw /go/bin"
-
-_out/scw version
-sudo cp _out/scw /usr/local/bin/
-```
 
 ## scaleway-cli
 

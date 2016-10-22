@@ -22,6 +22,10 @@ apt -y install docker.io kubelet kubeadm kubectl kubernetes-cni
 # temporary workaround
 rmdir /etc/kubernetes/manifests
 
+# FIXME
+# temporary fix needed, see
+# https://github.com/kubernetes/kubernetes/issues/34884#issuecomment-255357287
+
 # workaround since nodes are referenced by hostnames instead of ips (?)
 # echo "$server_id.priv.cloud.scaleway.com" > /etc/hostname
 echo "$server_id.pub.cloud.scaleway.com" > /etc/hostname

@@ -1,27 +1,19 @@
 #!/usr/bin/env fish
 
 # example
-# ./fetch-credetials.fish kube01 cfm
+# ./fetch-credetials.fish cfm
 # kubectl config use-context cfm
 
-# FIXME find master/apiserver by query
+set cluster_name $argv[1]
 
-set server_name $argv[1]
-set cluster_name $argv[2]
-
-set server_ids (scw ps --all --filter tags=kubeadm --quiet)
-
-set --erase servers
-for server_id in $server_ids
-  set servers (string join "" (printf "$servers" | jq -c '.[]') (scw inspect $server_id | jq -c '.[]') | jq -s -c '.')
-end
-
-set server_id (echo "$servers" | jq -r  '.[] | select(.name=="'$server_name'") | .id')
-set server_ip_pub (echo "$servers" | jq -r  '.[] | select(.name=="'$server_name'") | .public_ip.address')
+scw ps --all --filter "tags=master" --quiet | xargs echo -n | read --array server_ids
+# only one master server for now
+set server_id $server_ids[1]
+set server_ip_pub (scw inspect $server_id | jq -r  '.[] | .public_ip.address')
 
 
 mkdir --parents ~/.kube/certs
-# rm ~/.kube/certs/cfm*
+# rm ~/.kube/certs/$cluster_name*
 
 scw exec --wait $server_id "kubectl --kubeconfig /etc/kubernetes/admin.conf config view --raw -o json | jq -r '.clusters[] | select(.name | contains (\"kubernetes\")) | .cluster.\"certificate-authority-data\"' | base64 --decode" > ~/.kube/certs/$cluster_name.ca.crt
 

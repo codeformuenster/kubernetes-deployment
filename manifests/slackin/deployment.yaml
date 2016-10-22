@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: slackin
+  namespace: slackin
+  labels:
+    app: slackin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: slackin
+      labels:
+        app: slackin
+    spec:
+      containers:
+      - name: slackin
+        image: codeformuenster/slackin:master
+        env:
+        - name: SLACK_ORG
+          value: c4m
+        - name: SLACK_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: slackin
+              key: slack-token
+        ports:
+        - name: ui
+          containerPort: 3000

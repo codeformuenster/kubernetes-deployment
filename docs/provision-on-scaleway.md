@@ -91,7 +91,7 @@ set server_ip_pub (scw inspect $server_id | jq -r  '.[] | .public_ip.address')
 
 printf "\
 kubeadm init --api-advertise-addresses $server_ip_pub
-kubectl apply --filename https://git.io/weave-kube
+kubectl apply --filename https://github.com/weaveworks/weave-kube/releases/download/latest_release/weave-daemonset.yaml
 " | scw exec --wait $server_id
 
 # kubectl taint nodes --all dedicated-

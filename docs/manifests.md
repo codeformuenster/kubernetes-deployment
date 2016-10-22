@@ -56,3 +56,15 @@ kubectl apply --filename ./manifests/ingress/grafana-ingress.yaml
 kubectl get --all-namespaces ingress --output wide
 
 ```
+
+## Slackin
+
+```bash
+kubectl create namespace slackin
+
+echo -n "<slack-token>" > ./slack-token
+kubectl --namespace slackin \
+  create secret generic slackin \
+    --from-file=slack-token
+
+```

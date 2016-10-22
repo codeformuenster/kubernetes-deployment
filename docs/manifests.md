@@ -48,7 +48,7 @@ kubectl --namespace monitoring apply --filename ./manifests/grafana
 # htpasswd -c auth admin
 kubectl --namespace monitoring \
   create secret generic grafana-basic-auth \
-  --from-file=auth
+    --from-file=auth
 
 kubectl apply --filename ./manifests/ingress/grafana-ingress.yaml
 

@@ -26,6 +26,12 @@ rmdir /etc/kubernetes/manifests
 # temporary fix needed, see
 # https://github.com/kubernetes/kubernetes/issues/34884#issuecomment-255357287
 
+# needed for elasticsearch since v5.0
+sysctl -w vm.max_map_count=262144
+
+# add kubernetes labels to docker log output
+echo 'DOCKER_OPTS="--log-opt labels=io.kubernetes.container.hash,io.kubernetes.container.name,io.kubernetes.pod.name,io.kubernetes.pod.namespace,io.kubernetes.pod.uid"' > /etc/default/docker
+
 # workaround since nodes are referenced by hostnames instead of ips (?)
 # echo "$server_id.priv.cloud.scaleway.com" > /etc/hostname
 echo "$server_id.pub.cloud.scaleway.com" > /etc/hostname

@@ -94,6 +94,9 @@ kubeadm init --api-advertise-addresses $server_ip_pub
 kubectl apply --filename https://github.com/weaveworks/weave-kube/releases/download/latest_release/weave-daemonset.yaml
 " | scw exec --wait $server_id
 
+# maybe add "--etcd-servers=http://127.0.0.1:2379"
+# to /etc/kubernetes/manifests/kube-apiserver.json for `scheduledjobs`
+
 # kubectl taint nodes --all dedicated-
 ```
 

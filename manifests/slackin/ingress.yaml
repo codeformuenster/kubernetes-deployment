@@ -6,8 +6,8 @@ metadata:
   labels:
     app: slackin
     component: ingress
-  annotations:
-    kubernetes.io/tls-acme: "true"
+  # annotations:
+  #   kubernetes.io/tls-acme: "true"
 spec:
   rules:
   - host: slackin.codeformuenster.org
@@ -17,7 +17,7 @@ spec:
           serviceName: slackin
           servicePort: 3000
         path: /
-  tls:
-  - hosts:
-    - slackin.codeformuenster.org
-    secretName: slackin-tls
+  # tls:
+  # - hosts:
+  #   - slackin.codeformuenster.org
+  #   secretName: slackin-tls

@@ -16,6 +16,7 @@ spec:
       containers:
       - name: slackin
         image: codeformuenster/slackin:master
+        imagePullPolicy: Always
         env:
         - name: SLACK_ORG
           value: c4m

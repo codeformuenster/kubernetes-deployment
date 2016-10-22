@@ -12,24 +12,24 @@ spec:
       labels:
         k8s-app: ingress-controller
         component: core
-      annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-          {
-            "nodeAffinity": {
-              "requiredDuringSchedulingIgnoredDuringExecution": {
-                "nodeSelectorTerms": [
-                  {
-                    "matchExpressions": [
-                      {
-                        "key": "master",
-                        "operator": "DoesNotExist"
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+      # annotations:
+      #   scheduler.alpha.kubernetes.io/affinity: >
+      #     {
+      #       "nodeAffinity": {
+      #         "requiredDuringSchedulingIgnoredDuringExecution": {
+      #           "nodeSelectorTerms": [
+      #             {
+      #               "matchExpressions": [
+      #                 {
+      #                   "key": "master",
+      #                   "operator": "DoesNotExist"
+      #                 }
+      #               ]
+      #             }
+      #           ]
+      #         }
+      #       }
+      #     }
     spec:
       terminationGracePeriodSeconds: 60
       hostNetwork: true

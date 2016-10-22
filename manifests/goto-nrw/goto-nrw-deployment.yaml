@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: goto-nrw
+  namespace: default
+  labels:
+    app: goto-nrw
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: goto-nrw
+      labels:
+        app: goto-nrw
+    spec:
+      containers:
+      - name: goto-nrw
+        image: codeformuenster/goto-nrw
+        ports:
+        - name: ui
+          containerPort: 80

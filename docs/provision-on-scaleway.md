@@ -5,7 +5,7 @@ Mostly `fish` shell.
 
 ## build scaleway-cli from HEAD
 
-Current release of scaleway-cli is [buggy](https://github.com/scaleway/scaleway-cli/issues/395). Build from master: 
+Current release of scaleway-cli is [buggy](https://github.com/scaleway/scaleway-cli/issues/395). Build from master:
 
 ```bash
 docker run --rm -ti \
@@ -30,8 +30,6 @@ scw ps --all
 
 ## create servers
 
-Fri Oct 21 18:59:20 CEST 2016
-
 ```bash
 scw create \
   --name kube01 \
@@ -55,10 +53,11 @@ scw create \
   --volume 50G \
   --env "kubeadm worker" \
   Ubuntu_Xenial
+```
 
+## on all nodes
 
-
-# on all nodes
+```bash
 # optimization: run parallel
 scw ps --all --filter "tags=kubeadm" --quiet | xargs echo -n | read --array server_ids
 for server in (scw inspect $server_ids | jq -c '.[]')
@@ -97,6 +96,7 @@ kubectl apply --filename https://git.io/weave-kube
 # kubectl taint nodes --all dedicated-
 ```
 
+
 ## worker
 
 ```bash
@@ -124,26 +124,11 @@ kubectl config use-context cfm
 ```
 
 
+## check
+```bash
 kubectl get nodes
 NAME                                                           STATUS    AGE
 38f1aae0-69ae-4994-984d-92669086cb2c.priv.cloud.scaleway.com   Ready     4m
 3f610664-66f1-4219-a6f1-9105f4001fa7.priv.cloud.scaleway.com   Ready     1m
 8b693d4e-0185-4419-8cfd-232daf237c91.priv.cloud.scaleway.com   Ready     1m
-
-Fri Oct 21 19:25:19 CEST 2016
-
-
-
-
-
-
-## scaleway-cli
-
-see:
-  - https://github.com/scaleway/scaleway-cli
-  - https://github.com/scaleway/scaleway-cli/releases
-
-curl --location https://github.com/scaleway/scaleway-cli/releases/download/v1.9.0/scw_1.9.0_linux_amd64.tar.gz \
-  | tar --extract -z --directory /tmp scw_1.9.0_linux_amd64/scw
-sudo mv /tmp/scw_1.9.0_linux_amd64/scw /usr/local/bin
-rmdir /tmp/scw_1.9.0_linux_amd64
+```

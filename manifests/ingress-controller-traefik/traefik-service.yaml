@@ -1,0 +1,1 @@
+# kubectl expose deployment traefik-lb --port=80 --target-port=80 -n kube-system

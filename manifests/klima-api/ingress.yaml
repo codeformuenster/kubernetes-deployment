@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: klima-api
+  namespace: default
+  labels:
+    app: klima-api
+    component: ingress
+  annotations:
+    ingress.kubernetes.io/auth-secret: klima-api-basic-auth
+    ingress.kubernetes.io/auth-type: basic
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: klima-api.kube.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: klima-api
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+    - klima-api.kube.codeformuenster.org
+    secretName: klima-api-tls

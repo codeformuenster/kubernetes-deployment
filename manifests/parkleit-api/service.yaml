@@ -5,8 +5,6 @@ metadata:
   namespace: default
   labels:
     app: parkleit-api
-  # annotations:
-  #   prometheus.io/scrape: 'true'
 spec:
   ports:
     - port: 5000

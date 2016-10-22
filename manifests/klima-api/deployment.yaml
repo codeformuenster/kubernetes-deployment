@@ -1,0 +1,24 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: klima-api
+  namespace: default
+  labels:
+    app: klima-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: klima-api
+      labels:
+        app: klima-api
+    spec:
+      containers:
+      - name: klima-api
+        image: ubergesundheit/unims-kli-api
+        env:
+          - name: KLI_PROPERTIES
+            value: TIMESTAMP,AirTC_Avg,RH_Avg,Rain_Tot,BP_kPa_Avg,WS_Gust_Max,WindDir_D1_WVT,WS_ms_S_WVT
+        ports:
+        - name: api
+          containerPort: 8080

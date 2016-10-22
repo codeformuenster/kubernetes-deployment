@@ -7,9 +7,6 @@ metadata:
     app: parkleit-api
 spec:
   replicas: 1
-  # selector:
-  #   matchLabels:
-  #     app: parkleit-api
   template:
     metadata:
       name: parkleit-api

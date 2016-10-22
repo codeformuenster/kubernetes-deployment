@@ -1,0 +1,31 @@
+[frontends]
+
+  [frontends.frontend1]
+  passHostHeader = true
+  backend = "dashboard-backend"
+  entrypoints = ["https2"]
+    [frontends.frontend1.routes.test_1]
+    rule = "Host:dashboard.mydomain.com"
+
+  [frontends.frontend2]
+  passHostHeader = true
+  backend = "k8s"
+    [frontends.frontend2.routes.default]
+    rule = "Host:{subdomain:[a-z]+}.mydomain.com"
+
+[backends]
+  [backends.dashboard-backend]
+
+    [backends.dashboard-backend.LoadBalancer]
+    method = "wrr"
+
+    [backends.dashboard-backend.servers.server1]
+    url = "http://100.xx.xx.xxx:80"
+
+   [backends.k8s]
+
+     [backends.k8s.LoadBalancer]
+     method = "wrr"
+
+     [backends.k8s.servers.server1]
+     url = "http://100.xx.xx.xxx:80"

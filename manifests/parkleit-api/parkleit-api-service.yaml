@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: parkleit-api
+  namespace: default
+  labels:
+    app: parkleit-api
+  # annotations:
+  #   prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - port: 5000
+      protocol: TCP
+      name: api
+  selector:
+    app: parkleit-api

@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: parkleit-api
+  namespace: default
+  labels:
+    app: parkleit-api
+spec:
+  replicas: 1
+  # selector:
+  #   matchLabels:
+  #     app: parkleit-api
+  template:
+    metadata:
+      name: parkleit-api
+      labels:
+        app: parkleit-api
+    spec:
+      containers:
+      - name: parkleit-api
+        image: codeformuenster/parkleitsystem-testing
+        command:
+          - python3
+        args:
+          - extract.py
+        ports:
+        - name: api
+          containerPort: 5000

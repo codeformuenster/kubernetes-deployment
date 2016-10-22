@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard
+  namespace: kube-system
+  labels:
+    app: dashboard
+    component: ui
+  annotations:
+    ingress.kubernetes.io/auth-secret: dashboard-basic-auth
+    ingress.kubernetes.io/auth-type: basic
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: dashboard.kube.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: kubernetes-dashboard
+          servicePort: 9090
+        path: /
+  tls:
+  - hosts:
+    - dashboard.kube.codeformuenster.org
+    secretName: dashboard-tls

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-controller-config
+  namespace: ingress
+  labels:
+    k8s-app: ingress-controller
+    component: config
+data:
+  server-name-hash-bucket-size: "256"
+  server-name-hash-max-size: "1024"
+  body-size: "1024m"

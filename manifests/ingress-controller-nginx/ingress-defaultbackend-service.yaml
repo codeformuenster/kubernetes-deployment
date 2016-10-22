@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-controller-defb
+    #^ must be no more than 24 characters
+  namespace: ingress
+  labels:
+    k8s-app: ingress-controller
+    component: defaultbackend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    k8s-app: ingress-controller
+    component: defaultbackend

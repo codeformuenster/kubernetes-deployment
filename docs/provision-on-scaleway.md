@@ -20,13 +20,14 @@ sudo cp _out/scw /usr/local/bin/
 
 ## scw login
 
+```bash
 scw login \
   --skip-ssh-key
 
 scw info
 
 scw ps --all
-
+```
 
 ## create servers
 

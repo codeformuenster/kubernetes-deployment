@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: parkleit-fetcher
+  namespace: default
+  labels:
+    app: parkleit-fetcher
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: parkleit-fetcher
+      labels:
+        app: parkleit-fetcher
+    spec:
+      containers:
+      - name: parkleit-fetcher
+        image: webwurst/curl-utils
+        # imagePullPolicy: Always
+        command:
+        - fish
+        - --command
+        args:
+        - |
+          while true
+            for space in (curl -s parkleit-api:5000 | jq -c '.[]')
+              curl --request POST "http://elasticsearch.elasticsearch.svc:9200/parkleit/space/" --data "$space"
+            end
+            echo "\nwaiting 300 seconds now.\n"
+            sleep 300
+          end

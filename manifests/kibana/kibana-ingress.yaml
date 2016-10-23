@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kibana
+  namespace: kibana
+  labels:
+    app: kibana
+    component: ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: kibana-basic-auth
+spec:
+  rules:
+  - host: kibana.kube.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kibana
+          servicePort: 5601
+  tls:
+  - secretName: kibana-tls
+    hosts:
+    - kibana.kube.codeformuenster.org

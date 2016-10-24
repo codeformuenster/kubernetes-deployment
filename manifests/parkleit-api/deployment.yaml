@@ -15,11 +15,7 @@ spec:
     spec:
       containers:
       - name: parkleit-api
-        image: codeformuenster/parkleitsystem-testing
-        command:
-          - python3
-        args:
-          - extract.py
+        image: codeformuenster/parkleit-scraper
         ports:
         - name: api
           containerPort: 5000

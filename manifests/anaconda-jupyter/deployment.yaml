@@ -11,21 +11,50 @@ spec:
     metadata:
       labels:
         app: anaconda-jupyter
+      annotations:
+        scheduler.alpha.kubernetes.io/affinity: >
+          {
+            "nodeAffinity": {
+              "requiredDuringSchedulingIgnoredDuringExecution": {
+                "nodeSelectorTerms": [
+                  {
+                    "matchExpressions": [
+                      {
+                        "key": "anaconda",
+                        "operator": "In",
+                        "values": ["yes"]
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
     spec:
       containers:
       - name: anaconda-jupyter
-        image: codeformuenster/anaconda-test
+        image: codeformuenster/anaconda-test:r3
+        imagePullPolicy: Always
         command:
           - /bin/bash
           - -c
           - |
-            /opt/conda/bin/conda install jupyter -y --quiet \
-              && mkdir /opt/notebooks \
-              && /opt/conda/bin/jupyter notebook \
-                --notebook-dir=/opt/notebooks \
-                --ip='*' \
-                --port=8888 \
-                --no-browser
+            /opt/conda/bin/jupyter notebook \
+              --notebook-dir=/opt/notebooks \
+              --ip='*' \
+              --port=8888 \
+              --no-browser
+        # command:
+        #   - /bin/bash
+        #   - -c
+        #   - |
+        #     /opt/conda/bin/conda install jupyter -y --quiet \
+        #       && mkdir --parents /opt/notebooks \
+        #       && /opt/conda/bin/jupyter notebook \
+        #         --notebook-dir=/opt/notebooks \
+        #         --ip='*' \
+        #         --port=8888 \
+        #         --no-browser
         # resources:
         #   # keep request = limit to keep this container in guaranteed class
         #   limits:
@@ -36,3 +65,11 @@ spec:
         - containerPort: 8888
           name: ui
           protocol: TCP
+        volumeMounts:
+        - mountPath: /opt/notebooks
+          name: anaconda-volume
+      volumes:
+      - name: anaconda-volume
+        hostPath:
+          # directory location on host
+          path: /srv/anaconda-volume

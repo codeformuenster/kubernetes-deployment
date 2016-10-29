@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: anaconda-jupyter
+  namespace: anaconda-jupyter
+  labels:
+    app: anaconda-jupyter
+    component: ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/auth-type: basic
+    ingress.kubernetes.io/auth-secret: anaconda-jupyter-basic-auth
+spec:
+  rules:
+  - host: anaconda-jupyter.kube.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: anaconda-jupyter
+          servicePort: 8888
+  tls:
+  - secretName: anaconda-jupyter-tls
+    hosts:
+    - anaconda-jupyter.kube.codeformuenster.org

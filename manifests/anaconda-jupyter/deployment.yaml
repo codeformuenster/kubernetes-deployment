@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: anaconda-jupyter
+  namespace: anaconda-jupyter
+  labels:
+    app: anaconda-jupyter
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: anaconda-jupyter
+    spec:
+      containers:
+      - name: anaconda-jupyter
+        image: codeformuenster/anaconda-test
+        command:
+          - /bin/bash
+          - -c
+          - |
+            /opt/conda/bin/conda install jupyter -y --quiet \
+              && mkdir /opt/notebooks \
+              && /opt/conda/bin/jupyter notebook \
+                --notebook-dir=/opt/notebooks \
+                --ip='*' \
+                --port=8888 \
+                --no-browser
+        # resources:
+        #   # keep request = limit to keep this container in guaranteed class
+        #   limits:
+        #     cpu: 100m
+        #   requests:
+        #     cpu: 100m
+        ports:
+        - containerPort: 8888
+          name: ui
+          protocol: TCP

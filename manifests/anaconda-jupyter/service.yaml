@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: anaconda-jupyter
+  namespace: anaconda-jupyter
+  labels:
+    app: anaconda-jupyter
+spec:
+  ports:
+  - port: 8888
+    protocol: TCP
+    targetPort: ui
+  selector:
+    app: anaconda-jupyter

@@ -3,23 +3,29 @@
 server_id=$1
 
 apt update
+
+# workarounds because of changes made by scaleway
+#
 apt -y -o Dpkg::Options::="--force-confnew" install base-files
+rm /etc/apt/apt.conf.d/50unattended-upgrades*
+apt -y -o Dpkg::Options::="--force-confnew" -o Dpkg::Options::="--force-confmiss" install unattended-upgrades
+
 apt -y upgrade
 apt -y install apt-transport-https jq fish ethtool
 
 curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
   | apt-key add -
 
-# echo 'deb http://apt.kubernetes.io/ kubernetes-xenial main' \
-#   > /etc/apt/sources.list.d/kubernetes.list
-
-echo 'deb http://apt.kubernetes.io/ kubernetes-xenial-unstable main' \
+echo 'deb http://apt.kubernetes.io/ kubernetes-xenial main' \
   > /etc/apt/sources.list.d/kubernetes.list
+
+# echo 'deb http://apt.kubernetes.io/ kubernetes-xenial-unstable main' \
+#   > /etc/apt/sources.list.d/kubernetes.list
 
 apt update
 apt -y install docker.io kubelet kubeadm kubectl kubernetes-cni
 
-# temporary workaround
+# temporary workaround ? also ./pki ?
 rmdir /etc/kubernetes/manifests
 
 # FIXME

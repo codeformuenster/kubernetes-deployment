@@ -1,39 +1,34 @@
 work in progress, proof of concept.
 Mostly `fish` shell.
 
+<!-- FIXME show "organization/token" used on every run? -->
+
 # Scaleway CLI
 
-## build scaleway-cli from HEAD
-
-Current release of scaleway-cli is [buggy](https://github.com/scaleway/scaleway-cli/issues/395). Build from master:
+## install
 
 ```bash
-docker run --rm -ti \
-  --volume $PWD/_out:/go/bin \
-  golang:1.7 \
-    bash -c "go get -d github.com/scaleway/scaleway-cli/... && cd /go/src/github.com/scaleway/scaleway-cli && make && cp scw /go/bin"
-
-_out/scw version
-sudo cp _out/scw /usr/local/bin/
+curl -SL https://github.com/scaleway/scaleway-cli/releases/download/v1.11/scw_1.11_linux_amd64.tar.gz \
+  | tar -xzf -
+sudo mv ./scw_1.11_linux_amd64/scw /usr/local/bin/
+scw version
 ```
-
 
 ## scw login
 
 ```bash
-scw login \
-  --skip-ssh-key
-
+scw login --skip-ssh-key
 scw info
-
 scw ps --all
 ```
 
 ## create servers
 
+FIXME read in json/yaml and loop over
+
 ```bash
 scw create \
-  --name kube01 \
+  --name kube0 \
   --commercial-type VC1M \
   --ip-address 163.172.158.84 \
   --volume 50G \
@@ -41,7 +36,7 @@ scw create \
   Ubuntu_Xenial
 
 scw create \
-  --name kube02 \
+  --name kube1 \
   --commercial-type VC1M \
   --ip-address 212.47.232.30 \
   --volume 50G \
@@ -49,7 +44,7 @@ scw create \
   Ubuntu_Xenial
 
 scw create \
-  --name kube03 \
+  --name kube2 \
   --commercial-type VC1M \
   --volume 50G \
   --env "kubeadm worker" \
@@ -58,8 +53,14 @@ scw create \
 
 ## on all nodes
 
+FIXME optimization: run parallel
+
+FIXME
+> A new version (/etc/apt/apt.conf.d/50unattended-upgrades.ucftmp) of configuration file /etc/apt/apt.conf.d/50unattended-upgrades is available, but the version installed currently has been locally modified.
+
+FIXME don't ask on apt install
+
 ```bash
-# optimization: run parallel
 scw ps --all --filter "tags=kubeadm" --quiet | xargs echo -n | read --array server_ids
 for server in (scw inspect $server_ids | jq -c '.[]')
 
@@ -69,9 +70,11 @@ for server in (scw inspect $server_ids | jq -c '.[]')
   scw exec --wait $server_id \
     echo '$(hostname) is ready'
 
-  scw cp ./scripts/kubeadm/prepare-node.sh "$server_id:/root"
+  scw cp ./scripts/kubeadm "$server_id:/root"
   scw exec --wait $server_id \
-    /root/prepare-node.sh $server_id
+    /root/kubeadm/prepare-node.sh $server_id
+  # scw exec --wait $server_id \
+  #   rm /etc/kubernetes/pki -rf
 
   scw exec --wait $server_id \
     echo '$(hostname) is ready'
@@ -84,18 +87,14 @@ end
 
 ```bash
 scw ps --all --filter "tags=master" --quiet | xargs echo -n | read --array server_ids
+
 # only one master server for now
 set server_id $server_ids[1]
 # server_ip_pub
 set server_ip_pub (scw inspect $server_id | jq -r  '.[] | .public_ip.address')
 
-printf "\
-kubeadm init --api-advertise-addresses $server_ip_pub
-kubectl apply --filename https://github.com/weaveworks/weave-kube/releases/download/latest_release/weave-daemonset.yaml
-" | scw exec --wait $server_id
-
-# maybe add "--etcd-servers=http://127.0.0.1:2379"
-# to /etc/kubernetes/manifests/kube-apiserver.json for `scheduledjobs`
+scw exec --wait $server_id \
+  /root/kubeadm/master-init.sh $server_ip_pub
 
 # kubectl taint nodes --all dedicated-
 ```
@@ -123,7 +122,7 @@ end
 
 ```bash
 # FIXME refactor script
-./scripts/kubectl/fetch-credetials.fish kube01 cfm
+./scripts/kubectl/fetch-credetials.fish cfm
 kubectl config use-context cfm
 ```
 
@@ -131,8 +130,4 @@ kubectl config use-context cfm
 ## check
 ```bash
 kubectl get nodes
-NAME                                                           STATUS    AGE
-38f1aae0-69ae-4994-984d-92669086cb2c.priv.cloud.scaleway.com   Ready     4m
-3f610664-66f1-4219-a6f1-9105f4001fa7.priv.cloud.scaleway.com   Ready     1m
-8b693d4e-0185-4419-8cfd-232daf237c91.priv.cloud.scaleway.com   Ready     1m
 ```

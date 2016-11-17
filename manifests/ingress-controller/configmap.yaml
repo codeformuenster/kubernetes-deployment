@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-controller-config
+  namespace: ingress-controller
+  labels:
+    app: ingress-controller
+    component: config
+data:
+  server-name-hash-bucket-size: "256"
+  server-name-hash-max-size: "1024"
+  body-size: "1024m"
+
+  # map_hash_bucket_size: "128"
+  # map_hash_max_size: "2048"
+
+  # from https://github.com/jetstack/kube-lego/blob/master/examples/nginx/nginx/configmap.yaml
+  proxy-connect-timeout: "15"
+  proxy-read-timeout: "600"
+  proxy-send-imeout: "600"
+  hsts-include-subdomains: "false"
+  # body-size: "64m"
+  # server-name-hash-bucket-size: "256"

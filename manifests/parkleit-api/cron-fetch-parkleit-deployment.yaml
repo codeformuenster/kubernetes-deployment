@@ -24,7 +24,7 @@ spec:
         - |
           while true
             for space in (curl -s parkleit-api:5000 | jq -c '.[]')
-              curl --request POST "http://elasticsearch.elasticsearch.svc:9200/parkleit/space/" --data "$space"
+              curl --request POST "http://elasticsearch.monitoring.svc:9200/parkleit/space/" --data "$space"
             end
             echo "\nwaiting 300 seconds now.\n"
             sleep 300

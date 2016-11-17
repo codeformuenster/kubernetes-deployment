@@ -1,0 +1,29 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    app: dashboard
+    component: ui
+  name: dashboard
+  namespace: monitoring
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dashboard
+        component: ui
+    spec:
+      containers:
+      - name: dashboard-ui
+        image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.2
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9090
+          initialDelaySeconds: 30
+          timeoutSeconds: 30

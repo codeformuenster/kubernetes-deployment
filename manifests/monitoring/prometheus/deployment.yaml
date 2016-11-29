@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: prometheus-main
-        image: prom/prometheus:v1.3.1
+        image: prom/prometheus:v1.4.1
         args:
         - '-storage.local.memory-chunks=400000'
         - '-config.file=/etc/prometheus/prometheus.yml'

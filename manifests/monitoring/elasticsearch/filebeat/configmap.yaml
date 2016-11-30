@@ -29,15 +29,14 @@ data:
             equals:
               some.key.in.structure.that.has.value: filebeat
 
-
     output.elasticsearch:
       hosts: ["elasticsearch.monitoring.svc:9200"]
 
       # # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html#load-template-auto
       # # https://www.elastic.co/guide/en/elasticsearch/reference/5.0/indices-templates.html
-      # template.name: "filebeat"
-      # template.path: "filebeat.template.json"
-      # template.overwrite: false
+      template.name: "filebeat"
+      template.path: "filebeat.template.json"
+      template.overwrite: true
 
     # Sets log level. The default log level is error.
     # Available log levels are: critical, error, warning, info, debug

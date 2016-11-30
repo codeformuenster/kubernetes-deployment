@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kube-events
+  namespace: monitoring
+  labels:
+    app: kube-events
+spec:
+  template:
+    metadata:
+      labels:
+        app: kube-events
+      # annotations:
+      #   pod.beta.kubernetes.io/init-containers: '[{
+      #     "name": "wait-for-endpoints",
+      #     "image": "giantswarm/tini-tools",
+      #     "command": ["fish", "-c", "while test 0 -eq (curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt --header \"Authorization: Bearer \"(cat /var/run/secrets/kubernetes.io/serviceaccount/token) https://kubernetes.default.svc/api/v1/namespaces/$argv[1]/endpoints/$argv[2] | jq -r \'.subsets | length\'); sleep 2; end"],
+      #     "args": ["monitoring", "grafana"]
+      #   }]'
+    spec:
+      containers:
+      - name: kube-events
+        image: giantswarm/tiny-tools
+        # imagePullPolicy: Always
+        command:
+        - fish
+        - --command
+        - |
+          set token (cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+          curl --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+            --header "Authorization: Bearer $token" \
+            --request GET https://kubernetes.default.svc/api/v1/watch/events \
+              | jq -c '.' | while read -l event
+            curl --request POST http://elasticsearch.monitoring.svc:9200/kube-events-test/event --data "$event"
+          end

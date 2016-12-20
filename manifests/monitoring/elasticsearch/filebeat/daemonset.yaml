@@ -11,7 +11,7 @@ spec:
         component: filebeat
     spec:
       containers:
-      - image: giantswarm/filebeat:5.0.0
+      - image: giantswarm/filebeat:5.0.2
         name: filebeat
         env:
         resources:
@@ -24,7 +24,7 @@ spec:
         - name: config
           mountPath: /etc/filebeat
           readOnly: true
-        - name: lib-docker-containers
+        - name: hostfs-var-lib-docker-containers
           mountPath: /hostfs/var/lib/docker/containers
           readOnly: true
         - name: hostfs-var-log
@@ -37,6 +37,6 @@ spec:
       - name: hostfs-var-log
         hostPath:
           path: /var/log
-      - name: lib-docker-containers
+      - name: hostfs-var-lib-docker-containers
         hostPath:
           path: /var/lib/docker/containers

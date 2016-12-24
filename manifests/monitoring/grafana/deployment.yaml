@@ -34,7 +34,7 @@ spec:
           }
     spec:
       containers:
-      - image: grafana/grafana:4.0.0
+      - image: grafana/grafana:4.1.0-beta1
         name: grafana-main
         # env:
         resources:

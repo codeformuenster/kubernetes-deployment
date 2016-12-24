@@ -13,6 +13,16 @@ spec:
       labels:
         app: prometheus
         component: node-exporter
+      annotations:
+        scheduler.alpha.kubernetes.io/tolerations: |
+          [
+            {
+              "key": "dedicated",
+              "operator": "Equal",
+              "value": "master",
+              "effect": "NoSchedule"
+            }
+          ]
     spec:
       containers:
       - image: prom/node-exporter:0.13.0

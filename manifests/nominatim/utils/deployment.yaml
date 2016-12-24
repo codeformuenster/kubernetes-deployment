@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nominatim-utils
+  namespace: nominatim
+  labels:
+    app: nominatim
+    component: utils
+spec:
+  template:
+    metadata:
+      labels:
+        app: nominatim
+        component: utils
+    spec:
+      containers:
+      - name: nominatim-utils
+        image: codeformuenster/nominatim-test:utils
+        command: ["sleep", "infinity"]
+        env:
+        - name: PGHOST
+          value: postgis
+        - name: PGDATABASE
+          value: nominatim
+        - name: PGUSER
+          value: nominatim

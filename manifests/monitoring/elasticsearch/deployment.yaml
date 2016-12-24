@@ -42,7 +42,7 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: elasticsearch:5.0.2
+        image: elasticsearch:5.1.1
         ports:
         - containerPort: 9200
           name: api

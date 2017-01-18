@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: ingress-controller-defaultbackend
-  namespace: ingress-controller
+  namespace: ingress
   labels:
     app: ingress-controller
     component: defaultbackend

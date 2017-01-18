@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: ingress-controller-defb
     #^ must be no more than 24 characters
-  namespace: ingress-controller
+  namespace: ingress
   labels:
     app: ingress-controller
     component: defaultbackend

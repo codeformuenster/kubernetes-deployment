@@ -8,6 +8,12 @@ Mostly `fish` shell.
 ## install
 
 ```bash
+curl -SL https://github.com/scaleway/scaleway-cli/releases/download/v1.11.1/scw_1.11.1_linux_amd64.tar.gz \
+  | tar -xzf -
+sudo mv ./scw_1.11.1_linux_amd64/scw /usr/local/bin/
+scw version
+```
+```bash
 curl -SL https://github.com/scaleway/scaleway-cli/releases/download/v1.11/scw_1.11_linux_amd64.tar.gz \
   | tar -xzf -
 sudo mv ./scw_1.11_linux_amd64/scw /usr/local/bin/
@@ -24,13 +30,17 @@ scw ps --all
 
 ## create servers
 
-FIXME read in json/yaml and loop over
+scw --region="ams1"
+
+    "kernel": "http://169.254.42.24/kernel/x86_64-4.8.14-std-2/vmlinuz-4.8.14-std-2",
+    "id": "f26ba64e-e01b-4b69-8ad3-61e56a32d7ed",
+
 
 ```bash
 scw create \
-  --name kube0 \
   --commercial-type VC1M \
-  --ip-address 163.172.158.84 \
+  --bootscript 4.8.14-std \
+  --ip-address 163.172.162.231 \
   --volume 50G \
   --env "kubeadm master" \
   Ubuntu_Xenial
@@ -38,17 +48,23 @@ scw create \
 scw create \
   --name kube1 \
   --commercial-type VC1M \
-  --ip-address 212.47.232.30 \
   --volume 50G \
   --env "kubeadm worker" \
   Ubuntu_Xenial
 
+
+
 scw create \
-  --name kube2 \
   --commercial-type VC1M \
+  --bootscript 4.8.14-std-2 \
   --volume 50G \
-  --env "kubeadm worker" \
-  Ubuntu_Xenial
+  xenial
+
+kubeadm join --token=4e9d31.1bd662ac3dbe9060 163.172.158.84
+
+
+
+
 ```
 
 ## on all nodes
@@ -62,6 +78,7 @@ FIXME don't ask on apt install
 
 ```bash
 scw ps --all --filter "tags=kubeadm" --quiet | xargs echo -n | read --array server_ids
+printf "%s\n" $server_ids
 for server in (scw inspect $server_ids | jq -c '.[]')
 
   set server_id (echo $server | jq -r '.id')
@@ -122,12 +139,13 @@ end
 
 ```bash
 # FIXME refactor script
-./scripts/kubectl/fetch-credetials.fish cfm
-kubectl config use-context cfm
+./scripts/kubectl/fetch-credetials.fish thisone
+kubectl config use-context thisone
 ```
 
 
 ## check
 ```bash
+kubectl config current-context
 kubectl get nodes
 ```

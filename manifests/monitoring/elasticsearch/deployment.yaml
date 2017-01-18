@@ -15,6 +15,7 @@ spec:
           [{
             "name": "sysctl",
               "image": "busybox",
+              "imagePullPolicy": "IfNotPresent",
               "command": ["sysctl", "-w", "vm.max_map_count=262144"],
               "securityContext": {
                 "privileged": true
@@ -43,6 +44,7 @@ spec:
       containers:
       - name: elasticsearch
         image: elasticsearch:5.1.1
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9200
           name: api
@@ -51,9 +53,21 @@ spec:
           name: transport
           protocol: TCP
         volumeMounts:
-        - name: elasticsearch-data
+        - name: config
+          mountPath: /usr/share/elasticsearch/config
+        - name: data
           mountPath: /usr/share/elasticsearch/data
+        - name: snapshots
+          mountPath: /mnt/snapshots
+          #^ chown -R elasticsearch:elasticsearch /mnt/snapshots/
+          # FIXME create init-container for this
       volumes:
-      - name: elasticsearch-data
+      - name: config
+        configMap:
+          name: elasticsearch
+      - name: data
         hostPath:
           path: /srv/elasticsearch-data
+      - name: snapshots
+        hostPath:
+          path: /srv/elasticsearch-snapshots

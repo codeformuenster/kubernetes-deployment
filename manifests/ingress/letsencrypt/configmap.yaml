@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kube-lego
-  namespace: ingress-controller
+  namespace: ingress
 data:
   lego.email: "webwurst@gmail.com"
   lego.url: "https://acme-v01.api.letsencrypt.org/directory"

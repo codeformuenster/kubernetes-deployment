@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch-prometheus-exporter
+  namespace: monitoring
+  labels:
+    app: prometheus-exporter
+    # app: elasticsearch
+    # component: prometheus-exporter
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/'
+    prometheus.io/port: '8080'
+spec:
+  # see http://kubernetes.io/docs/user-guide/services/#with-selectors
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  # - name: prometheus-elasticsearch-exporter
+  - name: es-prom-exporter
+    port: 8080
+    protocol: TCP
+  selector:
+    app: prometheus-exporter
+    # app: elasticsearch
+    # component: prometheus-exporter

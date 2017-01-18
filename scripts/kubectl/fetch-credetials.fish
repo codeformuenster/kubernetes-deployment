@@ -1,9 +1,5 @@
 #!/usr/bin/env fish
 
-# example
-# ./fetch-credetials.fish cfm
-# kubectl config use-context cfm
-
 set cluster_name $argv[1]
 
 scw ps --all --filter "tags=master" --quiet | xargs echo -n | read --array server_ids

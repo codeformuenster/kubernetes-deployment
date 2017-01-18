@@ -14,6 +14,15 @@ spec:
         app: grafana
         component: main
       annotations:
+        scheduler.alpha.kubernetes.io/tolerations: |
+          [
+            {
+              "key": "dedicated",
+              "operator": "Equal",
+              "value": "master",
+              "effect": "NoSchedule"
+            }
+          ]
         scheduler.alpha.kubernetes.io/affinity: >
           {
             "nodeAffinity": {
@@ -36,6 +45,7 @@ spec:
       containers:
       - image: grafana/grafana:4.1.0-beta1
         name: grafana-main
+        imagePullPolicy: IfNotPresent
         # env:
         resources:
           # keep request = limit to keep this container in guaranteed class
@@ -50,10 +60,20 @@ spec:
           value: "true"
         - name: GF_AUTH_ANONYMOUS_ORG_ROLE
           value: Admin
+        # - name: GF_AUTH_GITHUB_CLIENT_SECRET
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: grafana
+        #       key: github-client-secret
         volumeMounts:
         - name: grafana-data
           mountPath: /var/lib/grafana
+        - name: config
+          mountPath: /etc/grafana
       volumes:
       - name: grafana-data
         hostPath:
           path: /srv/grafana-data
+      - name: config
+        configMap:
+          name: grafana-server

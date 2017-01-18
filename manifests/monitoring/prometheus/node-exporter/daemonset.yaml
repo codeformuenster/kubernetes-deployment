@@ -25,7 +25,7 @@ spec:
           ]
     spec:
       containers:
-      - image: prom/node-exporter:0.13.0
+      - image: prom/node-exporter:v0.13.0
         name: prometheus-node-exporter
         ports:
         - name: prom-node-exp

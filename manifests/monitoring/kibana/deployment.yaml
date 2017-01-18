@@ -15,6 +15,7 @@ spec:
       containers:
       - name: kibana
         image: kibana:5.1.1
+        imagePullPolicy: IfNotPresent
         resources:
           # keep request = limit to keep this container in guaranteed class
           limits:
@@ -22,9 +23,16 @@ spec:
           requests:
             cpu: 100m
         env:
-          - name: "ELASTICSEARCH_URL"
-            value: "http://elasticsearch.monitoring.svc:9200"
+        - name: "ELASTICSEARCH_URL"
+          value: "http://elasticsearch.monitoring.svc:9200"
         ports:
         - containerPort: 5601
           name: ui
           protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kibana
+      volumes:
+      - name: config
+        configMap:
+          name: kibana

@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: ingress-controller-nginx
-  namespace: ingress-controller
+  namespace: ingress
   labels:
     app: ingress-controller
     component: nginx

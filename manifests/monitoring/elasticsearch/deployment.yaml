@@ -11,17 +11,17 @@ spec:
       labels:
         app: elasticsearch
       annotations:
-        pod.alpha.kubernetes.io/init-containers: >
-          [{
-            "name": "sysctl",
-              "image": "busybox",
-              "imagePullPolicy": "IfNotPresent",
-              "command": ["sysctl", "-w", "vm.max_map_count=262144"],
-              "securityContext": {
-                "privileged": true
-              }
-            }
-          ]
+        # pod.alpha.kubernetes.io/init-containers: >
+        #   [{
+        #     "name": "sysctl",
+        #       "image": "busybox",
+        #       "imagePullPolicy": "IfNotPresent",
+        #       "command": ["sysctl", "-w", "vm.max_map_count=262144"],
+        #       "securityContext": {
+        #         "privileged": true
+        #       }
+        #     }
+        #   ]
         scheduler.alpha.kubernetes.io/affinity: >
           {
             "nodeAffinity": {
@@ -43,7 +43,9 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: elasticsearch:5.1.1
+        # image: elasticsearch:5.1.1
+        # image: elasticsearch:5.1.2
+        image: elasticsearch:5.2.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9200

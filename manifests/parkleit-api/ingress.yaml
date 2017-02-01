@@ -7,12 +7,12 @@ metadata:
     app: parkleit-api
     component: ingress
   annotations:
-    ingress.kubernetes.io/auth-secret: parkleit-api-basic-auth
-    ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: parkleit-api-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
     kubernetes.io/tls-acme: "true"
 spec:
   rules:
-  - host: parkleit-api.kube.codeformuenster.org
+  - host: parkleit-api.codeformuenster.org
     http:
       paths:
       - backend:
@@ -21,5 +21,5 @@ spec:
         path: /
   tls:
   - hosts:
-    - parkleit-api.kube.codeformuenster.org
+    - parkleit-api.codeformuenster.org
     secretName: parkleit-api-tls

@@ -43,7 +43,8 @@ spec:
           }
     spec:
       containers:
-      - image: grafana/grafana:4.1.0-beta1
+      # - image: grafana/grafana:4.1.0-beta1
+      - image: grafana/grafana:4.1.1
         name: grafana-main
         imagePullPolicy: IfNotPresent
         # env:

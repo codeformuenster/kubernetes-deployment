@@ -1,62 +1,68 @@
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: curator
-#   namespace: monitoring
-# data:
-#   action_file.yml: |
-#     ---
-#     # See https://www.elastic.co/guide/en/elasticsearch/client/curator/current/actions.html
-#     actions:
-#       1:
-#         action: delete_indices
-#         description: "Delete indices of filebeat older than 3 days"
-#         filters:
-#         - filtertype: age
-#           source: field_stats
-#           direction: older
-#           unit: days
-#           unit_count: 3
-#           field: @timestamp
-#           stats_result: min_value
-#           disable_action: True
-#       # 2:
-#       #   action: snapshot
-#       #   description: >-
-#       #     Snapshot selected indices to 'repository' with the snapshot name or name
-#       #     pattern in 'name'.  Use all other options as assigned
-#       #   options:
-#       #     repository:
-#       #     # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
-#       #     name:
-#       #     ignore_unavailable: False
-#       #     include_global_state: True
-#       #     partial: False
-#       #     wait_for_completion: True
-#       #     skip_repo_fs_check: False
-#       #     timeout_override:
-#       #     continue_if_exception: False
-#       #     disable_action: True
-#       #   filters:
-#       #   - filtertype: ...
-#   config.yml: |
-#     ---
-#     # See https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configfile.html
-#     client:
-#       hosts:
-#       - elasticsearch
-#       port: 9200
-#       url_prefix:
-#       use_ssl: False
-#       certificate:
-#       client_cert:
-#       client_key:
-#       ssl_no_validate: False
-#       http_auth:
-#       timeout: 30
-#       master_only: False
-#     logging:
-#       loglevel: INFO
-#       logfile:
-#       logformat: default
-#       blacklist: ['elasticsearch', 'urllib3']
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: curator
+  namespace: monitoring
+data:
+  action_file.yml: |
+    ---
+    # See https://www.elastic.co/guide/en/elasticsearch/client/curator/current/actions.html
+    actions:
+      1:
+        action: delete_indices
+        description: "Delete indices of filebeat older than 3 days"
+        options:
+          continue_if_exception: True
+          disable_action: False
+        filters:
+        - filtertype: pattern
+          kind: prefix
+          value: filebeat-
+        - filtertype: age
+          source: field_stats
+          direction: older
+          unit: days
+          unit_count: 3
+          field: "@timestamp"
+          stats_result: min_value
+      2:
+        action: snapshot
+        description: >-
+          Snapshot index "parkleit" to repository "parkleit" with the snapshot name 'curator-%Y%m%d%H%M%S'
+        options:
+          repository: parkleit
+          # Leaving name blank will result in the default 'curator-%Y%m%d%H%M%S'
+          name:
+          ignore_unavailable: False
+          include_global_state: True
+          partial: False
+          wait_for_completion: True
+          skip_repo_fs_check: False
+          timeout_override:
+          continue_if_exception: True
+          disable_action: False
+        filters:
+        - filtertype: pattern
+          kind: prefix
+          value: parkleit
+  config.yml: |
+    ---
+    # See https://www.elastic.co/guide/en/elasticsearch/client/curator/current/configfile.html
+    client:
+      hosts:
+      - elasticsearch
+      port: 9200
+      url_prefix:
+      use_ssl: False
+      certificate:
+      client_cert:
+      client_key:
+      ssl_no_validate: False
+      http_auth:
+      timeout: 30
+      master_only: False
+    logging:
+      loglevel: INFO
+      logfile:
+      logformat: default
+      blacklist: ['elasticsearch', 'urllib3']

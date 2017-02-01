@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
       - name: es-prom-exporter
-        image: braedon/prometheus-es-exporter:0.1.3
+        # image: braedon/prometheus-es-exporter:0.1.3
+        image: braedon/prometheus-es-exporter:0.3.0.beta1
         command: ["python", "-u", "/usr/local/bin/prometheus-es-exporter", "-e", "elasticsearch", "-c", "/etc/prometheus-es-exporter/exporter.cfg"]
         # --es-cluster --config-file --json-logging
 

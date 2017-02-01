@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: parkleit-api
-        image: codeformuenster/parkleit-scraper
+        image: codeformuenster/parkleit-scraper:0.1.1
         ports:
         - name: api
           containerPort: 5000

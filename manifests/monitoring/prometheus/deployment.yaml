@@ -45,9 +45,11 @@ spec:
     spec:
       containers:
       - name: prometheus-main
-        image: prom/prometheus:v1.4.1
+        # image: prom/prometheus:v1.4.1
+        image: prom/prometheus:v1.5.0
         args:
-        - '-storage.local.memory-chunks=800000'
+        # - '-storage.local.memory-chunks=800000'
+        - '-storage.local.memory-chunks=1200000'
         - '-config.file=/etc/prometheus/prometheus.yml'
         ports:
         - name: webui

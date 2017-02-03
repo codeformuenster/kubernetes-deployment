@@ -7,8 +7,8 @@ metadata:
     app: klima-api
     component: ingress
   annotations:
-    ingress.kubernetes.io/auth-secret: klima-api-basic-auth
-    ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: klima-api-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
     kubernetes.io/tls-acme: "true"
 spec:
   rules:

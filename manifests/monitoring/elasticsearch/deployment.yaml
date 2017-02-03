@@ -5,23 +5,25 @@ metadata:
   namespace: monitoring
   labels:
     app: elasticsearch
+    component: service
 spec:
   template:
     metadata:
       labels:
         app: elasticsearch
+        component: service
       annotations:
-        # pod.alpha.kubernetes.io/init-containers: >
-        #   [{
-        #     "name": "sysctl",
-        #       "image": "busybox",
-        #       "imagePullPolicy": "IfNotPresent",
-        #       "command": ["sysctl", "-w", "vm.max_map_count=262144"],
-        #       "securityContext": {
-        #         "privileged": true
-        #       }
-        #     }
-        #   ]
+        pod.alpha.kubernetes.io/init-containers: >
+          [{
+            "name": "sysctl",
+              "image": "busybox",
+              "imagePullPolicy": "IfNotPresent",
+              "command": ["sysctl", "-w", "vm.max_map_count=262144"],
+              "securityContext": {
+                "privileged": true
+              }
+            }
+          ]
         scheduler.alpha.kubernetes.io/affinity: >
           {
             "nodeAffinity": {

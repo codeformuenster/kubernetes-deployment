@@ -7,8 +7,8 @@ metadata:
     app: elasticsearch
     component: ingress
   annotations:
-    ingress.kubernetes.io/auth-secret: elasticsearch-basic-auth
-    ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: elasticsearch-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
     kubernetes.io/tls-acme: "true"
 spec:
   rules:

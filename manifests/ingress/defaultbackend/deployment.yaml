@@ -1,19 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: ingress-controller-defaultbackend
+  name: default-http-backend
   namespace: ingress
   labels:
-    app: ingress-controller
-    component: defaultbackend
+    app: default-http-backend
 spec:
   replicas: 1
   template:
     metadata:
-      name: ingress-controller-defaultbackend
+      name: default-http-backend
       labels:
-        app: ingress-controller
-        component: defaultbackend
+        app: default-http-backend
     spec:
       terminationGracePeriodSeconds: 60
       containers:

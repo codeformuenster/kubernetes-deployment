@@ -5,10 +5,13 @@ metadata:
   namespace: monitoring
   labels:
     app: elasticsearch
+    component: service
 spec:
   ports:
   - port: 9200
     protocol: TCP
-    targetPort: api
+    # targetPort: api
+    targetPort: 9200
   selector:
     app: elasticsearch
+    component: service

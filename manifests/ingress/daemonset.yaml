@@ -1,58 +1,51 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: ingress-controller-nginx
+  name: nginx-ingress-controller
   namespace: ingress
   labels:
-    app: ingress-controller
-    component: nginx
+    app: nginx-ingress-controller
 spec:
   template:
     metadata:
       labels:
-        app: ingress-controller
-        component: nginx
+        app: nginx-ingress-controller
     spec:
-      # terminationGracePeriodSeconds: 60
+      # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
+      # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host
+      # that said, since hostPort is broken on CNI (https://github.com/kubernetes/kubernetes/issues/31307) we have to use hostNetwork where CNI is used
+      # like with kubeadm
       hostNetwork: true
+      terminationGracePeriodSeconds: 60
       containers:
-      - image: gcr.io/google_containers/nginx-ingress-controller:0.8.3
-        name: ingress-controller-nginx
-        # imagePullPolicy: Always
+      - image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.1
+        name: nginx-ingress-controller
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
         livenessProbe:
           httpGet:
             path: /healthz
             port: 10254
             scheme: HTTP
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
         ports:
         - containerPort: 80
-          # hostPort: 80
+          hostPort: 80
         - containerPort: 443
-          # hostPort: 443
+          hostPort: 443
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
         args:
         - /nginx-ingress-controller
-        - --default-backend-service=$(POD_NAMESPACE)/ingress-controller-defb
-        - --nginx-configmap=$(POD_NAMESPACE)/ingress-controller-config
-        - --v=3
-        volumeMounts:
-          - mountPath: /etc/nginx/template
-            name: config-template
-            readOnly: true
-      volumes:
-        - name: config-template
-          configMap:
-            name: ingress-controller-config-template
-            items:
-            - key: nginx.tmpl
-              path: nginx.tmpl
+        - --default-backend-service=$(POD_NAMESPACE)/default-http-backend

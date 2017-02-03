@@ -8,7 +8,7 @@ metadata:
     component: server
   annotations:
     # ingress.kubernetes.io/auth-secret: nominatim-basic-auth
-    ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-type: basic
     kubernetes.io/tls-acme: "true"
 spec:
   rules:

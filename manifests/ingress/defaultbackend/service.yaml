@@ -1,17 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ingress-controller-defb
-    #^ must be no more than 24 characters
+  name: default-http-backend
   namespace: ingress
   labels:
-    app: ingress-controller
-    component: defaultbackend
+    app: default-http-backend
 spec:
   ports:
   - port: 80
-    protocol: TCP
     targetPort: 8080
   selector:
-    app: ingress-controller
-    component: defaultbackend
+    app: default-http-backend

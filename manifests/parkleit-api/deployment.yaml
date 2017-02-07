@@ -15,7 +15,11 @@ spec:
     spec:
       containers:
       - name: parkleit-api
-        image: codeformuenster/parkleit-scraper:0.1.1
+        image: codeformuenster/parkleit-scraper:0.1.2
         ports:
-        - name: api
-          containerPort: 5000
+        - containerPort: 5000
+          name: api
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: api

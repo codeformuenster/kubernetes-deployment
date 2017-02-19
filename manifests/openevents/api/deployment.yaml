@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: openevents-api
+  namespace: openevents
+  labels:
+    app: openevents
+    component: api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: openevents-api
+      labels:
+        app: openevents-api
+        component: api
+    spec:
+      containers:
+      - name: openevents-api
+        image: codeformuenster/openevents-api:master
+        ports:
+        - name: api
+          containerPort: 8080

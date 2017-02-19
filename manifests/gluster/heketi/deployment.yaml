@@ -1,0 +1,52 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: heketi
+  namespace: gluster
+  labels:
+    name: heketi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: heketi
+    spec:
+      serviceAccountName: heketi
+      containers:
+      - image: heketi/heketi:4
+        imagePullPolicy: IfNotPresent
+        name: heketi
+        command:
+        - /usr/bin/heketi
+        - --config=/etc/heketi/heketi.json
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: config
+          mountPath: /etc/heketi
+        - name: data
+          mountPath: /var/lib/heketi
+        - name: backup
+          mountPath: /backupdb
+        readinessProbe:
+          timeoutSeconds: 3
+          initialDelaySeconds: 3
+          httpGet:
+            path: /hello
+            port: 8080
+        livenessProbe:
+          timeoutSeconds: 3
+          initialDelaySeconds: 30
+          httpGet:
+            path: /hello
+            port: 8080
+      volumes:
+      - name: config
+        configMap:
+          name: heketi
+      - name: data
+        emptyDir: {}
+      - name: backup
+        secret:
+          secretName: backup

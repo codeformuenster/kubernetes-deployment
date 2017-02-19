@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: openevents-api
+  namespace: openevents
+  labels:
+    app: openevents
+    component: api
+spec:
+  ports:
+    - port: 8080
+      protocol: TCP
+      name: api
+  selector:
+    app: openevents
+    component: api

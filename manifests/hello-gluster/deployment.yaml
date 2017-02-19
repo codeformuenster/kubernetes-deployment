@@ -1,0 +1,26 @@
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: hello
+  namespace: hello-gluster
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: hello
+      labels:
+        name: hello
+    spec:
+      containers:
+      - image: giantswarm/helloworld-caddy:0.1.1
+        imagePullPolicy: IfNotPresent
+        name: hello
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: gluster-vol
+          mountPath: /var/www/gluster
+      volumes:
+      - name: gluster-vol
+        persistentVolumeClaim:
+          claimName: hello

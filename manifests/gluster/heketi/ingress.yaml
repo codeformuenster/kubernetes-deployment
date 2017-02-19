@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: heketi
+  namespace: gluster
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    # ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-secret: kibana-basic-auth
+spec:
+  rules:
+  - host: heketi.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: heketi
+          servicePort: 8080
+  tls:
+  - secretName: heketi-tls
+    hosts:
+    - heketi.codeformuenster.org

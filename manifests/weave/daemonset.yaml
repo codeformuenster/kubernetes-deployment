@@ -24,6 +24,7 @@ spec:
       containers:
         - name: weave
           image: weaveworks/weave-kube:1.9.0
+          # image: weaveworks/weave-kube:1.9.1
           command:
             - /home/weave/launch.sh
           livenessProbe:
@@ -45,10 +46,13 @@ spec:
               mountPath: /host/etc
             - name: dbus
               mountPath: /host/var/lib/dbus
+            # - name: lib-modules
+            #   mountPath: /lib/modules
           resources:
             requests:
               cpu: 10m
         - name: weave-npc
+          # image: weaveworks/weave-npc:1.9.1
           image: weaveworks/weave-npc:1.9.0
           resources:
             requests:
@@ -71,3 +75,6 @@ spec:
         - name: dbus
           hostPath:
             path: /var/lib/dbus
+        # - name: lib-modules
+        #   hostPath:
+        #     path: /lib/modules

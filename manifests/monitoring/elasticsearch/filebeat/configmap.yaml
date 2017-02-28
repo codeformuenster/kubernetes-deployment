@@ -1,75 +1,62 @@
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: filebeat
-#   namespace: monitoring
-#   labels:
-#     app: elasticsearch
-#     component: filebeat
-# data:
-#   filebeat.yml: |
-#     filebeat.prospectors:
-#     - input_type: log
-#       paths:
-#       - /hostfs/var/log/*.log
-#       - /hostfs/var/log/*/*.log
-#       tags:
-#       - host
-#
-#     - input_type: log
-#       paths:
-#       - /hostfs/var/lib/docker/containers/*/*-json.log
-#       tags:
-#       - docker
-#       json.keys_under_root: false
-#       json.message_key: log
-#       json.add_error_key: true
-#       # json.keys_under_root: true
-#
-#     # avoid feedback loop
-#     processors:
-#       - drop_event:
-#           when:
-#             equals:
-#               some.key.in.structure.that.has.value: filebeat
-#
-#     output.elasticsearch:
-#       hosts: ["elasticsearch.monitoring.svc:9200"]
-#
-#       # # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html#load-template-auto
-#       # # https://www.elastic.co/guide/en/elasticsearch/reference/5.0/indices-templates.html
-#       template.name: "filebeat"
-#       template.path: "filebeat.template.json"
-#       template.overwrite: true
-#
-#     # Sets log level. The default log level is error.
-#     # Available log levels are: critical, error, warning, info, debug
-#     logging.level: info
-#
-#
-# # PUT my-index/my-type/my-id?pipeline=my_pipeline_id
-# # {
-# #   "description": "Parse time field from docker logs",
-# #   "processors": [
-# #     {
-# #       "set": {
-# #         "field": "log_source",
-# #         "value": "container"
-# #       }
-# #     },
-# #     {
-# #       "date": {
-# #         "field": "time",
-# #         "formats": ["ISO8601"],
-# #         "on_failure": [
-# #           {
-# #             "set": {
-# #               "field": "log_source",
-# #               "value": "host"
-# #             }
-# #           }
-# #         ]
-# #       }
-# #     }
-# #   ]
-# # }
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat
+  namespace: monitoring
+  labels:
+    app: elasticsearch
+    component: filebeat
+data:
+  filebeat.yml: |
+    filebeat.prospectors:
+
+    - input_type: log
+      # log lines from host
+      paths:
+      - "/hostfs/var/log"
+      - "/hostfs/var/log/*"
+      - "/hostfs/var/log/dmesg"
+      - "/hostfs/var/log/syslog"
+      - "/hostfs/var/log/*/*"
+      # exclude_files: ['\.gz$']
+      exclude_files:
+      - '\.[0-9]$'
+      - '\.[0-9]\.gz$'
+      tags:
+      - host
+
+    - input_type: log
+      # log lines from containers
+      paths:
+      - /hostfs/var/lib/docker/containers/*/*-json.log
+      tags:
+      - docker
+      json.keys_under_root: false
+      json.message_key: log
+      json.add_error_key: true
+
+      # multiline.pattern: '^[[:space:]]'
+      multiline.pattern: '^[[:space:]]+|^Caused by:'
+      multiline.negate: false
+      multiline.match: after
+
+
+    # # avoid feedback loop
+    # processors:
+    # - drop_event:
+    #     when:
+    #       equals:
+    #         some.key.in.structure.that.has.value: filebeat
+
+    output.elasticsearch:
+      hosts: ["elasticsearch.monitoring.svc:9200"]
+
+      # https://www.elastic.co/guide/en/beats/filebeat/current/filebeat-template.html#load-template-auto
+      # https://www.elastic.co/guide/en/elasticsearch/reference/5.0/indices-templates.html
+      template.name: "filebeat"
+      template.path: "filebeat.template.json"
+      template.overwrite: true
+
+    # Sets log level. The default log level is error.
+    # Available log levels are: critical, error, warning, info, debug
+    logging.level: info

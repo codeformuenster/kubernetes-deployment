@@ -45,11 +45,12 @@ spec:
     spec:
       containers:
       - name: prometheus-main
-        # image: prom/prometheus:v1.4.1
-        image: prom/prometheus:v1.5.0
+        # image: prom/prometheus:v1.5.0
+        # image: prom/prometheus:v1.5.2
+        image: prom/prometheus:master
         args:
-        # - '-storage.local.memory-chunks=800000'
-        - '-storage.local.memory-chunks=1200000'
+        - '-storage.local.memory-chunks=800000'
+        # - '-storage.local.memory-chunks=1200000'
         - '-config.file=/etc/prometheus/prometheus.yml'
         ports:
         - name: webui
@@ -57,7 +58,7 @@ spec:
         resources:
           requests:
             cpu: 1000m
-            memory: 1000M
+            memory: 1500M
           limits:
             cpu: 2000m
             memory: 1500M

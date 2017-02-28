@@ -45,10 +45,14 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        # image: elasticsearch:5.1.1
-        # image: elasticsearch:5.1.2
-        image: elasticsearch:5.2.0
+        # image: elasticsearch:5.2.0
+        image: elasticsearch:5.2.1
         imagePullPolicy: IfNotPresent
+        # securityContext:
+        #   privileged: true
+        #   capabilities:
+        #     add:
+        #       - IPC_LOCK
         ports:
         - containerPort: 9200
           name: api

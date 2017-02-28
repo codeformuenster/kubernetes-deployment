@@ -11,9 +11,9 @@ spec:
         component: filebeat
     spec:
       containers:
-        # - image: giantswarm/filebeat:5.1.1
-      # - image: giantswarm/filebeat:5.1.2
-      - image: giantswarm/filebeat:5.2.0
+      # - image: giantswarm/filebeat:5.2.0
+      - image: giantswarm/filebeat:5.2.1
+        imagePullPolicy: IfNotPresent
         name: filebeat
         env:
         resources:

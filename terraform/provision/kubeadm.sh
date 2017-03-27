@@ -37,8 +37,9 @@ echo "vm.max_map_count = 262144" > /etc/sysctl.d/elasticsearch
 
 if [ "$node_num" = "0" ]; then
   kubeadm init --config master-configuration.yaml
-  # FIXME wait loop?
-  kubectl apply --filename https://git.io/weave-kube-1.6
+
+  KUBECONFIG=/etc/kubernetes/admin.conf \
+    kubectl apply --filename https://git.io/weave-kube-1.6
 else
   kubeadm join --token $token $master_ip:6443
 fi

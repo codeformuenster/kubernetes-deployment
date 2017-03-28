@@ -35,7 +35,7 @@ resource "scaleway_server" "kube" {
   count = "${var.count}"
   bootscript = "${data.scaleway_bootscript.latest.id}"
   image = "${data.scaleway_image.ubuntu.id}"
-  name = "kube_test${count.index}"
+  name = "${var.scaleway_server_nameprefix}${count.index}"
   type = "VC1M"
   enable_ipv6 = false
   dynamic_ip_required = true
@@ -63,6 +63,13 @@ resource "null_resource" "prepare" {
   provisioner "file" {
     source = "./provision"
     destination = "/root/provision"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod +x /root/provision/dependencies.sh",
+      "/root/provision/dependencies.sh"
+    ]
   }
 
   provisioner "remote-exec" {

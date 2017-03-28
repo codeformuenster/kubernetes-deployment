@@ -26,3 +26,7 @@ When you want to start from scratch, delete terraforms state files:
 ```bash
 rm terraform.state
 ```
+
+## Execution Graph
+
+![Visual execution graph of Terraform resources](terraform.png?raw=true)

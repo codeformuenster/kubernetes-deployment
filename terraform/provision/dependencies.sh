@@ -14,11 +14,9 @@ apt update
 # apt -y install docker-engine kubeadm kubelet kubernetes-cni kubectl
 apt -y install docker.io kubeadm kubelet kubernetes-cni kubectl
 
-# for service in kubeadm kubelet
-# do
-#   curl -Lo /usr/local/bin/$service https://dl.k8s.io/v1.6.0-rc.1/bin/linux/amd64/$service
-#   chmod +x /usr/local/bin/$service
-# done
+cp 10-kubeadm.conf /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+systemctl daemon-reload
+systemctl restart kubelet
 
 # for elasticsearch
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html

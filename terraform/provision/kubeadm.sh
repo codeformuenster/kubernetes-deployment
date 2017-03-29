@@ -5,8 +5,6 @@ token=$2
 master_ip_private=$3
 master_ip_public=$4
 
-cd /root/provision
-
 echo "apiServerCertSANs: [\"$master_ip_public\"]" >> ./master-configuration.yaml
 echo "token: $token" >> ./master-configuration.yaml
 

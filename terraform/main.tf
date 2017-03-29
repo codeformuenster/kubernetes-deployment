@@ -66,15 +66,17 @@ resource "null_resource" "prepare" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /root/provision/dependencies.sh",
-      "/root/provision/dependencies.sh"
+      "cd /root/provision",
+      "chmod +x dependencies.sh",
+      "./dependencies.sh"
     ]
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /root/provision/kubeadm.sh",
-      "/root/provision/kubeadm.sh ${count.index} ${var.kubeadm_token} ${scaleway_server.kube.0.private_ip} ${scaleway_server.kube.0.public_ip}"
+      "cd /root/provision",
+      "chmod +x kubeadm.sh",
+      "./kubeadm.sh ${count.index} ${var.kubeadm_token} ${scaleway_server.kube.0.private_ip} ${scaleway_server.kube.0.public_ip}"
     ]
   }
 }

@@ -12,8 +12,8 @@ export SCALEWAY_TOKEN "{ token }"
 
 If you want to log to a file:
 ```bash
-export TF_LOG "INFO" # TRACE, DEBUG, INFO, WARN or ERROR
-export TF_LOG_PATH "./terraform.log"
+export TF_LOG="INFO" # TRACE, DEBUG, INFO, WARN or ERROR
+export TF_LOG_PATH="terraform.log"
 ```
 
 Applying your configuration. IMPORTANT! Might destroy existing stuff!

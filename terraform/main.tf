@@ -22,14 +22,13 @@ provider "scaleway" {
 
 data "scaleway_bootscript" "latest" {
   architecture = "x86_64"
-  name_filter = "latest"
+  name_filter = "docker" # for built-in module xt_set
 }
 
 data "scaleway_image" "ubuntu" {
   architecture = "x86_64"
   name = "Ubuntu Xenial"
 }
-
 
 resource "scaleway_server" "kube" {
   count = "${var.count}"

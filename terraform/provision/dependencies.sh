@@ -14,10 +14,6 @@ apt update
 # apt -y install docker-engine kubeadm kubelet kubernetes-cni kubectl
 apt -y install docker.io kubeadm kubelet kubernetes-cni kubectl
 
-cp 10-kubeadm.conf /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-systemctl daemon-reload
-systemctl restart kubelet
-
 # for elasticsearch
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
 echo "* - nofile 65536" > /etc/security/limits.d/elasticsearch

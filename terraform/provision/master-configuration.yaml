@@ -2,3 +2,8 @@ apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
 kubernetesVersion: v1.6.0
 # selfHosted: true
+
+apiServerExtraArgs:
+  runtime-config: "api/all=true"
+  # audit-log-path: "/var/log/kubernetes/kube-apiserver-audit.log"
+  # audit-log-maxbackup: 4

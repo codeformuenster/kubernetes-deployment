@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: elasticsearch
+  namespace: elasticsearch
+  labels:
+    app: elasticsearch
+spec:
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: affinity/elasticsearch
+                operator: In
+                values:
+                - "true"
+      initContainers:
+      # - name: set-vm-max-map-count
+      #   image: busybox
+      #   command: ['sysctl', '-w', 'vm.max_map_count=262144']
+      #   securityContext:
+      #     privileged: true
+      - name: copy-config
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.0.0-alpha2
+        command: ['sh', '-c', 'cp --recursive /usr/share/elasticsearch/config/. /tmp/config-merged/ && cp --recursive /tmp/config/. /tmp/config-merged/']
+        volumeMounts:
+        - name: config
+          mountPath: /tmp/config
+        - name: config-merged
+          mountPath: /tmp/config-merged
+      containers:
+      - name: elasticsearch
+        # image: elasticsearch:5.2.0
+        # image: elasticsearch:5.2.1
+        # image: elasticsearch:5.2.2
+        # image: elasticsearch:5.4
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.0.0-alpha2
+        imagePullPolicy: IfNotPresent
+        # securityContext:
+        #   privileged: true
+        #   capabilities:
+        #     add:
+        #       - IPC_LOCK
+        ports:
+        - containerPort: 9200
+          name: api
+          protocol: TCP
+        - containerPort: 9300
+          name: transport
+          protocol: TCP
+        volumeMounts:
+        - name: config-merged
+          mountPath: /usr/share/elasticsearch/config
+        - name: data
+          mountPath: /usr/share/elasticsearch/data
+      volumes:
+      - name: config
+        configMap:
+          name: elasticsearch
+      - name: config-merged
+        emptyDir: {}
+      - name: data
+        hostPath:
+          path: /srv/elasticsearch-data

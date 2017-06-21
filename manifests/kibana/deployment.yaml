@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: kibana
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:6.0.0-alpha2
+        imagePullPolicy: IfNotPresent
+        # # Info: During rebuilding assets, over 800mb ram and 2 cores are used. can take up to 15min..
+        # resources:
+        #   # keep request = limit to keep this container in guaranteed class
+        #   limits:
+        #     cpu: 100m
+        #   requests:
+        #     cpu: 100m
+        env:
+          - name: "ELASTICSEARCH_URL"
+            value: "http://elasticsearch.elasticsearch.svc:9200"
+          - name: "XPACK_SECURITY_ENABLED"
+            value: "false"
+          - name: "XPACK_MONITORING_ENABLED"
+            value: "false"
+          - name: "LOGGING_QUIET"
+            value: "false"
+          - name: "LOGGING_VERBOSE"
+            value: "true"
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP
+      #   volumeMounts:
+      #   - name: config
+      #     mountPath: /usr/share/kibana/config
+      # volumes:
+      # - name: config
+      #   configMap:
+      #     name: kibana

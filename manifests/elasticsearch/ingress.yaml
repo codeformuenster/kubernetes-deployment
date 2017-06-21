@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: elasticsearch
+  namespace: elasticsearch
+  labels:
+    app: elasticsearch
+  annotations:
+    # ingress.kubernetes.io/auth-secret: elasticsearch-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: elasticsearch.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: elasticsearch
+          servicePort: 9200
+        path: /
+  tls:
+  - hosts:
+    - elasticsearch.codeformuenster.org
+    secretName: elasticsearch-tls

@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: nginx-ingress-controller
-  namespace: ingress
+  namespace: nginx-ingress
   labels:
     app: nginx-ingress-controller
 spec:
@@ -10,6 +10,9 @@ spec:
     metadata:
       labels:
         app: nginx-ingress-controller
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "10254"
     spec:
       # hostNetwork makes it possible to use ipv6 and to preserve the source IP correctly regardless of docker configuration
       # however, it is not a hard dependency of the nginx-ingress-controller itself and it may cause issues if port 10254 already is taken on the host
@@ -17,9 +20,16 @@ spec:
       # like with kubeadm
       hostNetwork: true
       terminationGracePeriodSeconds: 60
+      serviceAccountName: nginx-ingress-serviceaccount
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
       containers:
       - name: nginx-ingress-controller
-        image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.2
+        image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.8
+        # image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.7
+        # image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.2
+        # image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.3
         readinessProbe:
           httpGet:
             path: /healthz

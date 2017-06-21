@@ -1,9 +1,0 @@
-nodes:
-  kube0:
-    commercial_type: VC1M
-    ip_address: 163.172.158.84
-    volume: 50G
-    labels:
-    - kubeadm
-    - master
-    base_image: Ubuntu_Xenial

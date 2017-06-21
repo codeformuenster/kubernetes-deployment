@@ -2,23 +2,24 @@ apiVersion: batch/v2alpha1
 kind: CronJob
 metadata:
   name: parkleit-fetcher
+  namespace: parkleit-api
 spec:
   schedule: "*/5 * * * *"
   #^ utc server-time
+  startingDeadlineSeconds: 300
+  concurrencyPolicy: Replace
   jobTemplate:
     spec:
       template:
         spec:
+          # FIXME use elasticsearch-python-api for this
           containers:
           - name: parkleit-fetcher
             image: webwurst/curl-utils
-            # imagePullPolicy: Always
+            imagePullPolicy: IfNotPresent
             command:
-            - fish
-            - --command
+            - sh
+            - -c
             args:
-            - |
-              for json_line in (curl -s parkleit-api:5000 | jq -c '.[]')
-                curl --request POST "http://elasticsearch.monitoring.svc:9200/parkleit/space/" --data "$json_line"
-              end
+            - curl -sSf parkleit-api:5000/minio
           restartPolicy: OnFailure

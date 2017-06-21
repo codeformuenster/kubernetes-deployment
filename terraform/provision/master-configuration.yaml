@@ -1,9 +1,22 @@
 apiVersion: kubeadm.k8s.io/v1alpha1
 kind: MasterConfiguration
-kubernetesVersion: v1.6.0
-# selfHosted: true
+
+kubernetesVersion: "v1.6.5"
 
 apiServerExtraArgs:
   runtime-config: "api/all=true"
-  # audit-log-path: "/var/log/kubernetes/kube-apiserver-audit.log"
-  # audit-log-maxbackup: 4
+  feature-gates: "TaintBasedEvictions=true"
+
+
+# # https://github.com/kubernetes/kubernetes/pull/39440
+# networking:
+#   # weave
+#   podSubnet: 10.32.0.0/12
+
+# api:
+#   advertiseAddress: <address|string>
+
+# apiServerCertSANs: <name1|string>
+
+# token: <string>
+# tokenTTL: <time duration>

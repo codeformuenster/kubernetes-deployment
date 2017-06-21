@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: parkleit-api
-  namespace: default
+  namespace: parkleit-api
   labels:
     app: parkleit-api
 spec:
@@ -15,7 +15,9 @@ spec:
     spec:
       containers:
       - name: parkleit-api
-        image: codeformuenster/parkleit-scraper:0.1.2
+        # image: codeformuenster/parkleit-scraper:0.1.6
+        image: codeformuenster/parkleit-scraper:0.2.0-minio10
+        imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 5000
           name: api

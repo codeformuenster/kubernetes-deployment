@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: event-api
+  namespace: event-api
+  labels:
+    app: event-api
+    component: ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: event-api.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: event-api
+          servicePort: 5000
+        path: /
+  tls:
+  - hosts:
+    - event-api.codeformuenster.org
+    secretName: event-api-tls

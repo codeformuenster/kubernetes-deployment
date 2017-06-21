@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana
+  namespace: kibana
+data:
+  kibana.yml: |
+    server.host: "0"
+    elasticsearch.url: http://elasticsearch.elasticsearch.svc:9200
+    xpack:
+      monitoring.ui.container.elasticsearch.enabled: false
+      security.enabled: false
+    status.allowAnonymous: true
+    logging:
+      quiet: false
+      verbose: true

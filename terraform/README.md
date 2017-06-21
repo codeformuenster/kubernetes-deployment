@@ -2,17 +2,14 @@
 
 > experimental! may destroy all your things! please fix me!
 
+Lookup credentials of your Scaleway account: https://cloud.scaleway.com/#/credentials
+
 Edit `scaleway-config.tfvars`, see `main.tf` for defaults.
 
-Lookup credentials of your Scaleway account: https://cloud.scaleway.com/#/credentials
-```bash
-export SCALEWAY_ORGANIZATION "{ access key }"
-export SCALEWAY_TOKEN "{ token }"
-```
 
 If you want to log to a file:
 ```bash
-export TF_LOG="INFO" # TRACE, DEBUG, INFO, WARN or ERROR
+export TF_LOG="WARN" # TRACE, DEBUG, INFO, WARN or ERROR
 export TF_LOG_PATH="terraform.log"
 ```
 
@@ -30,3 +27,21 @@ rm terraform.state
 ## Execution Graph
 
 ![Visual execution graph of Terraform resources](terraform.png?raw=true)
+
+
+## On the Cluster
+
+```
+KUBECONFIG=/etc/kubernetes/admin.conf kubectl help
+```
+
+Remote
+```
+scp root@$master:/etc/kubernetes/admin.conf .
+
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x kubectl
+
+./kubectl --kubeconfig ./admin.conf get nodes
+./kubectl --kubeconfig ./admin.conf get --all-namespaces pods
+```

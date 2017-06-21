@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: prometheus
+  namespace: monitoring
+  labels:
+    app: prometheus
+    component: ingress
+  annotations:
+    # ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: prometheus.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: prometheus
+          servicePort: 9090
+        path: /
+  tls:
+  - hosts:
+    - prometheus.codeformuenster.org
+    secretName: prometheus-tls

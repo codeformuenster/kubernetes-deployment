@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: klima-api
-  namespace: default
+  namespace: klima-api
   labels:
     app: klima-api
     component: ingress
@@ -12,7 +12,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
 spec:
   rules:
-  - host: klima-api.kube.codeformuenster.org
+  - host: klima-api.codeformuenster.org
     http:
       paths:
       - backend:
@@ -21,5 +21,5 @@ spec:
         path: /
   tls:
   - hosts:
-    - klima-api.kube.codeformuenster.org
+    - klima-api.codeformuenster.org
     secretName: klima-api-tls

@@ -1,0 +1,25 @@
+digraph {
+	compound = "true"
+	newrank = "true"
+	subgraph "root" {
+		"[root] data.scaleway_bootscript.latest" [label = "data.scaleway_bootscript.latest", shape = "box"]
+		"[root] data.scaleway_image.ubuntu" [label = "data.scaleway_image.ubuntu", shape = "box"]
+		"[root] null_resource.prepare" [label = "null_resource.prepare", shape = "box"]
+		"[root] provider.null" [label = "provider.null", shape = "diamond"]
+		"[root] provider.scaleway" [label = "provider.scaleway", shape = "diamond"]
+		"[root] scaleway_server.kube" [label = "scaleway_server.kube", shape = "box"]
+		"[root] data.scaleway_bootscript.latest" -> "[root] provider.scaleway"
+		"[root] data.scaleway_image.ubuntu" -> "[root] provider.scaleway"
+		"[root] null_resource.prepare" -> "[root] provider.null"
+		"[root] null_resource.prepare" -> "[root] scaleway_server.kube"
+		"[root] null_resource.prepare" -> "[root] var.kubeadm_token"
+		"[root] provider.scaleway" -> "[root] var.scaleway_region"
+		"[root] root" -> "[root] null_resource.prepare"
+		"[root] root" -> "[root] var.scaleway_server_type"
+		"[root] scaleway_server.kube" -> "[root] data.scaleway_bootscript.latest"
+		"[root] scaleway_server.kube" -> "[root] data.scaleway_image.ubuntu"
+		"[root] scaleway_server.kube" -> "[root] var.count"
+		"[root] scaleway_server.kube" -> "[root] var.scaleway_server_nameprefix"
+	}
+}
+

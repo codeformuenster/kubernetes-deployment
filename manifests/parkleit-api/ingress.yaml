@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: parkleit-api
-  namespace: default
+  namespace: parkleit-api
   labels:
     app: parkleit-api
     component: ingress

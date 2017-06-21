@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: goto-nrw
-  namespace: default
+  namespace: goto-nrw
   labels:
     app: goto-nrw
     component: ingress
@@ -10,7 +10,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
 spec:
   rules:
-  - host: goto-nrw.kube.codeformuenster.org
+  - host: goto-nrw.codeformuenster.org
     http:
       paths:
       - backend:
@@ -19,5 +19,5 @@ spec:
         path: /
   tls:
   - hosts:
-    - goto-nrw.kube.codeformuenster.org
+    - goto-nrw.codeformuenster.org
     secretName: goto-nrw-tls

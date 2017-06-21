@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: goto-nrw
-  namespace: default
+  namespace: goto-nrw
   labels:
     app: goto-nrw
 spec:

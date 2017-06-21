@@ -8,22 +8,12 @@ spec:
     metadata:
       labels:
         name: weave-net
-      annotations:
-        scheduler.alpha.kubernetes.io/tolerations: |
-          [
-            {
-              "key": "dedicated",
-              "operator": "Equal",
-              "value": "master",
-              "effect": "NoSchedule"
-            }
-          ]
     spec:
       hostNetwork: true
       hostPID: true
       containers:
         - name: weave
-          image: weaveworks/weave-kube:1.9.6
+          image: weaveworks/weave-kube:1.9.8
           command:
             - /home/weave/launch.sh
           livenessProbe:
@@ -51,13 +41,26 @@ spec:
             requests:
               cpu: 10m
         - name: weave-npc
-          image: weaveworks/weave-npc:1.9.6
+          image: weaveworks/weave-npc:1.9.8
           resources:
             requests:
               cpu: 10m
           securityContext:
             privileged: true
+          env:
+          - name: HOSTNAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: spec.nodeName
       restartPolicy: Always
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+      serviceAccountName: weave-net
+      securityContext:
+        seLinuxOptions:
+          type: spc_t
       volumes:
         - name: weavedb
           emptyDir: {}

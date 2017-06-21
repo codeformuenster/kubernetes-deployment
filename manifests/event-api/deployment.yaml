@@ -13,14 +13,15 @@ spec:
       labels:
         app: event-api
     spec:
-      initContainers:
-      - name: init-schema
-        image: codeformuenster/event-api:0.3.3
-        command: ["sh", "-c"]
-        args:
-        - cat ./events_schema_template.json | curl --request PUT --header Content-Type:application/json --globoff -sSf elasticsearch.monitoring.svc:9200/_template/events_1 --data @-; fi
-        # args:
-        # - if test 404 = $(curl --head -sS -o /dev/null -w '%{http_code}' elasticsearch.monitoring.svc:9200/events); then cat ./events_schema.json | curl --request PUT --header Content-Type:application/json --globoff -sSf elasticsearch.monitoring.svc:9200/events --data @-; fi
+      # FIXME don't crash if schema already exists
+      # initContainers:
+      # - name: init-schema
+      #   image: codeformuenster/event-api:0.3.3
+      #   command: ["sh", "-c"]
+      #   args:
+      #   - cat ./events_schema_template.json | curl --request PUT --header Content-Type:application/json --globoff -sSf elasticsearch.monitoring.svc:9200/_template/events_1 --data @-; fi
+      #   # args:
+      #   # - if test 404 = $(curl --head -sS -o /dev/null -w '%{http_code}' elasticsearch.monitoring.svc:9200/events); then cat ./events_schema.json | curl --request PUT --header Content-Type:application/json --globoff -sSf elasticsearch.monitoring.svc:9200/events --data @-; fi
       containers:
       - name: event-api
         # image: codeformuenster/event-api:0.2.0-testing2

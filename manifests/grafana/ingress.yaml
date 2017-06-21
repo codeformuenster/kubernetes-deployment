@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  namespace: grafana
+  labels:
+    app: grafana
+    component: ingress
+  annotations:
+    # ingress.kubernetes.io/auth-secret: kibana-basic-auth
+    # ingress.kubernetes.io/auth-type: basic
+    # ingress.kubernetes.io/auth-realm: "thisone"
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: grafana.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+        path: /
+  tls:
+  - secretName: grafana-tls
+    hosts:
+    - grafana.codeformuenster.org

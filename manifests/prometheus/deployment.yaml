@@ -22,7 +22,8 @@ spec:
         imagePullPolicy: IfNotPresent
         args:
         - '-storage.local.retention=12h'
-        - '-storage.local.memory-chunks=500000'
+        # - '-storage.local.memory-chunks=500000'
+        - '-storage.local.memory-chunks=2000000'
         - '-config.file=/etc/prometheus/prometheus.yaml'
         - '-alertmanager.url=http://alertmanager:9093/'
         ports:

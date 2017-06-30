@@ -22,9 +22,17 @@ apt -yq install docker.io kubeadm
 
 # for elasticsearch
 # https://www.elastic.co/guide/en/elasticsearch/reference/current/system-config.html
-echo "* - nofile 65536" > /etc/security/limits.d/elasticsearch
-echo "vm.max_map_count = 262144" > /etc/sysctl.d/elasticsearch
-sysctl -w vm.max_map_count=262144
+
+cat > /etc/sysctl.d/elasticsearch.conf <<EOF
+vm.max_map_count = 262144
+fs.file-max = 65536
+EOF
+
+cat > /etc/security/limits.d/elasticsearch.conf <<EOF
+* - nofile 65536
+root - nofile 65536
+EOF
+sysctl --system
 
 # log versions of docker, kubeadm
 docker version

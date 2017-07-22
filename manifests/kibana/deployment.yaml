@@ -13,6 +13,7 @@ spec:
         app: kibana
     spec:
       containers:
+      # FIXME! health check + rolling update policy
       - name: kibana
         image: docker.elastic.co/kibana/kibana:6.0.0-alpha2
         imagePullPolicy: IfNotPresent
@@ -24,24 +25,56 @@ spec:
         #   requests:
         #     cpu: 100m
         env:
-          - name: "ELASTICSEARCH_URL"
-            value: "http://elasticsearch.elasticsearch.svc:9200"
-          - name: "XPACK_SECURITY_ENABLED"
-            value: "false"
-          - name: "XPACK_MONITORING_ENABLED"
-            value: "false"
-          - name: "LOGGING_QUIET"
-            value: "false"
-          - name: "LOGGING_VERBOSE"
-            value: "true"
+        - name: "ELASTICSEARCH_URL"
+          value: "http://elasticsearch.elasticsearch.svc:9200"
+        - name: "SERVER_HOST"
+          value: "127.0.0.1"
+        # - name: "SERVER_PORT"
+        #   value: "5602"
+        # - name: "SERVER_PORT"
+        #   value: "80"
+        - name: "XPACK_SECURITY_ENABLED"
+          value: "false"
+        - name: "XPACK_MONITORING_ENABLED"
+          value: "false"
+        - name: "LOGGING_QUIET"
+          value: "false"
+        # - name: "LOGGING_VERBOSE"
+        #   value: "true"
+        # - name: "REGIONMAP"
+        #   value: ""
+
+        # ports:
+        # - containerPort: 5602
+        #   name: ui
+        #   protocol: TCP
+        # volumeMounts:
+        # - name: config-kibana
+        #   mountPath: /usr/share/kibana/config
+      - name: caddy
+        image: giantswarm/caddy:0.10.4
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 5601
-          name: ui
+        - containerPort: 80
+          name: caddy
           protocol: TCP
-      #   volumeMounts:
-      #   - name: config
-      #     mountPath: /usr/share/kibana/config
-      # volumes:
-      # - name: config
+        # - containerPort: 443
+        #   name: caddy
+        #   protocol: TCP
+        # config
+        #   proxy from/to
+        #   enable letsencrypt
+        #   github group?
+        # secret:
+        #   github token or something
+        volumeMounts:
+        - name: kibana
+          mountPath: /etc/caddy
+      # or maybe both configs in one configmap?
+      volumes:
+      # - name: config-kibana
       #   configMap:
       #     name: kibana
+      - name: kibana
+        configMap:
+          name: kibana

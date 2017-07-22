@@ -18,8 +18,8 @@ spec:
       paths:
       - backend:
           serviceName: kibana
-          servicePort: 5601
-        path: /
+          # servicePort: 5601
+          servicePort: 80
   tls:
   - secretName: kibana-tls
     hosts:

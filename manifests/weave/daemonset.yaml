@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: weave-net
+  labels:
+    name: weave-net
   namespace: kube-system
 spec:
   template:
@@ -9,19 +11,26 @@ spec:
       labels:
         name: weave-net
     spec:
-      hostNetwork: true
-      hostPID: true
       containers:
         - name: weave
-          image: weaveworks/weave-kube:1.9.8
           command:
             - /home/weave/launch.sh
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          image: 'weaveworks/weave-kube:2.0.1'
           livenessProbe:
-            initialDelaySeconds: 30
             httpGet:
               host: 127.0.0.1
               path: /status
               port: 6784
+            initialDelaySeconds: 30
+          resources:
+            requests:
+              cpu: 10m
           securityContext:
             privileged: true
           volumeMounts:
@@ -37,33 +46,26 @@ spec:
               mountPath: /host/var/lib/dbus
             - name: lib-modules
               mountPath: /lib/modules
-          resources:
-            requests:
-              cpu: 10m
         - name: weave-npc
-          image: weaveworks/weave-npc:1.9.8
+          image: 'weaveworks/weave-npc:2.0.1'
           resources:
             requests:
               cpu: 10m
           securityContext:
             privileged: true
-          env:
-          - name: HOSTNAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: spec.nodeName
+      hostNetwork: true
+      hostPID: true
       restartPolicy: Always
-      tolerations:
-      - key: node-role.kubernetes.io/master
-        effect: NoSchedule
-      serviceAccountName: weave-net
       securityContext:
-        seLinuxOptions:
-          type: spc_t
+        seLinuxOptions: {}
+      serviceAccountName: weave-net
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
       volumes:
         - name: weavedb
-          emptyDir: {}
+          hostPath:
+            path: /var/lib/weave
         - name: cni-bin
           hostPath:
             path: /opt
@@ -79,3 +81,5 @@ spec:
         - name: lib-modules
           hostPath:
             path: /lib/modules
+  updateStrategy:
+    type: RollingUpdate

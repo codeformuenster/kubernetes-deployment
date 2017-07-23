@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: IfNotPresent
         env:
         - name: "ELASTICSEARCH_URL"
-          value: "http://elasticsearch.monitoring.svc:9200"
+          value: "http://elasticsearch.elasticsearch.svc:9200"
         - name: "ES_INDEX_NAME"
           value: "events-1"
         ports:

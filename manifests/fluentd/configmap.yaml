@@ -20,7 +20,7 @@ data:
   # fluent-plugin-grok-parser
   #
   # https://github.com/fluent/fluentd/blob/master/ChangeLog
-  
+
   fluent.conf: |
     @include kubernetes.conf
 
@@ -45,6 +45,8 @@ data:
     </match>
 
   kubernetes.conf: |
+    # https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter/blob/master/README.md
+
     <match fluent.**>
       type null
     </match>
@@ -168,6 +170,22 @@ data:
     <filter kubernetes.**>
       type kubernetes_metadata
     </filter>
+
+    <filter kubernetes.var.log.containers.nginx-ingress-controller-**>
+      # https://github.com/kubernetes/ingress/tree/master/controllers/nginx#log-format
+      type parser
+      reserve_data true
+      hash_value_field parsed
+      key_name log
+      format /^(?<remote_addr>[^ ]*) - \[(?<proxy_add_x_forwarded_for>[^\]]*)\] - (?<remote_user>[^ ]*) \[(?<time_local>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^\"]*) +\S*)?" (?<status>[^ ]*) (?<body_bytes_sent>[^ ]*)(?: "(?<http_referer>[^\"]*)" "(?<http_user_agent>[^\"]*)")?.*$/
+    </filter>
+
+    # <filter kubernetes.var.log.containers.nginx-ingress-controller-**>
+    #   type record_transformer
+    #   <record>
+    #     message "#{parsed.method} #{parsed.path} #{parsed.status}"
+    #   </record>
+    # </filter>
 
   # prometheus.conf: |
   #   # https://github.com/kazegusuri/fluent-plugin-prometheus#usage

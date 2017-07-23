@@ -12,7 +12,10 @@ spec:
   ports:
     - port: 9090
       protocol: TCP
-      # name: webui
+      name: webui
+    - port: 80
+      protocol: TCP
+      name: caddy
   selector:
     app: prometheus
     component: core

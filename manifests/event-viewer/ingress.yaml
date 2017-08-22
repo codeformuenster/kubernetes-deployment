@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: event-viewer
+  namespace: event-viewer
+  labels:
+    app: event-viewer
+    component: ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: event-viewer.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: event-viewer
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - event-viewer.codeformuenster.org
+    secretName: event-viewer-tls

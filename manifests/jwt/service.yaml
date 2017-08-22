@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jwt
+  namespace: jwt
+  labels:
+    app: jwt
+  # annotations:
+  #   prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      name: caddy
+  selector:
+    app: jwt

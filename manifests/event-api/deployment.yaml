@@ -24,9 +24,7 @@ spec:
       #   # - if test 404 = $(curl --head -sS -o /dev/null -w '%{http_code}' elasticsearch.monitoring.svc:9200/events); then cat ./events_schema.json | curl --request PUT --header Content-Type:application/json --globoff -sSf elasticsearch.monitoring.svc:9200/events --data @-; fi
       containers:
       - name: event-api
-        # image: codeformuenster/event-api:0.2.0-testing2
-        # image: codeformuenster/event-api:0.3.0-testing1
-        image: codeformuenster/event-api:0.3.3
+        image: codeformuenster/event-api:0.3.5
         imagePullPolicy: IfNotPresent
         env:
         - name: "ELASTICSEARCH_URL"

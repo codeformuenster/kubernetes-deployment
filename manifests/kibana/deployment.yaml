@@ -15,6 +15,7 @@ spec:
       containers:
       # FIXME! health check + rolling update policy
       - name: kibana
+        # image: docker.elastic.co/kibana/kibana:6.0.0-beta1
         image: docker.elastic.co/kibana/kibana:6.0.0-alpha2
         imagePullPolicy: IfNotPresent
         # # Info: During rebuilding assets, over 800mb ram and 2 cores are used. can take up to 15min..

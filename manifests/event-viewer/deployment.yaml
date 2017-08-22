@@ -1,0 +1,31 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: event-viewer
+  namespace: event-viewer
+  labels:
+    app: event-viewer
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: event-viewer
+      labels:
+        app: event-viewer
+    spec:
+      containers:
+      - name: event-viewer
+        image: codeformuenster/event-viewer:0.1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: "ELASTICSEARCH_URL"
+          value: "http://elasticsearch.elasticsearch.svc:9200"
+        - name: "ES_INDEX_NAME"
+          value: "events-1"
+        - name: MapboxAccessToken
+          valueFrom:
+            secretKeyRef:
+              name: event-viewer
+              key: MapboxAccessToken
+        ports:
+        - containerPort: 80

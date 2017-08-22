@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jwt
+  namespace: jwt
+  labels:
+    app: jwt
+    component: ingress
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: jwt.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: jwt
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - jwt.codeformuenster.org
+    secretName: jwt-tls

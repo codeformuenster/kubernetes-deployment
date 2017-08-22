@@ -31,7 +31,7 @@ spec:
       containers:
       - name: prometheus
         image: quay.io/prometheus/prometheus:v1.7.1
-        # image: quay.io/prometheus/prometheus:v2.0.0-beta.0
+        # image: quay.io/prometheus/prometheus:v2.0.0-beta.2
         imagePullPolicy: IfNotPresent
         args:
         # set storage.local.target-heap-size to 2/3 of physical memory:

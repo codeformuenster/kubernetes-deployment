@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kibana-auth
+  labels:
+    app: kibana-auth
+    stack: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana-auth
+      stack: logging
+  template:
+    metadata:
+      labels:
+        app: kibana-auth
+        stack: logging
+    spec:
+      containers:
+      - name: kibana-auth
+        image: quay.io/giantswarm/oauth2-proxy:2.2.0-1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /etc/oauth2_proxy
+      volumes:
+      - name: config
+        configMap:
+          name: kibana-auth

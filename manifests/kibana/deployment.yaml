@@ -2,80 +2,37 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kibana
-  namespace: kibana
   labels:
     app: kibana
+    stack: logging
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: kibana
+        stack: logging
     spec:
+      # FIXME
+      # healthcheck + resources
       containers:
-      # FIXME! health check + rolling update policy
       - name: kibana
-        # image: docker.elastic.co/kibana/kibana:6.0.0-beta1
-        image: docker.elastic.co/kibana/kibana:6.0.0-alpha2
+        image: docker.elastic.co/kibana/kibana-oss:6.1.1
         imagePullPolicy: IfNotPresent
-        # # Info: During rebuilding assets, over 800mb ram and 2 cores are used. can take up to 15min..
-        # resources:
-        #   # keep request = limit to keep this container in guaranteed class
-        #   limits:
-        #     cpu: 100m
-        #   requests:
-        #     cpu: 100m
         env:
-        - name: "ELASTICSEARCH_URL"
-          value: "http://elasticsearch.elasticsearch.svc:9200"
-        - name: "SERVER_HOST"
-          value: "127.0.0.1"
-        # - name: "SERVER_PORT"
-        #   value: "5602"
-        # - name: "SERVER_PORT"
-        #   value: "80"
-        - name: "XPACK_SECURITY_ENABLED"
-          value: "false"
-        - name: "XPACK_MONITORING_ENABLED"
-          value: "false"
-        - name: "LOGGING_QUIET"
-          value: "false"
-        # - name: "LOGGING_VERBOSE"
-        #   value: "true"
-        # - name: "REGIONMAP"
-        #   value: ""
-
-        # ports:
-        # - containerPort: 5602
-        #   name: ui
-        #   protocol: TCP
-        # volumeMounts:
-        # - name: config-kibana
-        #   mountPath: /usr/share/kibana/config
-      - name: caddy
-        image: giantswarm/caddy:0.10.4
-        imagePullPolicy: IfNotPresent
+        - name: ELASTICSEARCH_PASSWORD
+          value: changeme
         ports:
-        - containerPort: 80
-          name: caddy
-          protocol: TCP
-        # - containerPort: 443
-        #   name: caddy
-        #   protocol: TCP
-        # config
-        #   proxy from/to
-        #   enable letsencrypt
-        #   github group?
-        # secret:
-        #   github token or something
+        - containerPort: 5601
+        resources: {}
         volumeMounts:
-        - name: kibana
-          mountPath: /etc/caddy
-      # or maybe both configs in one configmap?
+        - name: config
+          mountPath: /usr/share/kibana/kibana.yml
+          subPath: kibana.yml
+      restartPolicy: Always
       volumes:
-      # - name: config-kibana
-      #   configMap:
-      #     name: kibana
-      - name: kibana
+      - name: config
         configMap:
           name: kibana

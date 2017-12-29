@@ -1,23 +1,21 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: kibana
+  name: kibana-auth
   labels:
-    app: kibana
+    app: kibana-auth
     stack: logging
   annotations:
-    nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start
-    nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
     kubernetes.io/tls-acme: "true"
 spec:
   rules:
   - host: kibana.codeformuenster.org
     http:
       paths:
-      - path: /
+      - path: /oauth2
         backend:
-          serviceName: kibana
-          servicePort: 5601
+          serviceName: oauth2-proxy
+          servicePort: 4180
   tls:
   - secretName: kibana-tls
     hosts:

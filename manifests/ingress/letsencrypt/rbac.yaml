@@ -1,34 +1,26 @@
-# from https://github.com/jetstack/kube-lego/issues/99#issuecomment-297484920
+# from https://github.com/jetstack/kube-lego/issues/99#issuecomment-316978562
 
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
     name: lego
 rules:
-- apiGroups:
-  - ""
-  - "extensions"
-  resources:
-  - configmaps
-  - secrets
-  - services
-  - endpoints
-  - ingresses
-  - nodes
-  - pods
-  verbs:
-  - list
-  - get
-  - watch
+# must be able to get / create / delete services to manage the kube-lego-nginx service
+# TODO: this should actually be a namespaced Role, with a distinct name
+# More TODO: why does kube-lego even need to manage this? Why can't it be created
+# at instantiation time?
 - apiGroups:
   - ""
   resources:
   - services
   verbs:
   - create
+  - get
+  - delete
+# Not sur if ingress/status is needed
+# TODO: this should be trimmed further, I don't see any use of PATCH and UPDATE insofar
 - apiGroups:
-  - "extensions"
-  - ""
+  - extensions
   resources:
   - ingresses
   - ingresses/status
@@ -40,20 +32,15 @@ rules:
   - patch
   - delete
   - watch
+# allow global access to manage secrets (to write the keys)
 - apiGroups:
-  - "*"
   - ""
   resources:
-  - events
-  - certificates
   - secrets
   verbs:
-  - create
-  - list
-  - update
   - get
-  - patch
-  - watch
+  - create
+  - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding

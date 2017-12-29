@@ -1,14 +1,11 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: nginx-ingress
----
-apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nginx-ingress-serviceaccount
-  namespace: nginx-ingress
+  namespace: ingress-nginx
+
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -60,12 +57,14 @@ rules:
       - ingresses/status
     verbs:
       - update
+
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
   name: nginx-ingress-role
-  namespace: nginx-ingress
+  namespace: ingress-nginx
 rules:
   - apiGroups:
       - ""
@@ -73,6 +72,7 @@ rules:
       - configmaps
       - pods
       - secrets
+      - namespaces
     verbs:
       - get
   - apiGroups:
@@ -86,23 +86,28 @@ rules:
       # when launching the nginx-ingress-controller.
       - "ingress-controller-leader-nginx"
     verbs:
-      - create
       - get
       - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
   - apiGroups:
       - ""
     resources:
       - endpoints
     verbs:
       - get
-      - create
-      - update
+
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
   name: nginx-ingress-role-nisa-binding
-  namespace: nginx-ingress
+  namespace: ingress-nginx
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -110,8 +115,10 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nginx-ingress-serviceaccount
-    namespace: nginx-ingress
+    namespace: ingress-nginx
+
 ---
+
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -123,4 +130,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: nginx-ingress-serviceaccount
-    namespace: nginx-ingress
+    namespace: ingress-nginx

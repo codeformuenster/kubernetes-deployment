@@ -2,52 +2,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kibana
-  namespace: kibana
+  labels:
+    app: kibana
+    stack: logging
 data:
-  # kibana.yml: |
-  #   server.host: "0"
-  #   elasticsearch.url: http://elasticsearch.elasticsearch.svc:9200
-  #   xpack:
-  #     monitoring.ui.container.elasticsearch.enabled: false
-  #     security.enabled: false
-  #   status.allowAnonymous: true
-  #   logging:
-  #     quiet: false
-  #     verbose: true
-  Caddyfile: |
-    :80
-    log stdout
-    errors stdout
-
-    # proxy / 127.0.0.1:5601
-    proxy / 127.0.0.1:5601 {
-        header_upstream X-Forwarded-Proto {scheme}
-        header_upstream X-Forwarded-Host {host}
-        header_upstream Host {host}
-    }
-
-    jwt {
-        path /
-        redirect /login
-        allow sub bob
-    }
-
-    login {
-        login_path /login
-        simple bob=secret,alice=secret
-    }
-
-    # jwt {
-    #   path /my-account
-    #   redirect /login
-    # }
-    #
-    # login {
-    #   github client_id={$github_client_id},client_secret={$github_client_secret}
-    #
-    #   success_url /my-account
-    #   logout_url /
-    #   template login_template.html
-    #   jwt_expiry 24h
-    #   cookie_expiry 2400h
-    # }
+  kibana.yml: |
+    server:
+      name: "full-stack-example"
+      port: 127.0.0.1:5601
+    elasticsearch.url: "http://elasticsearch:9200"

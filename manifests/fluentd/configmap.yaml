@@ -2,9 +2,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fluentd
-  namespace: logging-fluentd
+  # namespace: logging-fluentd
   labels:
-    component: fluentd
+    app: fluentd
 data:
   # see also https://github.com/kubernetes/kubernetes/blob/master/cluster/addons/fluentd-elasticsearch/fluentd-es-image/td-agent.conf
   # https://github.com/fabric8io/fluent-plugin-kubernetes_metadata_filter

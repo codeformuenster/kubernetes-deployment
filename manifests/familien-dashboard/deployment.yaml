@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dashboard
+  namespace: dashboard
+  labels:
+    app: dashboard
+spec:
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      containers:
+      - name: dashboard
+        image: codeformuenster/familien-dashboard:0.3.2-test1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: ui
+          containerPort: 2015

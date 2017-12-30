@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard
+  namespace: dashboard
+  labels:
+    app: dashboard
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: dashboard.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: dashboard
+          servicePort: ui
+        path: /
+  - host: mein-ms.de
+    http:
+      paths:
+      - backend:
+          serviceName: dashboard
+          servicePort: ui
+        path: /
+  tls:
+  - hosts:
+    - dashboard.codeformuenster.org
+    - mein-ms.de
+    secretName: dashboard-tls

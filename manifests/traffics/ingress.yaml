@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: traffics
+  namespace: traffics
+  labels:
+    app: traffics
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: traffics.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: traffics
+          servicePort: ui
+        path: /
+  tls:
+  - hosts:
+    - traffics.codeformuenster.org
+    secretName: traffics-tls

@@ -14,6 +14,7 @@ items:
       name: weave-net
       labels:
         name: weave-net
+      namespace: kube-system
     rules:
       - apiGroups:
           - ''
@@ -26,7 +27,7 @@ items:
           - list
           - watch
       - apiGroups:
-          - extensions
+          - networking.k8s.io
         resources:
           - networkpolicies
         verbs:
@@ -39,8 +40,47 @@ items:
       name: weave-net
       labels:
         name: weave-net
+      namespace: kube-system
     roleRef:
       kind: ClusterRole
+      name: weave-net
+      apiGroup: rbac.authorization.k8s.io
+    subjects:
+      - kind: ServiceAccount
+        name: weave-net
+        namespace: kube-system
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: Role
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    rules:
+      - apiGroups:
+          - ''
+        resourceNames:
+          - weave-net
+        resources:
+          - configmaps
+        verbs:
+          - get
+          - update
+      - apiGroups:
+          - ''
+        resources:
+          - configmaps
+        verbs:
+          - create
+  - apiVersion: rbac.authorization.k8s.io/v1beta1
+    kind: RoleBinding
+    metadata:
+      name: weave-net
+      labels:
+        name: weave-net
+      namespace: kube-system
+    roleRef:
+      kind: Role
       name: weave-net
       apiGroup: rbac.authorization.k8s.io
     subjects:

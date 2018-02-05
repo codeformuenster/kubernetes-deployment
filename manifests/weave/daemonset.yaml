@@ -21,7 +21,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          image: 'weaveworks/weave-kube:2.0.1'
+          image: 'weaveworks/weave-kube:2.2.0'
           livenessProbe:
             httpGet:
               host: 127.0.0.1
@@ -46,13 +46,25 @@ spec:
               mountPath: /host/var/lib/dbus
             - name: lib-modules
               mountPath: /lib/modules
+            - name: xtables-lock
+              mountPath: /run/xtables.lock
         - name: weave-npc
-          image: 'weaveworks/weave-npc:2.0.1'
+          args: []
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: spec.nodeName
+          image: 'weaveworks/weave-npc:2.2.0'
           resources:
             requests:
               cpu: 10m
           securityContext:
             privileged: true
+          volumeMounts:
+            - name: xtables-lock
+              mountPath: /run/xtables.lock
       hostNetwork: true
       hostPID: true
       restartPolicy: Always
@@ -81,5 +93,8 @@ spec:
         - name: lib-modules
           hostPath:
             path: /lib/modules
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
   updateStrategy:
     type: RollingUpdate

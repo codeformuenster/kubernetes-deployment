@@ -1,6 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+  annotations:
+    flux.weave.works/tag.weave: glob:2\.2.*
   name: weave-net
   labels:
     name: weave-net

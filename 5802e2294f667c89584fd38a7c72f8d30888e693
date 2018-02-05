@@ -1,0 +1,1 @@
+{"jobID":"8260b51d-1564-9375-908c-d029d70a3895","spec":{"type":"policy","cause":{"Message":"","User":"webwurst \u003cwebwurst@gmail.com\u003e"},"spec":{"dashboard:deployment/dashboard":{"add":{"automated":"true"},"remove":null}}},"result":null}

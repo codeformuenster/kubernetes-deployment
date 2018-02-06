@@ -1,0 +1,83 @@
+##---
+# Source: grafana/templates/grafana-deployment.yaml
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: r1-grafana
+    chart: "grafana-0.0.6"
+    heritage: "Tiller"
+    release: "r1"
+  name: r1-grafana
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+      labels:
+        app: r1-grafana
+        release: "r1"
+    spec:
+      containers:
+      - name: grafana
+        image: grafana/grafana:4.6.3
+        env:
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "true"
+        - name: GF_SECURITY_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: r1-grafana
+              key: user
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: r1-grafana
+              key: password
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/grafana-storage
+        ports:
+        - name: web
+          containerPort: 3000
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 100m
+          limits:
+            memory: 200Mi
+            cpu: 200m
+      - name: grafana-watcher
+        image: quay.io/coreos/grafana-watcher:v0.0.8
+        args:
+          - '--watch-dir=/var/grafana-dashboards'
+          - '--grafana-url=http://127.0.0.1:3000'
+        env:
+        - name: GRAFANA_USER
+          valueFrom:
+            secretKeyRef:
+              name: r1-grafana
+              key: user
+        - name: GRAFANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: r1-grafana
+              key: password
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "50m"
+          limits:
+            memory: "32Mi"
+            cpu: "100m"
+        volumeMounts:
+          - name: grafana-dashboards
+            mountPath: /var/grafana-dashboards
+      volumes:
+        - name: grafana-storage
+          emptyDir: {}
+        - name: grafana-dashboards
+          configMap:
+            name: r1-grafana

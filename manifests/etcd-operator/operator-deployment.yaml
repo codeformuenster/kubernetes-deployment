@@ -1,0 +1,45 @@
+##---
+# Source: etcd-operator/templates/operator-deployment.yaml
+
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: r1-etcd-operator-etcd-operator
+  labels:
+    chart: "etcd-operator-0.6.2"
+    app: etcd-operator
+    heritage: Tiller
+    release: r1
+spec:
+  replicas: 
+  template:
+    metadata:
+      name: r1-etcd-operator-etcd-operator
+      labels:
+        app: r1-etcd-operator-etcd-operator
+        release: r1
+    spec:
+      serviceAccountName: r1-etcd-operator-etcd-operator
+      containers:
+      - name: r1-etcd-operator-etcd-operator
+        image: "quay.io/coreos/etcd-operator:v0.7.0"
+        imagePullPolicy: Always
+        command:
+         - etcd-operator
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

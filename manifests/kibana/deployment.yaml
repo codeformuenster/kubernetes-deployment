@@ -4,6 +4,7 @@ metadata:
   name: kibana
   annotations:
     flux.weave.works/automated: "true"
+    flux.weave.works/tag.kibana: glob:6.*
   labels:
     app: kibana
     stack: logging

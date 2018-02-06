@@ -1,0 +1,1 @@
+{"jobID":"3ca315b1-3cfb-d960-3cd4-481954f0158f","spec":{"type":"policy","cause":{"Message":"","User":"webwurst \u003cwebwurst@gmail.com\u003e"},"spec":{"kube-system:daemonset/weave-net":{"add":{"tag.weave-npc":"glob:2.2.*"},"remove":null}}},"result":null}

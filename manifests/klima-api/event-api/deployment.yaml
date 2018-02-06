@@ -2,6 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   annotations:
+    flux.weave.works/automated: "true"
     flux.weave.works/tag.event-api: glob:0.*
   name: event-api
   namespace: event-api

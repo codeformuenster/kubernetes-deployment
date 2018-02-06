@@ -4,6 +4,7 @@ metadata:
   annotations:
     flux.weave.works/automated: "true"
     flux.weave.works/tag.weave: glob:2.2.*
+    flux.weave.works/tag.weave-npc: glob:2.2.*
   name: weave-net
   labels:
     name: weave-net

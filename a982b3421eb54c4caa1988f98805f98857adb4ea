@@ -1,0 +1,1 @@
+{"jobID":"b02ffc74-b23e-ea1f-99fb-cdf86a57c422","spec":{"type":"policy","cause":{"Message":"","User":"webwurst \u003cwebwurst@gmail.com\u003e"},"spec":{"default:deployment/elasticsearch":{"add":{"tag.elasticsearch":"glob:6.*"},"remove":null}}},"result":null}

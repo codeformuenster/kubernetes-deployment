@@ -4,6 +4,7 @@ metadata:
   name: elasticsearch
   annotations:
     flux.weave.works/automated: "true"
+    flux.weave.works/tag.elasticsearch: glob:6.*
   labels:
     app: elasticsearch
     stack: logging

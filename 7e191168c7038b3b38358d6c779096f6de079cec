@@ -1,0 +1,1 @@
+{"jobID":"a526b424-ebe7-ba08-fbcb-976b4b4056a8","spec":{"type":"policy","cause":{"Message":"","User":"webwurst \u003cwebwurst@gmail.com\u003e"},"spec":{"ingress-nginx:deployment/default-http-backend":{"add":{"automated":"true"},"remove":null}}},"result":null}

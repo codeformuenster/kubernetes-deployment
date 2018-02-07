@@ -1,6 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  annotations:
+    flux.weave.works/automated: "true"
   name: default-http-backend
   labels:
     app: default-http-backend

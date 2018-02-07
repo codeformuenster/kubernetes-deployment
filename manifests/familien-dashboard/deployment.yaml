@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   annotations:
     flux.weave.works/automated: "true"
+    flux.weave.works/tag.dashboard: glob:0.*
   name: dashboard
   namespace: dashboard
   labels:

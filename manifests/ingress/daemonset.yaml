@@ -1,6 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
+  annotations:
+    flux.weave.works/tag.nginx-ingress-controller: glob:0.10.*
   name: nginx-ingress-controller
   namespace: ingress-nginx
 spec:

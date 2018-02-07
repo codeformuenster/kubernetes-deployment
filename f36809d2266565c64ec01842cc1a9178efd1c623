@@ -1,0 +1,1 @@
+{"jobID":"c120cf6b-f2d8-300a-6f46-986e24697b2b","spec":{"type":"policy","cause":{"Message":"","User":"webwurst \u003cwebwurst@gmail.com\u003e"},"spec":{"ingress-nginx:daemonset/nginx-ingress-controller":{"add":{"tag.nginx-ingress-controller":"glob:0.10.*"},"remove":null}}},"result":null}

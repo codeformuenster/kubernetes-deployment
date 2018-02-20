@@ -18,6 +18,10 @@ spec:
         backend:
           serviceName: kibana
           servicePort: 5601
+      - path: /oauth2
+        backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180
   tls:
   - secretName: kibana-tls
     hosts:

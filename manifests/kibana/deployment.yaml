@@ -22,7 +22,7 @@ spec:
       # healthcheck + resources
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.2.1
+        image: docker.elastic.co/kibana/kibana-oss:6.2.2
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_PASSWORD

@@ -20,4 +20,4 @@ spec:
         imagePullPolicy: IfNotPresent
         ports:
         - name: ui
-          containerPort: 3000
+          containerPort: 8080

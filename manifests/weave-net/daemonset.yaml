@@ -1,10 +1,6 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.weave: glob:2.2.*
-    flux.weave.works/tag.weave-npc: glob:2.2.*
   name: weave-net
   labels:
     name: weave-net
@@ -60,7 +56,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          image: weaveworks/weave-kube:2.2.1
+          image: weaveworks/weave-npc:2.2.1
           resources:
             requests:
               cpu: 10m

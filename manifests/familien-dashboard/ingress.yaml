@@ -71,4 +71,5 @@ spec:
   - hosts:
     - dashboard.codeformuenster.org
     - mein-ms.de
+    - www.mein-ms.de
     secretName: dashboard-tls

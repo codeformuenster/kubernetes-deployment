@@ -1,10 +1,13 @@
+##---
+# Source: app-with-url/templates/ingress.yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: traffics
-  namespace: traffics
+  name: traffics-shiny
+  namespace: traffics-shiny
   labels:
-    app: traffics
+    app: traffics-shiny
+    chart: app-with-url-v0.1.0
   annotations:
     kubernetes.io/tls-acme: "true"
 spec:
@@ -13,10 +16,10 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: traffics
-          servicePort: ui
+          serviceName: traffics-shiny
+          servicePort: 3838
         path: /
   tls:
   - hosts:
     - traffics.codeformuenster.org
-    secretName: traffics-tls
+    secretName: traffics-shiny-tls

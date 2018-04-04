@@ -1,22 +1,30 @@
-apiVersion: extensions/v1beta1
+##---
+# Source: app-with-url/templates/deployment.yaml
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    flux.weave.works/automated: "true"
-  name: traffics
-  namespace: traffics
+  name: traffics-shiny
+  namespace: traffics-shiny
   labels:
-    app: traffics
+    app: traffics-shiny
+    chart: app-with-url-v0.1.0
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: traffics-shiny
   template:
     metadata:
       labels:
-        app: traffics
+        app: traffics-shiny
+        chart: app-with-url-v0.1.0
     spec:
       containers:
-      - name: traffics
+      - name: traffics-shiny
         image: codeformuenster/traffic-dynamics-shiny:v0.3.6
         imagePullPolicy: IfNotPresent
         ports:
-        - name: ui
-          containerPort: 3838
+        - containerPort: 3838
+        resources:
+          null
+          

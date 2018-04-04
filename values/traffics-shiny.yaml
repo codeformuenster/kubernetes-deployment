@@ -1,0 +1,16 @@
+name: traffics-shiny
+namespace: traffics-shiny
+
+image: codeformuenster/traffic-dynamics-shiny:v0.3.6
+containerPort: 3838
+url: traffics.codeformuenster.org
+
+# resources:
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
+
+x-nomagic_chart_url: ./app-with-url-v0.1.0

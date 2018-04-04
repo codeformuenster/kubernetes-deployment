@@ -1,0 +1,7 @@
+apiVersion: v1
+description: app-with-url
+icon: https://example.com/images/logo-color-on-transparent.png
+name: app-with-url
+sources:
+- https://github.com/example
+version: v0.1.0

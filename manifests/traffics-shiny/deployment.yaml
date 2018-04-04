@@ -21,10 +21,9 @@ spec:
     spec:
       containers:
       - name: traffics-shiny
-        image: codeformuenster/traffic-dynamics-shiny:v0.3.6
+        image: codeformuenster/traffic-dynamics-shiny:v0.3.8
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3838
         resources:
           null
-          

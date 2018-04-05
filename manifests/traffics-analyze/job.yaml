@@ -23,15 +23,13 @@ spec:
             cd /srv/shiny-server
             Rscript -e "source('./src/temp_docker_test.R')"
 
-            date=$(date --utc +%Y-%m-%d_%H-%M-%S)
             cd ./results
-            for file in *
-            do
-              curl \
-                -T "$file" \
+            date=$(date --utc +%Y-%m-%d_%H-%M-%S)
+            for file in *; do
+              curl --upload-file "$file" \
                 https://files.codeformuenster.org/traffics-analyze-results-$date/
             done
-
+            
             echo "Done"
         resources:
           null

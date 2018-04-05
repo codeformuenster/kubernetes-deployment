@@ -4,7 +4,7 @@ metadata:
   name: kibana
   annotations:
     flux.weave.works/automated: "true"
-    flux.weave.works/tag.kibana: glob:6.*
+    flux.weave.works/tag.kibana: glob:6.2.*
   labels:
     app: kibana
     stack: logging
@@ -22,7 +22,7 @@ spec:
       # healthcheck + resources
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.1.4
+        image: docker.elastic.co/kibana/kibana-oss:6.2.3
         imagePullPolicy: IfNotPresent
         env:
         - name: ELASTICSEARCH_PASSWORD

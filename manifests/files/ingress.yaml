@@ -1,0 +1,21 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: files
+  labels:
+    app: files
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  rules:
+  - host: files.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: files
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - files.codeformuenster.org
+    secretName: files-tls

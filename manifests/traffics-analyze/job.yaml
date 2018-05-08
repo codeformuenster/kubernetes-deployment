@@ -1,38 +1,36 @@
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: traffics-analyze
-  namespace: traffics-analyze
-  labels:
-    app: traffics-analyze
-spec:
-  # backoffLimit: 5
-  # activeDeadlineSeconds: 100
-  template:
-    metadata:
-      labels:
-        app: traffics-analyze
-    spec:
-      containers:
-      - name: traffics-analyze
-        image: codeformuenster/traffic-dynamics-analyze:v0.1.1
-        imagePullPolicy: IfNotPresent
-        command: ["sh",  "-c"]
-        args:
-          - |
-            cd /srv/shiny-server
-            Rscript -e "source('./src/temp_docker_test.R')"
-
-            date=$(date --utc +%Y-%m-%d_%H-%M-%S)
-            cd ./results
-            for file in *
-            do
-              curl \
-                -T "$file" \
-                https://files.codeformuenster.org/traffics-analyze-results-$date/
-            done
-
-            echo "Done"
-        resources:
-          null
-      restartPolicy: OnFailure
+# apiVersion: batch/v1
+# kind: Job
+# metadata:
+#   name: traffics-analyze
+#   namespace: traffics-analyze
+#   labels:
+#     app: traffics-analyze
+# spec:
+#   # backoffLimit: 5
+#   # activeDeadlineSeconds: 100
+#   template:
+#     metadata:
+#       labels:
+#         app: traffics-analyze
+#     spec:
+#       containers:
+#       - name: traffics-analyze
+#         image: codeformuenster/traffic-dynamics-analyze:v0.1.3
+#         imagePullPolicy: IfNotPresent
+#         command: ["sh",  "-c"]
+#         args:
+#           - |
+#             cd /srv/shiny-server
+#             Rscript -e "source('./src/02_Bayesian_regressions.R')"
+#
+#             cd ./results
+#             date=$(date --utc +%Y-%m-%d_%H-%M-%S)
+#             for file in *; do
+#               curl --upload-file "$file" \
+#                 https://files.codeformuenster.org/traffics-analyze-results-$date/
+#             done
+#
+#             echo "Done"
+#         resources:
+#           null
+#       restartPolicy: OnFailure

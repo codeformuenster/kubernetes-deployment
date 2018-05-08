@@ -6,6 +6,7 @@ metadata:
     name: weave-net
   namespace: kube-system
 spec:
+  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -21,7 +22,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          image: weaveworks/weave-kube:2.2.1
+          image: 'weaveworks/weave-kube:2.3.0'
           livenessProbe:
             httpGet:
               host: 127.0.0.1
@@ -56,7 +57,7 @@ spec:
                 fieldRef:
                   apiVersion: v1
                   fieldPath: spec.nodeName
-          image: weaveworks/weave-npc:2.2.1
+          image: 'weaveworks/weave-npc:2.3.0'
           resources:
             requests:
               cpu: 10m

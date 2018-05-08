@@ -3,30 +3,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: traffics-shiny
-  namespace: traffics-shiny
+  name: mein-ms
+  namespace: mein-ms
   labels:
-    app: traffics-shiny
+    app: mein-ms
     chart: app-with-url-v0.1.0
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.elasticsearch: glob:v0.*
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: traffics-shiny
+      app: mein-ms
   template:
     metadata:
       labels:
-        app: traffics-shiny
+        app: mein-ms
         chart: app-with-url-v0.1.0
     spec:
       containers:
-      - name: traffics-shiny
-        image: codeformuenster/traffic-dynamics-shiny:v0.3.8
+      - name: mein-ms
+        image: codeformuenster/familien-dashboard:0.3.2-test2
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3838
+        - containerPort: 8080
         resources:
           null
+          

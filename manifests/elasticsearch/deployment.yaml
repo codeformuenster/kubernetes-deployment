@@ -4,7 +4,7 @@ metadata:
   name: elasticsearch
   annotations:
     flux.weave.works/automated: "true"
-    flux.weave.works/tag.elasticsearch: glob:6.*
+    flux.weave.works/tag.elasticsearch: glob:6.2.*
   labels:
     app: elasticsearch
     stack: logging
@@ -44,7 +44,7 @@ spec:
           mountPath: /usr/share/elasticsearch/data
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.1.4
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.3
         imagePullPolicy: IfNotPresent
         # env:
         # - name: ES_JAVA_OPTS
@@ -53,10 +53,10 @@ spec:
         #   # ES_JVM_HEAP=1024m
         ports:
         - containerPort: 9200
-        resources:
-          limits:
-            # memory: "2147483648"
-            memory: 3Gi
+        # resources:
+        #   limits:
+        #     # memory: "2147483648"
+        #     memory: 3Gi
         volumeMounts:
         - name: config
           mountPath: /usr/share/elasticsearch/elasticsearch.yml

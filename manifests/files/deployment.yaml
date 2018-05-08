@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: files
+  labels:
+    app: files
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: files
+  template:
+    metadata:
+      labels:
+        app: files
+    spec:
+      containers:
+      - name: caddy
+        image: giantswarm/caddy:v0.10.12
+        ports:
+        - name: http
+          containerPort: 80
+        volumeMounts:
+        - name: config
+          mountPath: /etc/caddy
+        - name: data
+          mountPath: /var/www
+      volumes:
+      - name: config
+        configMap:
+          name: files
+      - name: data
+        emptyDir: {}

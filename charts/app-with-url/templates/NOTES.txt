@@ -1,0 +1,1 @@
+Image [..] is deployed and can be accessed at [..].

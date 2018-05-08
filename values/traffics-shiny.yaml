@@ -1,7 +1,7 @@
 name: traffics-shiny
 namespace: traffics-shiny
 
-image: codeformuenster/traffic-dynamics-shiny:v0.3.6
+image: codeformuenster/traffic-dynamics-shiny:v0.3.8
 containerPort: 3838
 url: traffics.codeformuenster.org
 

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: codeformuenster/familien-dashboard:0.3.2-test2
+        image: codeformuenster/familien-dashboard:0.3.3
         imagePullPolicy: IfNotPresent
         ports:
         - name: ui

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    spec:
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.containerPort }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+
+
+
+# FIXME
+# - add volumes
+#   for config, secrets and data
+#
+#         volumeMounts:
+#         - name: config
+#           mountPath: /etc/caddy
+#         - name: data
+#           mountPath: /var/www
+#       volumes:
+#       - name: config
+#         configMap:
+#           name: files
+#       - name: data
+#         emptyDir: {}

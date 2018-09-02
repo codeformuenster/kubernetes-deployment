@@ -1,11 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.dashboard: glob:0.*
+  # annotations:
+  #   flux.weave.works/automated: "true"
+  #   flux.weave.works/tag.dashboard: glob:0.*
   name: dashboard
-  namespace: dashboard
+  namespace: mein-ms
   labels:
     app: dashboard
 spec:

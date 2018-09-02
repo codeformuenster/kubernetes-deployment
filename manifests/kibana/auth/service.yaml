@@ -1,16 +1,17 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: kibana-auth
-  labels:
-    app: kibana-auth
-    stack: logging
-spec:
-  ports:
-  - name: http
-    port: 4180
-    protocol: TCP
-    targetPort: 4180
-  selector:
-    app: kibana-auth
-    stack: logging
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: kibana-auth
+#   namespace: kibana
+#   labels:
+#     app: kibana-auth
+#     stack: logging
+# spec:
+#   ports:
+#   - name: http
+#     port: 4180
+#     protocol: TCP
+#     targetPort: 4180
+#   selector:
+#     app: kibana-auth
+#     stack: logging

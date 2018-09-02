@@ -2,7 +2,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: dashboard
-  namespace: dashboard
+  namespace: mein-ms
   labels:
     app: dashboard
   annotations:

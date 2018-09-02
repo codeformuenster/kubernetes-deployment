@@ -1,14 +1,10 @@
-##---
-# Source: cert-manager/templates/rbac.yaml
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: r2-cert-manager
+  name: cert-manager
+  namespace: cert-manager
   labels:
     app: cert-manager
-    chart: cert-manager-0.1.0
-    release: r2
-    heritage: Tiller
 rules:
 - apiGroups: ["certmanager.k8s.io"]
   resources: ["certificates", "issuers", "clusterissuers"]
@@ -23,17 +19,15 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: r2-cert-manager
+  name: cert-manager
+  namespace: cert-manager  
   labels:
     app: cert-manager
-    chart: cert-manager-0.1.0
-    release: r2
-    heritage: Tiller
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: r2-cert-manager
+  name: cert-manager
 subjects:
-- name: r2-cert-manager
-  namespace: "default"
+- name: cert-manager
+  namespace: cert-manager
   kind: ServiceAccount

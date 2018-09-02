@@ -1,6 +1,0 @@
-##---
-# Source: app-with-url/templates/0-namespace.yaml
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: traffics-analyze

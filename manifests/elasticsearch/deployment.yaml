@@ -2,9 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: elasticsearch
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.elasticsearch: glob:6.2.*
+  namespace: elasticsearch
+  # annotations:
+  #   flux.weave.works/automated: "true"
+  #   flux.weave.works/tag.elasticsearch: glob:6.2.*
   labels:
     app: elasticsearch
     stack: logging
@@ -18,23 +19,23 @@ spec:
         app: elasticsearch
         stack: logging
     spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: affinity/elasticsearch
-                operator: In
-                values:
-                - "true"
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: affinity/elasticsearch
+      #           operator: In
+      #           values:
+      #           - "true"
       serviceAccountName: elasticsearch
       initContainers:
-      - name: set-vm-max-map-count
-        image: busybox
-        imagePullPolicy: IfNotPresent
-        command: ['sysctl', '-w', 'vm.max_map_count=262144']
-        securityContext:
-          privileged: true
+      # - name: set-vm-max-map-count
+      #   image: busybox
+      #   imagePullPolicy: IfNotPresent
+      #   command: ['sysctl', '-w', 'vm.max_map_count=262144']
+      #   securityContext:
+      #     privileged: true
       - name: volume-mount-hack
         image: busybox
         imagePullPolicy: IfNotPresent
@@ -74,6 +75,8 @@ spec:
       # - name: data
       #   persistentVolumeClaim:
       #     claimName: elasticsearch
+      # - name: data
+      #   hostPath:
+      #     path: /srv/elasticsearch-data2
       - name: data
-        hostPath:
-          path: /srv/elasticsearch-data2
+        emptyDir: {}

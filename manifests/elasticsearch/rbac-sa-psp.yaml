@@ -3,6 +3,7 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   name: elasticsearch
+  namespace: elasticsearch
   labels:
     app: elasticsearch
     stack: logging
@@ -20,6 +21,7 @@ kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: elasticsearch
+  namespace: elasticsearch
   labels:
     app: elasticsearch
     stack: logging
@@ -36,6 +38,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: elasticsearch
+  namespace: elasticsearch
   labels:
     app: elasticsearch
     stack: logging
@@ -44,6 +47,7 @@ apiVersion: extensions/v1beta1
 kind: PodSecurityPolicy
 metadata:
   name: elasticsearch
+  namespace: elasticsearch
   labels:
     app: elasticsearch
     stack: logging

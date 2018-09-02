@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: dashboard
-  namespace: dashboard
+  namespace: mein-ms
   labels:
     app: dashboard
 spec:

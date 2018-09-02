@@ -2,9 +2,10 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kibana
-  annotations:
-    flux.weave.works/automated: "true"
-    flux.weave.works/tag.kibana: glob:6.2.*
+  namespace: kibana
+  # annotations:
+  #   flux.weave.works/automated: "true"
+  #   flux.weave.works/tag.kibana: glob:6.2.*
   labels:
     app: kibana
     stack: logging
@@ -23,10 +24,9 @@ spec:
       containers:
       - name: kibana
         image: docker.elastic.co/kibana/kibana-oss:6.2.4
-        imagePullPolicy: IfNotPresent
-        env:
-        - name: ELASTICSEARCH_PASSWORD
-          value: changeme
+        # env:
+        # - name: ELASTICSEARCH_PASSWORD
+        #   value: changeme
         ports:
         - containerPort: 5601
         resources: {}

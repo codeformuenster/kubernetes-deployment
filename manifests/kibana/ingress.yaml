@@ -2,12 +2,13 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: kibana
+  namespace: kibana
   labels:
     app: kibana
     stack: logging
   annotations:
-    nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start
-    nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+    # nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start
+    # nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
     kubernetes.io/tls-acme: "true"
 spec:
   rules:

@@ -1,0 +1,48 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: mosmix-processor-l
+spec:
+  schedule: "0 3,9,15,21 * * *"
+  concurrencyPolicy: Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: temp-download-volume-mosmix-l
+            emptyDir:
+              medium: Memory
+          initContainers:
+          - name: mosmix-processor-filecheck-l
+            image: quay.io/codeformuenster/mosmix-processor:v20180717-1
+            command: ["./mosmix-check", "-interval=10s", "mosmix_l"]
+            resources:
+              limits:
+                memory: "2048Mi"
+                cpu: "3000m"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              readOnlyRootFilesystem: true
+          containers:
+          - name: mosmix-processor-l
+            image: quay.io/codeformuenster/mosmix-processor:v20180717-1
+            command: ["./mosmix-processor", "-db=postgresql://mosmix:fls0g6ESjITX7k1HImohIK22o5I38HAi1@mosmix-postgis?sslmode=disable", "mosmix_l"]
+            volumeMounts:
+              - mountPath: /tmp
+                name: temp-download-volume-mosmix-l
+            resources:
+              requests:
+                memory: "1024Mi"
+                cpu: "1500m"
+              limits:
+                memory: "2048Mi"
+                cpu: "3000m"
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+              readOnlyRootFilesystem: true

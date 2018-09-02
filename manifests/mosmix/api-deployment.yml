@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mosmix-api
+  namespace: mosmix
+  labels:
+    app: mosmix-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosmix-api
+  template:
+    metadata:
+      labels:
+        app: mosmix-api
+    spec:
+      volumes:
+      - name: caddy-tmp-volume
+        emptyDir:
+          medium: Memory
+      containers:
+      - name: mosmix-api
+        image: quay.io/codeformuenster/mosmix-api:v20180807-1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: ["ALL"]
+          readOnlyRootFilesystem: true
+        env:
+        - name: PG_USER
+          value: mosmix
+        - name: PG_PASS
+          value: fls0g6ESjITX7k1HImohIK22o5I38HAi1
+        - name: PG_HOST
+          value: mosmix-postgis
+        - name: PG_DB
+          value: mosmix
+        - name: PG_PORT
+          value: "5432"
+        volumeMounts:
+        - name: caddy-tmp-volume
+          mountPath: /root/.caddy

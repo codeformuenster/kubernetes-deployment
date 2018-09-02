@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mosmix-postgis
+spec:
+  selector:
+    matchLabels:
+      app: mosmix-postgis # has to match .spec.template.metadata.labels
+  replicas: 1 # by default is 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mosmix-postgis # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: postgis
+        image: mdillon/postgis:10-alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql/data
+        env:
+        - name: POSTGRES_USER
+          value: "mosmix"
+        - name: POSTGRES_PASSWORD
+          value: "fls0g6ESjITX7k1HImohIK22o5I38HAi1"
+        resources:
+          requests:
+            memory: "2048Mi"
+            cpu: "2500m"
+          limits:
+            cpu: "5000m"
+      volumes:
+      - name: pgdata
+        emptyDir: {}

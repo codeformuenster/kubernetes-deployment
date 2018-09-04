@@ -5,8 +5,8 @@ metadata:
   namespace: mosmix
   labels:
     app: mosmix-api
-  # annotations:
-  #   kubernetes.io/tls-acme: "true"
+  annotations:
+    kubernetes.io/tls-acme: "true"
 spec:
   rules:
   - host: mosmix-api.codeformuenster.org
@@ -16,7 +16,7 @@ spec:
           serviceName: mosmix-api
           servicePort: 3000
         path: /
-  # tls:
-  # - hosts:
-  #   - mosmix-api.codeformuenster.org
-  #   secretName: mosmix-api-tls
+  tls:
+  - hosts:
+    - mosmix-api.codeformuenster.org
+    secretName: mosmix-api-tls

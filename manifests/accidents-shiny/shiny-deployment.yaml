@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: accidents-shiny
+  namespace: accidents-shiny
+  labels:
+    app: accidents-shiny
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: accidents-shiny
+  template:
+    metadata:
+      labels:
+        app: accidents-shiny
+    spec:
+      containers:
+      - name: accidents-shiny
+        image: quay.io/codeformuenster/accidents-shiny:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3838
+        resources:
+          null

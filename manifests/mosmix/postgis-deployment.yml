@@ -34,8 +34,10 @@ spec:
           requests:
             memory: "2048Mi"
             cpu: "2500m"
+            ephemeral-storage: "10Gi"
           limits:
             cpu: "5000m"
+            ephemeral-storage: "15Gi"
       volumes:
       - name: pgdata
         emptyDir: {}

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: accidents-shiny-postgis
+  namespace: accidents-shiny
+  labels:
+    app: accidents-shiny-postgis
+spec:
+  ports:
+  - port: 5432
+    protocol: TCP
+    name: postgres
+  selector:
+    app: accidents-shiny-postgis

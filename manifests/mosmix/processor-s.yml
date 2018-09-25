@@ -1,7 +1,8 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: mosmix-processor-s
+  name: processor-s
+  namespace: mosmix
 spec:
   schedule: "*/30 * * * *"
   concurrencyPolicy: Replace
@@ -10,12 +11,8 @@ spec:
       template:
         spec:
           restartPolicy: OnFailure
-          volumes:
-          - name: temp-download-volume-mosmix-s
-            emptyDir:
-              medium: Memory
           initContainers:
-          - name: mosmix-processor-filecheck-s
+          - name: processor-filecheck-s
             image: quay.io/codeformuenster/mosmix-processor:v20180717-1
             command: ["./mosmix-check", "-interval=10s", "mosmix_s"]
             resources:
@@ -30,10 +27,16 @@ spec:
           containers:
           - name: mosmix-processor-s
             image: quay.io/codeformuenster/mosmix-processor:v20180717-1
-            command: ["./mosmix-processor", "-db=postgresql://mosmix:fls0g6ESjITX7k1HImohIK22o5I38HAi1@mosmix-postgis?sslmode=disable", "mosmix_s"]
-            volumeMounts:
-              - mountPath: /tmp
-                name: temp-download-volume-mosmix-s
+            command: ["./mosmix-processor"]
+            args: ["-db=postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgis?sslmode=disable", "mosmix_s"]
+            env:
+            - name: POSTGRES_USER
+              value: mosmix
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgis
+                  key: postgres-password
             resources:
               requests:
                 memory: "1024Mi"
@@ -46,3 +49,10 @@ spec:
               capabilities:
                 drop: ["ALL"]
               readOnlyRootFilesystem: true
+            volumeMounts:
+            - mountPath: /tmp
+              name: temp-download
+          volumes:
+          - name: temp-download
+            emptyDir:
+              medium: Memory

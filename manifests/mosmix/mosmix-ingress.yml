@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: mosmix-api
+  name: mosmix
   namespace: mosmix
   labels:
-    app: mosmix-api
+    app: mosmix
   annotations:
     kubernetes.io/tls-acme: "true"
 spec:
@@ -14,9 +14,10 @@ spec:
       paths:
       - backend:
           serviceName: mosmix-api
-          servicePort: 3000
+          servicePort: api
         path: /
   tls:
-  - hosts:
+  - secretName: mosmix-api-tls
+    hosts:
     - mosmix-api.codeformuenster.org
-    secretName: mosmix-api-tls
+    

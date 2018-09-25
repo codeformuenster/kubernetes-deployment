@@ -13,11 +13,11 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: mosmix-api
-          servicePort: api
+          serviceName: mosmix
+          servicePort: 3000
+          # servicePort: api
         path: /
   tls:
   - secretName: mosmix-api-tls
     hosts:
     - mosmix-api.codeformuenster.org
-    

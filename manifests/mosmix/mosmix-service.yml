@@ -7,7 +7,10 @@ metadata:
     app: mosmix
 spec:
   ports:
-  - port: 3000
-    protocol: TCP
+  - name: api
+    port: 3000
+    targetPort: 3000
+    # targetPort: api
+    # protocol: TCP
   selector:
     app: mosmix

@@ -1,0 +1,88 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-cstor-disk
+  annotations:
+    openebs.io/cas-type: cstor
+    cas.openebs.io/config: |
+      - name: StoragePoolClaim
+        value: "cstor-disk"
+provisioner: openebs.io/provisioner-iscsi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: high-performance-no-resilience
+  annotations:
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "1"
+      - name: StoragePoolClaim
+        value: "cstor-disk"
+provisioner: openebs.io/provisioner-iscsi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: high-performance-high-resilience
+  annotations:
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "3"
+      - name: StoragePoolClaim
+        value: "cstor-disk"
+    # - name: StoragePool
+    #   value: default
+    # - name: TargetResourceRequests
+    #   value: |-
+    #       memory: 0.5Gi
+    #       cpu: 100m
+    # - name: TargetResourceLimits
+    #   value: |-
+    #       memory: 1Gi
+    # - name: ReplicaResourceRequests
+    #   value: |-
+    #       memory: 0.5Gi
+    #       cpu: 100m
+    # - name: ReplicaResourceLimits
+    #   value: |-
+    #       memory: 2Gi
+    #       cpu: 200m
+    # - name: ReplicaAntiAffinityTopoKey
+    #   value: failure-domain.beta.kubernetes.io/zone
+provisioner: openebs.io/provisioner-iscsi
+# parameters:
+#   openebs.io/fstype: "xfs"
+---
+#Use the following YAMLs to create a cStor Storage Pool.
+# and associated storage class.
+apiVersion: openebs.io/v1alpha1
+kind: StoragePoolClaim
+metadata:
+  name: cstor-disk
+spec:
+  name: cstor-disk
+  type: disk
+  maxPools: 3
+  poolSpec:
+    poolType: striped
+  # NOTE - Appropriate disks need to be fetched using `kubectl get disks`
+  #
+  # `Disk` is a custom resource supported by OpenEBS with `node-disk-manager`
+  # as the disk operator
+# Replace the following with actual disk CRs from your cluster `kubectl get disks`
+# Uncomment the below lines after updating the actual disk names.
+  disks:
+    diskList:
+      - disk-06edd9d1a37083bde0c0246565e8ba5a
+      - disk-08ee09030d42211a0d6a80d29566229c
+      - disk-49f6c0eb56da2012dfba656436311d8a
+# Replace the following with actual disk CRs from your cluster from `kubectl get disks`
+#       - disk-184d99015253054c48c4aa3f17d137b1
+#       - disk-2f6bced7ba9b2be230ca5138fd0b07f1
+#       - disk-806d3e77dd2e38f188fdaf9c46020bdc
+#       - disk-8b6fb58d0c4e0ff3ed74a5183556424d
+#       - disk-bad1863742ce905e67978d082a721d61
+#       - disk-d172a48ad8b0fb536b9984609b7ee653
+---

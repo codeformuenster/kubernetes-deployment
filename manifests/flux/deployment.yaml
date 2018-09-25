@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flux
+  namespace: flux
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: flux
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: flux
+    spec:
+      serviceAccount: flux
+      containers:
+      - name: flux
+        image: quay.io/weaveworks/flux:1.7.0
+        args:
+        - --ssh-keygen-dir=/var/fluxd/keygen
+        - --git-url=git@github.com:codeformuenster/kubernetes-deployment.git
+        - --git-branch=master
+        ports:
+        - containerPort: 3030 # informational
+        volumeMounts:
+        - name: git-key
+          mountPath: /etc/fluxd/ssh # to match location given in image's /etc/ssh/config
+        - name: git-keygen
+          mountPath: /var/fluxd/keygen # to match location given in image's /etc/ssh/config
+      volumes:
+      - name: git-key
+        secret:
+          secretName: flux-git-deploy
+          defaultMode: 0400 # when mounted read-only, we won't be able to chmod
+      - name: git-keygen
+        emptyDir:
+          medium: Memory

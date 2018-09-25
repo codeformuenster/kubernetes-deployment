@@ -27,7 +27,9 @@ spec:
           containers:
           - name: mosmix-processor-s
             image: quay.io/codeformuenster/mosmix-processor:v20180717-1
+            # image: alpine:3.8
             command: ["./mosmix-processor"]
+            # command: ["/bin/echo"]
             args: ["-db=postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@postgis?sslmode=disable", "mosmix_s"]
             env:
             - name: POSTGRES_USER

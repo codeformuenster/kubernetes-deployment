@@ -22,9 +22,12 @@ spec:
         - name: PG_USER
           value: mosmix
         - name: PG_PASS
-          value: fls0g6ESjITX7k1HImohIK22o5I38HAi1
+          valueFrom:
+            secretKeyRef:
+              name: postgis
+              key: postgres-password
         - name: PG_HOST
-          value: mosmix-postgis
+          value: postgis
         - name: PG_DB
           value: mosmix
         - name: PG_PORT

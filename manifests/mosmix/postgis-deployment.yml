@@ -21,6 +21,7 @@ spec:
       containers:
       - name: postgis
         image: mdillon/postgis:10-alpine
+        command: ["--log_statement='all'"]
         env:
         - name: POSTGRES_USER
           value: mosmix

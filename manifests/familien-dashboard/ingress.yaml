@@ -39,37 +39,37 @@ spec:
           serviceName: dashboard
           servicePort: ui
         path: /impressum
-  - host: mein-ms.de
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard
-          servicePort: ui
-        path: /
-  - host: mein-ms.de
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard
-          servicePort: ui
-        path: /stadtviertel
-  - host: mein-ms.de
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard
-          servicePort: ui
-        path: /copyright
-  - host: mein-ms.de
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard
-          servicePort: ui
-        path: /impressum
+  # - host: mein-ms.de
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: dashboard
+  #         servicePort: ui
+  #       path: /
+  # - host: mein-ms.de
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: dashboard
+  #         servicePort: ui
+  #       path: /stadtviertel
+  # - host: mein-ms.de
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: dashboard
+  #         servicePort: ui
+  #       path: /copyright
+  # - host: mein-ms.de
+  #   http:
+  #     paths:
+  #     - backend:
+  #         serviceName: dashboard
+  #         servicePort: ui
+  #       path: /impressum
   tls:
   - hosts:
     - dashboard.codeformuenster.org
-    - mein-ms.de
-    - www.mein-ms.de
+    # - mein-ms.de
+    # - www.mein-ms.de
     secretName: dashboard-tls

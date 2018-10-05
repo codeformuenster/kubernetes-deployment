@@ -1,11 +1,11 @@
 # This manifest deploys the OpenEBS control plane components, with associated CRs & RBAC rules
 # NOTE: On GKE, deploy the openebs-operator.yaml in admin context
 
-# # Create the OpenEBS namespace
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: openebs
+# Create the OpenEBS namespace
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: openebs
 ---
 # Create Maya Service Account
 apiVersion: v1
@@ -69,19 +69,19 @@ roleRef:
   name: openebs-maya-operator
   apiGroup: rbac.authorization.k8s.io
 ---
-# # This is the install related config. It specifies the version of openebs
-# # components i.e. custom operators that gets installed. This config is
-# # used by maya-apiserver.
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: maya-install-config
-#   namespace: openebs
-# data:
-#   install: |
-#     spec:
-#       install:
-#       - version: "0.7.0"
+# This is the install related config. It specifies the version of openebs
+# components i.e. custom operators that gets installed. This config is
+# used by maya-apiserver.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: maya-install-config
+  namespace: openebs
+data:
+  install: |
+    spec:
+      install:
+      - version: "0.7.0"
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
@@ -260,53 +260,53 @@ spec:
         #- name: OPENEBS_MAYA_SERVICE_NAME
         #  value: "maya-apiserver-apiservice"
 ---
-# # This is the node-disk-manager related config.
-# # It can be used to customize the disks probes and filters
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: openebs-ndm-config
-#   namespace: openebs
-# data:
-#   # udev-probe is default or primary probe which should be enabled to run ndm
-#   # filterconfigs contails configs of filters - in ther form fo include
-#   # and exclude comma separated strings
-#   node-disk-manager.config: |
-#     {
-#       "probeconfigs": [
-#         {
-#           "key": "udev-probe",
-#           "name": "udev probe",
-#           "state": "true"
-#         },
-#         {
-#           "key": "smart-probe",
-#           "name": "smart probe",
-#           "state": "true"
-#         }
-#       ],
-#       "filterconfigs": [
-#         {
-#           "key": "os-disk-exclude-filter",
-#           "name": "os disk exclude filter",
-#           "state": "true"
-#         },
-#         {
-#           "key": "vendor-filter",
-#           "name": "vendor filter",
-#           "state": "true",
-#           "include":"",
-#           "exclude":"CLOUDBYT,OpenEBS"
-#         },
-#         {
-#           "key": "path-filter",
-#           "name": "path filter",
-#           "state": "true",
-#           "include":"",
-#           "exclude":"loop,/dev/fd0,/dev/sr0,/dev/ram,/dev/dm-"
-#         }
-#       ]
-#     }
+# This is the node-disk-manager related config.
+# It can be used to customize the disks probes and filters
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openebs-ndm-config
+  namespace: openebs
+data:
+  # udev-probe is default or primary probe which should be enabled to run ndm
+  # filterconfigs contails configs of filters - in ther form fo include
+  # and exclude comma separated strings
+  node-disk-manager.config: |
+    {
+      "probeconfigs": [
+        {
+          "key": "udev-probe",
+          "name": "udev probe",
+          "state": "true"
+        },
+        {
+          "key": "smart-probe",
+          "name": "smart probe",
+          "state": "true"
+        }
+      ],
+      "filterconfigs": [
+        {
+          "key": "os-disk-exclude-filter",
+          "name": "os disk exclude filter",
+          "state": "true"
+        },
+        {
+          "key": "vendor-filter",
+          "name": "vendor filter",
+          "state": "true",
+          "include":"",
+          "exclude":"CLOUDBYT,OpenEBS"
+        },
+        {
+          "key": "path-filter",
+          "name": "path filter",
+          "state": "true",
+          "include":"",
+          "exclude":"loop,/dev/fd0,/dev/sr0,/dev/ram,/dev/dm-,/dev/zram,/dev/nbd"
+        }
+      ]
+    }
 ---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -328,19 +328,6 @@ spec:
       # kubectl label node <node-name> "openebs.io/nodegroup"="storage-node"
       #nodeSelector:
       #  "openebs.io/nodegroup": "storage-node"
-      tolerations:
-      - key: CriticalAddonsOnly
-        operator: Exists
-      - effect: NoSchedule
-        key: node-role.kubernetes.io/master
-      # - effect: NoExecute
-      #   key: node.kubernetes.io/not-ready
-      #   operator: Exists
-      #   tolerationSeconds: 300
-      # - effect: NoExecute
-      #   key: node.kubernetes.io/unreachable
-      #   operator: Exists
-      #   tolerationSeconds: 300
       serviceAccountName: openebs-maya-operator
       hostNetwork: true
       containers:

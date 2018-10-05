@@ -1,0 +1,62 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-ssd-no-resilience
+  annotations:
+    openebs.io/cas-type: cstor
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "1"
+      - name: StoragePoolClaim
+        value: "cstor-disk"
+provisioner: openebs.io/provisioner-iscsi
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: local-ssd-normal-resilience
+  annotations:
+    openebs.io/cas-type: cstor
+    cas.openebs.io/config: |
+      - name: ReplicaCount
+        value: "2"
+      - name: StoragePoolClaim
+        value: "cstor-disk"
+provisioner: openebs.io/provisioner-iscsi
+# ---
+# apiVersion: storage.k8s.io/v1
+# kind: StorageClass
+# metadata:
+#   name: local-ssd-high-resilience
+#   annotations:
+#     openebs.io/cas-type: cstor
+#     cas.openebs.io/config: |
+#       - name: ReplicaCount
+#         value: "3"
+#       - name: StoragePoolClaim
+#         value: "cstor-disk"
+# provisioner: openebs.io/provisioner-iscsi
+---
+apiVersion: openebs.io/v1alpha1
+kind: StoragePoolClaim
+metadata:
+  name: cstor-disk
+spec:
+  name: cstor-disk
+  type: disk
+  maxPools: 3
+  poolSpec:
+    poolType: striped
+  disks:
+    # NOTE - Appropriate disks need to be fetched using `kubectl get disks`
+    diskList:
+    # default0
+    - disk-b56f4440601cc27642465b17c437f9e4
+    # default1
+    - disk-08ee09030d42211a0d6a80d29566229c
+    # default2
+    - disk-49f6c0eb56da2012dfba656436311d8a
+
+    # - disk-06edd9d1a37083bde0c0246565e8ba5a
+    # - disk-08ee09030d42211a0d6a80d29566229c
+    # - disk-49f6c0eb56da2012dfba656436311d8a

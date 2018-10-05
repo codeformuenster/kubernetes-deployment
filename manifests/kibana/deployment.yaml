@@ -23,7 +23,8 @@ spec:
       # healthcheck + resources
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana-oss:6.2.4
+        # image: docker.elastic.co/kibana/kibana-oss:6.2.4
+        image: docker.elastic.co/kibana/kibana-oss:6.4.1
         # env:
         # - name: ELASTICSEARCH_PASSWORD
         #   value: changeme
@@ -32,7 +33,7 @@ spec:
         resources: {}
         volumeMounts:
         - name: config
-          mountPath: /usr/share/kibana/kibana.yml
+          mountPath: /usr/share/kibana/config/kibana.yml
           subPath: kibana.yml
       restartPolicy: Always
       volumes:

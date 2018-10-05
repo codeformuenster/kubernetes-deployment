@@ -18,10 +18,12 @@ spec:
         app: postgis # has to match .spec.selector.matchLabels
     spec:
       terminationGracePeriodSeconds: 10
+      securityContext:
+        runAsUser: 70
       containers:
       - name: postgis
         image: mdillon/postgis:10-alpine
-        command: ["--log_statement='all'"]
+        command: ["postgres", "--log_statement=all"]
         env:
         - name: POSTGRES_USER
           value: mosmix

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kinto
+  namespace: weihnachtsmarkt
+  labels:
+    app: kinto
+spec:
+  ports:
+  - name: api
+    port: 8888
+    targetPort: api
+  selector:
+    app: kinto

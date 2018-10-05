@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kinto
+  namespace: weihnachtsmarkt
+  labels:
+    app: kinto
+spec:
+  template:
+    metadata:
+      labels:
+        app: kinto
+    spec:
+      containers:
+      - name: kinto
+        image: kinto/kinto-server:10.1.2
+        ports:
+        - name: api
+          containerPort: 8888

@@ -4,7 +4,7 @@ metadata:
   name: postgis-data
   namespace: mosmix
 spec:
-  storageClassName: high-performance-high-resilience
+  storageClassName: local-ssd-normal-resilience
   accessModes:
   - ReadWriteOnce
   resources:

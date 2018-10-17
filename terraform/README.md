@@ -1,5 +1,28 @@
 # Kubernetes Cluster on Scaleway
 
+
+```bash
+# manually delete all unneeded resources on scaleway
+$ rm -f kube terraform.tfstate terraform.tfstate.backup kube-config "temp/*"
+
+$ terraform init
+
+$ terraform plan \
+  -var scaleway_server_type=C2L \
+  -var nodes_count=3 \
+  -var kubernetes_version=v1.11.2 \
+  -var-file=secrets.tfvars \
+  -out kube
+
+$ terraform apply "kube"
+```
+
+
+
+
+
+---
+
 > experimental! may destroy all your things! please fix me!
 
 Lookup credentials of your Scaleway account: https://cloud.scaleway.com/#/credentials
@@ -44,4 +67,22 @@ chmod +x kubectl
 
 ./kubectl --kubeconfig ./admin.conf get nodes
 ./kubectl --kubeconfig ./admin.conf get --all-namespaces pods
+```
+
+Maybe pin Kubernetes on miner version like this:
+```bash
+cat /etc/apt/preferences.d/pin-kubernetes
+```
+```
+Package: kubeadm
+Pin: version 1.6*
+Pin-Priority: 1000
+
+Package: kubectl
+Pin: version 1.6*
+Pin-Priority: 1000
+
+Package: kubelet
+Pin: version 1.6*
+Pin-Priority: 1000
 ```

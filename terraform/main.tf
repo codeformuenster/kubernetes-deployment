@@ -1,87 +1,134 @@
 
-variable "count" {
-  default = 3
-}
-variable "scaleway_server_type" {
-  default = "VC1M"
-}
-variable "scaleway_server_nameprefix" {
-  default = "kube"
-}
-variable "scaleway_region" {
-  default = "par1"
-}
-variable "kubeadm_token" {}
-variable "scaleway_organization" {}
-variable "scaleway_token" {}
-
-
 provider "scaleway" {
+  version = "1.5.1"
   organization = "${var.scaleway_organization}" # or SCALEWAY_ORGANIZATION
   token = "${var.scaleway_token}" # or SCALEWAY_TOKEN
   region = "${var.scaleway_region}"
 }
 
-data "scaleway_bootscript" "latest" {
-  architecture = "x86_64"
-  name_filter = "docker" # for built-in module xt_set
+resource "scaleway_ip" "server" {
+  count = "${var.server_count}"
 }
 
 data "scaleway_image" "ubuntu" {
   architecture = "x86_64"
-  name = "Ubuntu Xenial"
+  name = "Ubuntu Bionic"
 }
 
-# FIXME does not work as expected :/
-# see https://github.com/hashicorp/terraform/issues/14175
-
-resource "scaleway_ip" "kube" {
-  count = "${var.count}"
-  # id = "d6a7eab0-c9c0-4ea5-9b40-6f49c559fa18"
-}
-
-resource "scaleway_server" "kube" {
-  count = "${var.count}"
-  bootscript = "${data.scaleway_bootscript.latest.id}"
+resource "scaleway_server" "server" {
+  count =  "${var.server_count}"
   image = "${data.scaleway_image.ubuntu.id}"
-  name = "${var.scaleway_server_nameprefix}${count.index}"
+  name = "${terraform.workspace}${count.index}"
   type = "${var.scaleway_server_type}"
   enable_ipv6 = false
-  public_ip = "${element(scaleway_ip.kube.*.ip, count.index)}"
+  public_ip = "${element(scaleway_ip.server.*.ip, count.index)}"
 
-  volume {
-    size_in_gb = 50
-    type = "l_ssd"
+  // template?
+  provisioner "remote-exec" {
+    script = "./scripts/bootstrap-server.sh"
   }
 }
 
-resource "null_resource" "prepare" {
-  count = "${var.count}"
+// ---
 
+
+resource "null_resource" "kubeadm-secrets" {
+  provisioner "local-exec" {
+
+    command = "./scripts/prepare-kubeadm-secrets.sh"
+    // working_dir = "./temp"
+    environment {
+      KUBERNETES_VERSION = "${var.kubernetes_version}"
+    }
+  }
+}
+
+resource "null_resource" "control-plane" {
+  count = 1
+  depends_on = ["null_resource.kubeadm-secrets"]
   connection {
-    host = "${element(scaleway_server.kube.*.public_ip, count.index)}"
-    type     = "ssh"
-    user     = "root"
+    host = "${element(scaleway_server.server.*.public_ip, count.index)}"
   }
 
-  provisioner "file" {
-    source = "./provision"
-    destination = "/root/provision"
-  }
+  // provisioner "file" {
+  //   source = "./temp/ca.crt"
+  //   destination = "/etc/kubernetes/pki/ca.crt"
+  // }
+  //
+  // provisioner "file" {
+  //   source = "./temp/ca.key"
+  //   destination = "/etc/kubernetes/pki/ca.key"
+  // }
 
   provisioner "remote-exec" {
-    inline = [
-      "cd /root/provision",
-      "chmod +x dependencies.sh",
-      "./dependencies.sh"
+    inline = [<<EOF
+      kubeadm init \
+        --apiserver-advertise-address="${scaleway_server.server.0.private_ip}" \
+        --apiserver-cert-extra-sans="${scaleway_server.server.0.public_ip}" \
+        --kubernetes-version="${var.kubernetes_version}" \
+        --token="${file("${path.module}/temp/kubeadm-token")}"
+EOF
     ]
   }
 
+//   provisioner "local-exec" {
+//     on_failure = "continue"
+//     command = <<EOF
+//       ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "root@${scaleway_server.server.0.public_ip}" \
+//         cat /etc/kubernetes/admin.conf \
+//           | sed -e "s/${scaleway_server.server.0.private_ip}/${scaleway_server.server.0.public_ip}/g" \
+//             > ./kube-config.conf
+// EOF
+//   }
+
+  provisioner "local-exec" {
+    on_failure = "continue"
+    command = <<EOF
+      ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "root@${scaleway_server.server.0.public_ip}" \
+        cat /etc/kubernetes/admin.conf \
+          | sed -e "s/${scaleway_server.server.0.private_ip}/${scaleway_server.server.0.public_ip}/g" \
+            > ./kube-config.conf
+EOF
+  }
+}
+
+data "external" "kubeadm-join-command" {
+  program = ["./scripts/remote-exec.sh"]
+  query = {
+    dest = "root@${scaleway_server.server.0.public_ip}"
+    cmd = "kubeadm token create --print-join-command"
+  }
+  depends_on = ["scaleway_server.controlplane"]
+  // on_failure = "continue"
+}
+
+
+// #!/usr/bin/env bash
+// set -e
+// eval "$(jq -r '@sh "dest=\(.dest) cmd=\(.cmd)"')"
+//
+// ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$dest" "$cmd" \
+//   | xargs --null -I {} jq -n --arg data "{}" '{"data": $data}'
+
+
+
+
+
+
+
+resource "null_resource" "worker-node" {
+  count = "${var.server_count - 1}"
+  depends_on = ["null_resource.kubeadm-secrets"]
+  connection {
+    host = "${element(scaleway_server.server.*.public_ip, count.index + 1)}"
+  }
+
   provisioner "remote-exec" {
-    inline = [
-      "cd /root/provision",
-      "chmod +x kubeadm.sh",
-      "./kubeadm.sh ${count.index} ${var.kubeadm_token} ${scaleway_server.kube.0.private_ip} ${scaleway_server.kube.0.public_ip}"
+    inline = [<<EOF
+      kubeadm join "${scaleway_server.server.0.private_ip}:6443" \
+        --token="${file("${path.module}/temp/kubeadm-token")}" \
+        --discovery-token-ca-cert-hash="${file("${path.module}/temp/kubeadm-discovery-token-ca-cert-hash")}"
+EOF
     ]
   }
 }

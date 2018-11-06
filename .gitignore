@@ -1,3 +1,4 @@
 secrets/
 terraform/scaleway-config.tfvars
 DEVNOTES.md
+temp/

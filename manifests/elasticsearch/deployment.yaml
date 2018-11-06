@@ -45,7 +45,7 @@ spec:
           mountPath: /usr/share/elasticsearch/data
       containers:
       - name: elasticsearch
-        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.4
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.4.3
         imagePullPolicy: IfNotPresent
         # env:
         # - name: ES_JAVA_OPTS
@@ -60,7 +60,7 @@ spec:
         #     memory: 3Gi
         volumeMounts:
         - name: config
-          mountPath: /usr/share/elasticsearch/elasticsearch.yml
+          mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           subPath: elasticsearch.yml
         - name: data
           mountPath: /usr/share/elasticsearch/data
@@ -72,11 +72,11 @@ spec:
       - name: config
         configMap:
           name: elasticsearch
-      # - name: data
-      #   persistentVolumeClaim:
-      #     claimName: elasticsearch
+      - name: data
+        persistentVolumeClaim:
+          claimName: elasticsearch
       # - name: data
       #   hostPath:
       #     path: /srv/elasticsearch-data2
-      - name: data
-        emptyDir: {}
+      # - name: data
+      #   emptyDir: {}

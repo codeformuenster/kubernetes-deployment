@@ -4,19 +4,19 @@ metadata:
   # annotations:
   #   flux.weave.works/automated: "true"
   #   flux.weave.works/tag.dashboard: glob:0.*
-  name: dashboard
-  namespace: mein-ms
+  name: muenster-dashboard
+  namespace: muenster-dashboard
   labels:
-    app: dashboard
+    app: muenster-dashboard
 spec:
   template:
     metadata:
       labels:
-        app: dashboard
+        app: muenster-dashboard
     spec:
       containers:
-      - name: dashboard
-        image: codeformuenster/familien-dashboard:0.3.3
+      - name: muenster-dashboard
+        image: quay.io/codeformuenster/muenster-dashboard:0.4.0-rc1
         imagePullPolicy: IfNotPresent
         ports:
         - name: ui

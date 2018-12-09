@@ -154,3 +154,24 @@ spec:
   resources:
     requests:
       storage: 20G
+
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: nextcloud-webcron
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: hello
+            image: alpine:3.8
+            command:
+            - /usr/bin/wget
+            - -O=-
+            - -q
+            - https://nextcloud.codeformuenster.org/cron.php
+          restartPolicy: Never

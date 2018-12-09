@@ -162,7 +162,7 @@ metadata:
   name: nextcloud-webcron
   namespace: nextcloud
 spec:
-  schedule: "*/1 * * * *"
+  schedule: "*/5 * * * *"
   jobTemplate:
     spec:
       template:

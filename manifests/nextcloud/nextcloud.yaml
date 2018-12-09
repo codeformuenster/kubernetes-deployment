@@ -160,6 +160,7 @@ apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: nextcloud-webcron
+  namespace: nextcloud
 spec:
   schedule: "*/1 * * * *"
   jobTemplate:
@@ -171,7 +172,7 @@ spec:
             image: alpine:3.8
             command:
             - /usr/bin/wget
-            - -O=-
+            - -O-
             - -q
             - https://nextcloud.codeformuenster.org/cron.php
           restartPolicy: Never

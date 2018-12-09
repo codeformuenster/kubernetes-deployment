@@ -1,0 +1,156 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+    component: ingress
+  annotations:
+    # maybe also see https://kubernetes.github.io/ingress-nginx/user-guide/miscellaneous/#proxy-protocol
+    # FIXME https://github.com/nextcloud/docker/blob/master/.examples/docker-compose/with-nginx-proxy/mariadb/apache/proxy/uploadsize.conf
+    kubernetes.io/tls-acme: "true"
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    # nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+  - host: nextcloud.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: nextcloud
+          servicePort: 80
+  tls:
+  - secretName: nextcloud-tls
+    hosts:
+    - nextcloud.codeformuenster.org
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  selector:
+    app: nextcloud
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-redis
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+data:
+  redis.config.php: |
+    <?php
+    $CONFIG = array (
+      'memcache.locking' => '\OC\Memcache\Redis',
+      'redis' => array(
+        'host' => 'redis',
+        'port' => 6379,
+      ),
+    );
+
+# ---
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: nextcloud
+#   namespace: nextcloud
+# data:
+#   # openssl rand -base64 32 | tr -d "\n" | base64
+#   nextcloud-admin-password:
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud
+  namespace: nextcloud
+  labels:
+    app: nextcloud
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: nextcloud
+  template:
+    metadata:
+      labels:
+        app: nextcloud
+    spec:
+      containers:
+      - name: nextcloud
+        # image: nextcloud:14.0-apache
+        # image: nextcloud:15.0.0RC3-apache
+        image: codeformuenster/nextcloud:15.0.0RC3-apache-imagick2
+        ports:
+        - name: http
+          containerPort: 80
+        env:
+        # - name: NEXTCLOUD_URL
+        #   value: http://nextcloud.codeformuenster.org
+        # - name: NEXTCLOUD_UPLOAD_MAX_FILESIZE
+        #   value: 4G
+        - name: NEXTCLOUD_TRUSTED_DOMAINS
+          value: nextcloud.codeformuenster.org
+        - name: MYSQL_HOST
+          value: mariadb
+        - name: MYSQL_DATABASE
+          value: nextcloud
+        - name: MYSQL_USER
+          value: nextcloud
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mariadb
+              key: mysql-nextcloud-password
+        # - name: VIRTUAL_HOST
+        #   value:
+        - name: NEXTCLOUD_ADMIN_USER
+          value: admin
+        - name: NEXTCLOUD_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud
+              key: nextcloud-admin-password
+        volumeMounts:
+        - name: nextcloud-redis
+          mountPath: /usr/src/nextcloud/config/redis.config.php
+          subPath: redis.config.php
+        - name: data
+          mountPath: /var/www/html/data
+          subPath: data
+      volumes:
+      - name: nextcloud-redis
+        configMap:
+          name: nextcloud-redis
+      - name: data
+        persistentVolumeClaim:
+          claimName: nextcloud-data
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nextcloud-data
+  namespace: nextcloud
+spec:
+  storageClassName: high-performance-high-resilience
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20G

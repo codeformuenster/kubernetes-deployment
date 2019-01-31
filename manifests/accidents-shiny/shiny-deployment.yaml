@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: accidents-shiny
-        image: quay.io/codeformuenster/accidents-shiny:v2
+        image: quay.io/codeformuenster/accidents-shiny:v3.0.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 3838

@@ -3,15 +3,15 @@
 # metadata:
 #   name: ingress-nginx
 
-# ---
-# kind: ConfigMap
-# apiVersion: v1
-# metadata:
-#   name: nginx-configuration
-#   namespace: ingress-nginx
-#   labels:
-#     app.kubernetes.io/name: ingress-nginx
-#     app.kubernetes.io/part-of: ingress-nginx
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-configuration
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
 
 # ---
 # kind: ConfigMap
@@ -180,7 +180,7 @@ subjects:
     namespace: ingress-nginx
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: nginx-ingress-controller
@@ -189,7 +189,8 @@ metadata:
     app.kubernetes.io/name: ingress-nginx
     app.kubernetes.io/part-of: ingress-nginx
 spec:
-  # replicas: 1
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       app.kubernetes.io/name: ingress-nginx
@@ -204,20 +205,25 @@ spec:
         prometheus.io/scrape: "true"
     spec:
       hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: nginx-ingress-serviceaccount
       tolerations:
       - effect: NoSchedule
         key: node-role.kubernetes.io/master
       containers:
       - name: nginx-ingress-controller
-        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.21.0
+        image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.22.0
         args:
           - /nginx-ingress-controller
-          # - --configmap=$(POD_NAMESPACE)/nginx-configuration
+          - --configmap=$(POD_NAMESPACE)/nginx-configuration
           # - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
           # - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
           - --publish-service=$(POD_NAMESPACE)/ingress-nginx
-          - --annotations-prefix=nginx.ingress.kubernetes.io
+          # - --annotations-prefix=nginx.ingress.kubernetes.io  # default
+          # - --enable-dynamic-configuration  # default
+          - --enable-dynamic-certificates
+          # - --report-node-internal-ip-address  # because of baremetal
+          - --update-status=false
         securityContext:
           capabilities:
             drop:

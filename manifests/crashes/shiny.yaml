@@ -64,32 +64,6 @@ spec:
     spec:
       containers:
       - name: crashes
-        image: quay.io/codeformuenster/accidents-shiny:v3.0.2
+        image: quay.io/codeformuenster/crashes-shiny:v3.1.0
         ports:
         - containerPort: 3838
-        # env:
-        # - name: POSTGRES_HOST
-        #   value: postgis
-        volumeMounts:
-        - name: shiny-env
-          mountPath: /etc
-          subPath: environment
-      volumes:
-      - name: shiny-env
-        configMap:
-          name: shiny-env
-
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: shiny-env
-  namespace: crashes
-  labels:
-    app.kubernetes.io/name: shiny
-    app.kubernetes.io/part-of: crashes
-data:
-  environment:
-    # update `MRAN` when changing the version of the docker image
-    MRAN=https://mran.microsoft.com/snapshot/2019-02-02
-    POSTGRES_HOST=postgis

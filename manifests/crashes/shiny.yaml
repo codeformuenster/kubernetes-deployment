@@ -62,8 +62,22 @@ spec:
         app: crashes
         component: shiny
     spec:
+      # affinity:
+      #   podAntiAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #     - labelSelector:
+      #         matchExpressions:
+      #         - key: app
+      #           operator: In
+      #           values:
+      #           - crashes
+      #         - key: component
+      #           operator: In
+      #           values:
+      #           - shiny
+      #       topologyKey: "kubernetes.io/hostname"
       containers:
       - name: crashes
-        image: quay.io/codeformuenster/crashes-shiny:v3.1.0
+        image: quay.io/codeformuenster/crashes-shiny:v4.0.0
         ports:
         - containerPort: 3838

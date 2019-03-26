@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kinto
+  labels:
+    app.kubernetes.io/name: kinto
+    app.kubernetes.io/component: datastore
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+  - host: kinto-test.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kinto
+          servicePort: api
+  tls:
+  - hosts:
+    - kinto-test.codeformuenster.org
+    secretName: kinto-tls

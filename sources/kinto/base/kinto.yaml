@@ -1,0 +1,172 @@
+# app.kubernetes.io/name: mysql
+# app.kubernetes.io/instance: wordpress-abcxzy
+# app.kubernetes.io/version: "5.7.21"
+# app.kubernetes.io/component: database
+# app.kubernetes.io/part-of: wordpress
+# app.kubernetes.io/managed-by: helm
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kinto
+  labels:
+    app.kubernetes.io/name: kinto
+    app.kubernetes.io/component: datastore
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+  - host: FIXME
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kinto
+          servicePort: api
+  tls:
+  - hosts:
+    - FIXME
+    secretName: kinto-tls
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kinto
+  labels:
+    app.kubernetes.io/name: kinto
+    app.kubernetes.io/component: datastore
+spec:
+  ports:
+  - name: api
+    port: 8888
+    targetPort: api
+  selector:
+    app.kubernetes.io/name: kinto
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: kinto
+  labels:
+    app.kubernetes.io/name: kinto
+    app.kubernetes.io/component: datastore
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kinto
+        app.kubernetes.io/component: datastore
+    spec:
+      containers:
+      - name: kinto
+        # image: kinto/kinto-server:13.1.0
+        image: kinto/kinto-server:13.0.1
+        ports:
+        - name: api
+          containerPort: 8888
+        volumeMounts:
+        - name: config
+          mountPath: /etc/kinto
+      volumes:
+      - name: config
+        configMap:
+          name: kinto
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kinto
+  namespace: kinto
+  labels:
+    app.kubernetes.io/name: kinto
+    app.kubernetes.io/component: datastore
+data:
+  kinto.ini: |
+    # from: https://github.com/Kinto/kinto/blob/master/kinto/config/kinto.tpl
+    # see also: https://kinto.readthedocs.io/en/latest/configuration/settings.html
+
+    [server:main]
+    use = egg:waitress#main
+    host = 0.0.0.0
+    port = %(http_port)s
+
+    [app:main]
+    use = egg:kinto
+
+    kinto.includes = kinto.plugins.default_bucket
+                     kinto.plugins.admin
+                     kinto.plugins.openid
+                     kinto.plugins.accounts
+                     kinto_elasticsearch
+
+    kinto.elasticsearch.hosts = elasticsearch:9200
+    kinto.elasticsearch.index_prefix = kinto
+
+    kinto.storage_backend = kinto.core.storage.postgresql
+    kinto.storage_url = postgres://kinto:kinto@postgres/kinto
+
+    kinto.permission_backend = kinto.core.permission.postgresql
+    kinto.permission_url = postgres://kinto:kinto@postgres/kinto
+
+    kinto.experimental_collection_schema_validation = True
+
+    # # kinto.userid_hmac_secret = {secret}
+    # multiauth.policies = account
+
+    # multiauth.policy.account.use = kinto.plugins.accounts.authentication.AccountsAuthenticationPolicy
+    # # multiauth.policy.account.use = kinto.plugins.accounts.AccountsPolicy
+
+    # multiauth.policies = oidc
+    # multiauth.policy.oidc.use = kinto.plugins.openid.OpenIDConnectPolicy
+    # multiauth.policy.oidc.issuer = https://accounts.oidc.com
+    # multiauth.policy.oidc.client_id = 42XXXX365001.apps.oidcusercontent.com
+    # multiauth.policy.oidc.client_secret = UAlL-054uyh5in4b6u8jhg5o3hnj
+    # multiauth.policy.oidc.userid_field = email
+
+
+    # Allow anyone to create accounts.
+    kinto.account_create_principals = system.Everyone
+    # Set user 'account:admin' as the administrator.
+    kinto.account_write_principals = account:admin
+    # Allow administrators to create buckets
+    kinto.bucket_create_principals = account:admin
+
+
+    # https://kinto.readthedocs.io/en/stable/configuration/settings.html#standard-logging
+    [loggers]
+    keys = root
+
+    [handlers]
+    keys = console
+
+    [formatters]
+    keys = generic
+    # keys = color
+    # keys = json
+
+    [logger_root]
+    level = DEBUG
+    handlers = console
+
+    [handler_console]
+    class = StreamHandler
+    args = (sys.stdout,)
+    level = NOTSET
+    formatter = generic
+
+    [formatter_generic]
+    format = %(asctime)s,%(msecs)03d %(levelname)-5.5s [%(name)s] %(message)s
+    datefmt = %H:%M:%S
+
+    [formatter_color]
+    class = logging_color_formatter.ColorFormatter
+
+    [formatter_json]
+    class = kinto.core.JsonLogFormatter

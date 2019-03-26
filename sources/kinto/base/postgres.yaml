@@ -39,7 +39,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:9.5
+        image: postgres:11
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data

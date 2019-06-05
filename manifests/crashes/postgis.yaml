@@ -42,13 +42,14 @@ spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: postgis
-        image: quay.io/codeformuenster/verkehrsunfall-postgis:master
+        # image: quay.io/codeformuenster/verkehrsunfall-postgis:master
+        image: quay.io/codeformuenster/verkehrsunfaelle:2019-05-18
         ports:
         - name: postgres
           containerPort: 5432
         resources:
           requests:
             memory: "2048Mi"
-            cpu: "2500m"
-          limits:
-            cpu: "5000m"
+            cpu: "1000m"
+          # limits:
+          #   cpu: "5000m"

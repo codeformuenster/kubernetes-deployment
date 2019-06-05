@@ -1,0 +1,102 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    # app.kubernetes.io/version: "0.5.1.3"
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  ports:
+  - port: 3838
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: shiny
+    # app.kubernetes.io/version: "0.5.1.3"
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: shiny
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    # app.kubernetes.io/version: "0.5.1.3"
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  rules:
+  - host: traffics.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          serviceName: shiny
+          servicePort: 3838
+        path: /
+  tls:
+  - hosts:
+    - traffics.codeformuenster.org
+    secretName: traffics-tls
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: traffics-tls
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    # app.kubernetes.io/version: "0.5.1.3"
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  secretName: traffics-tls
+  commonName: traffics.codeformuenster.org
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    # app.kubernetes.io/version: "0.5.1.3"
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+  # annotations:
+  #   flux.weave.works/automated: "true"
+  #   flux.weave.works/tag.elasticsearch: glob:v0.*
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shiny
+      # app.kubernetes.io/version: "0.5.1.3"
+      app.kubernetes.io/component: webserver
+      app.kubernetes.io/part-of: traffics
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shiny
+        # app.kubernetes.io/version: "0.5.1.3"
+        app.kubernetes.io/component: webserver
+        app.kubernetes.io/part-of: traffics
+    spec:
+      containers:
+      - name: shiny
+        image: codeformuenster/traffic-dynamics-shiny:v0.5.1.3
+        ports:
+        - containerPort: 3838
+        # FIXME
+        # resources:
+        #   null

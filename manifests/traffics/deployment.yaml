@@ -1,0 +1,32 @@
+# ##---
+# # Source: app-with-url/templates/deployment.yaml
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: traffics-shiny
+#   namespace: traffics-shiny
+#   labels:
+#     app: traffics-shiny
+#     chart: app-with-url-v0.1.0
+#   annotations:
+#     flux.weave.works/automated: "true"
+#     flux.weave.works/tag.elasticsearch: glob:v0.*
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: traffics-shiny
+#   template:
+#     metadata:
+#       labels:
+#         app: traffics-shiny
+#         chart: app-with-url-v0.1.0
+#     spec:
+#       containers:
+#       - name: traffics-shiny
+#         image: codeformuenster/traffic-dynamics-shiny:v0.5.1.3
+#         imagePullPolicy: IfNotPresent
+#         ports:
+#         - containerPort: 3838
+#         resources:
+#           null

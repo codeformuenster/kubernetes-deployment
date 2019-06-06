@@ -43,7 +43,7 @@ spec:
       containers:
       - name: postgis
         # image: quay.io/codeformuenster/verkehrsunfall-postgis:master
-        image: quay.io/codeformuenster/verkehrsunfaelle:2019-05-18
+        image: quay.io/codeformuenster/verkehrsunfaelle:2019-06-06
         ports:
         - name: postgres
           containerPort: 5432

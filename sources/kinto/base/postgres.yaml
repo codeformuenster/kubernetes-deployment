@@ -14,8 +14,9 @@ spec:
     targetPort: 5432
     protocol: TCP
   selector:
-    app: postgres
-    
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/component: database
+
 ---
 apiVersion: apps/v1
 kind: StatefulSet

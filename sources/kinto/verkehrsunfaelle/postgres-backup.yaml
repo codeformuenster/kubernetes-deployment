@@ -6,45 +6,57 @@ metadata:
     app.kubernetes.io/name: kinto-postgres-backup
 spec:
   schedule: "5 4 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
   jobTemplate:
     spec:
+      parallelism: 1
       template:
         spec:
-          initContainers:
-            - name: backup-creator
-              image: postgres:11
-              volumeMounts:
-                - mountPath: /dumps
-                  name: dump-volume
-              command:
-                - /bin/bash
-                - -c
-                - "pg_dump ${POSTGRES_URL} --encoding=utf8 --format=plain --no-owner --no-acl --no-privileges | gzip -9 > /dumps/verkehrsunfaelle_$(date --utc --iso-8601=seconds).sql.gz"
-              env:
-                # FIXME create secret on commandline
-                - name: POSTGRES_URL
-                  value: kinto
           containers:
             - name: backup-uploader
-              image: minio/mc/RELEASE.2019-06-19T22-39-53Z
+              image: quay.io/codeformuenster/postgres-minio-mc:0.1.1
               volumeMounts:
                 - mountPath: /dumps
                   name: dump-volume
               command:
                 - /bin/bash
                 - -c
-                - 'mc config host add backup "${BUCKET_URL}" "${BUCKET_ACCESS_KEY}" "${BUCKET_SECRET_KEY}" && mc cp /dumps/*.sql.gz ${BUCKET_TARGET}'
+              args:
+                - 'set -e &&
+                  pg_dump ${POSTGRES_URL} --encoding=utf8 --format=plain --no-owner --no-acl --no-privileges | gzip -9 > /dumps/verkehrsunfaelle_$(date -Iseconds).sql.gz &&
+                   mc config host add backup "${BUCKET_URL}" "${BUCKET_ACCESS_KEY}" "${BUCKET_SECRET_KEY}" &&
+                   mc cp /dumps/*.sql.gz ${BUCKET_TARGET}'
               env:
-                # FIXME create secret on commandline
+                - name: POSTGRES_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres
+                      key: postgres-url
                 - name: BUCKET_URL
-                  value: kinto
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3
+                      key: bucket-url
                 - name: BUCKET_ACCESS_KEY
-                  value: kinto
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3
+                      key: access-key
                 - name: BUCKET_SECRET_KEY
-                  value: kinto
+                  valueFrom:
+                    secretKeyRef:
+                      name: s3
+                      key: secret-key
                 - name: BUCKET_TARGET
                   value: backup/codeformuenster/verkehrsunfaelle/
           restartPolicy: OnFailure
           volumes:
             - name: dump-volume
               emptyDir: {}
+            - name: s3-secrets
+              secret:
+                secretName: s3
+            - name: postgres-secrets
+              secret:
+                secretName: postgres

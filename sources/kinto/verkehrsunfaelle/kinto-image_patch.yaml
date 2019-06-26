@@ -10,4 +10,4 @@ spec:
     spec:
       containers:
       - name: kinto
-        image: kinto/kinto-server:13.1.1
+        image: kinto/kinto-server:13.2.1

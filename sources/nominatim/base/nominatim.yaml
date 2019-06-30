@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: nominatim
+  labels:
+    app.kubernetes.io/name: nominatim
+    app.kubernetes.io/component: api
+spec:
+  rules:
+  - host: nominatim.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: nominatim
+          servicePort: api
+  tls:
+  - secretName: nominatim-tls
+    hosts:
+    - nominatim.example.com
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: nominatim
+  labels:
+    app.kubernetes.io/name: nominatim
+    app.kubernetes.io/component: api
+spec:
+  secretName: nominatim-tls
+  commonName: nominatim.example.com
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nominatim
+  labels:
+    app.kubernetes.io/name: nominatim
+    app.kubernetes.io/component: api
+spec:
+  ports:
+  - name: api
+    port: 80
+    targetPort: api
+  selector:
+    app.kubernetes.io/name: nominatim
+    app.kubernetes.io/component: api
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nominatim
+  labels:
+    app.kubernetes.io/name: nominatim
+    app.kubernetes.io/component: api
+spec:
+  # selector:
+  #   matchLabels:
+  #     app.kubernetes.io/name: kinto
+  #     app.kubernetes.io/component: datastore
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: nominatim
+        app.kubernetes.io/component: api
+    spec:
+      containers:
+      - name: nominatim
+        image: codeformuenster/nominatim-api:0.1.0
+        ports:
+        - name: api
+          containerPort: 80

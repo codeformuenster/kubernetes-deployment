@@ -1,0 +1,69 @@
+# https://docs.openebs.io/docs/next/ugcstor.html#creating-cStor-storage-pools
+
+---
+apiVersion: openebs.io/v1alpha1
+kind: StoragePoolClaim
+metadata:
+  name: cstor-disk-pool
+  annotations:
+    # https://docs.openebs.io/docs/next/ugcstor.html#setting-pool-policies
+    cas.openebs.io/config: |
+      - name: PoolResourceRequests
+        value: |-
+            memory: 2Gi
+      - name: PoolResourceLimits
+        value: |-
+            memory: 4Gi
+      # - name:  AuxResourceLimits
+      #   value: |-
+      #       memory: 0.5Gi
+      #       cpu: 100m
+      # - name: AuxResourceRequests
+      #   value: |-
+      #       memory: 0.5Gi
+      #       cpu: 100m
+    # openebs.io/cas-type: cstor
+# provisioner: openebs.io/provisioner-iscsi
+spec:
+  name: cstor-disk-pool
+  type: disk
+  poolSpec:
+    poolType: striped
+  blockDevices:
+    # kubectl -n openebs describe blockdevices
+    # kubectl -n openebs get blockdevices -o name
+    blockDeviceList:
+    - blockdevice-6ab12275626f63562b9fa1cd0951e34f
+    - blockdevice-a3bd014efc4bbe301f2665723ceafb39
+    - blockdevice-f76a3cf2189f70c91499968c1788f12b
+
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: cstor-localssd-3x
+  annotations:
+    openebs.io/cas-type: cstor
+    cas.openebs.io/config: |
+      - name: StoragePoolClaim
+        value: "cstor-disk-pool"
+      - name: ReplicaCount
+        value: "3"
+      - name: TargetResourceLimits
+        value: |-
+            memory: 1Gi
+            cpu: 100m
+      - name: TargetResourceRequests
+        value: |-
+            memory: 1Gi
+            cpu: 100m
+      - name:  AuxResourceLimits
+        value: |-
+            memory: 0.5Gi
+            cpu: 100m
+      - name: AuxResourceRequests
+        value: |-
+            memory: 0.5Gi
+            cpu: 100m
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: openebs.io/provisioner-iscsi

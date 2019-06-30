@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ingress-nginx
+commonLabels:
+  # app.kubernetes.io/name: ingress-nginx
+  app.kubernetes.io/part-of: ingress-nginx
+
+bases:
+- ../base/cloud-generic
+- ../base/cluster-wide
+
+patchesStrategicMerge:
+- ./hostNetwork-patch.yaml
+- ./podAntiAffinity-patch.yaml
+
+replicas:
+- name: nginx-ingress-controller
+  count: 3
+
+# FIXME add prometheus-servicemonitor

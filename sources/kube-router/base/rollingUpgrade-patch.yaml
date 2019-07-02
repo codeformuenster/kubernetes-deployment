@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kube-router
+  namespace: kube-system
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    spec:
+      containers:
+      - name: kube-router
+        imagePullPolicy: IfNotPresent

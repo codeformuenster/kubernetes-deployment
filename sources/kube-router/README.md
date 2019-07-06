@@ -4,8 +4,6 @@ https://github.com/cloudnativelabs/kube-router/releases
 
 For features see https://github.com/cloudnativelabs/kube-router/blob/master/docs/user-guide.md#advertising-ips
 
-**FIXME**
-- use tag with docker-image
 
 ```bash
 # from upstream
@@ -19,12 +17,12 @@ curl -sfSL https://raw.githubusercontent.com/cloudnativelabs/kube-router/v0.3.1/
 kustomize build ./overlay
 
 # apply to cluster
-kubectl create namespace cert-manager
 kubectl apply -k ./overlay
 
 # or place manifests in local directory
-kustomize build ./overlay > ../../manifests/cert-manager/kustomized.yaml
-kubectl apply -f ../../manifests/cert-manager
+rm ../../manifests/kube-router -rf && mkdir ../../manifests/kube-router
+kubectl kustomize ./overlay > ../../manifests/kube-router/kustomized.yaml
+kubectl apply -f ../../manifests/kube-router
 
 # or
 kubectl apply --recursive -f ../../manifests

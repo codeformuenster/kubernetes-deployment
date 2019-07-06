@@ -11,6 +11,7 @@ commonLabels:
 images:
 - name: docker.io/cloudnativelabs/kube-router
   newTag: v0.3.1
+# FIXME also busybox
 
 resources:
 - ./kubeadm-kuberouter-all-features-hostport.yaml

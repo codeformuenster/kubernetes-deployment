@@ -1,5 +1,7 @@
 # ingress-nginx
 
+FIXME add prometheus-servicemonitor
+
 ```bash
 # refresh from upstream
 rm -r ./base ; mkdir -p ./base
@@ -11,17 +13,17 @@ curl -L https://github.com/kubernetes/ingress-nginx/archive/master.tar.gz \
         ingress-nginx-master/deploy/grafana/dashboards
 
 # build manifests to verify
-kustomize build .
+kubectl kustomize ./overlay
 
 # apply to cluster
 kubectl create namespace ingress-nginx
-kubectl apply -k ./base
+kubectl apply -k ./overlay
 
 # or place manifests in local directory
 rm -r ../../manifests/ingress-nginx ; mkdir -p ../../manifests/ingress-nginx
 
-kustomize build ./base > ../../manifests/ingress-nginx/kustomized.yaml
-kubectl apply --recursive -f ../../manifests/ingress-nginx/kustomized.yaml
+kubectl kustomize ./overlay > ../../manifests/ingress-nginx/kustomized.yaml
+kubectl apply -f ../../manifests/ingress-nginx
 
 # or
 kubectl apply --recursive -f ../../manifests

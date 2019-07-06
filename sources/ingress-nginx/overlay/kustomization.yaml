@@ -14,8 +14,8 @@ patchesStrategicMerge:
 - ./hostNetwork-patch.yaml
 - ./podAntiAffinity-patch.yaml
 
-replicas:
-- name: nginx-ingress-controller
-  count: 3
+# replicas:
+# - name: nginx-ingress-controller
+#   count: 3
 
 # FIXME add prometheus-servicemonitor

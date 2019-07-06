@@ -10,18 +10,17 @@ https://docs.openebs.io/docs/overview.html
 curl -sfSL https://openebs.github.io/charts/openebs-operator-1.0.0.yaml \
     -o ./base/openebs-operator.yaml
 
-# build manifests to verify
-kustomize build ./overlay
-
-# apply to cluster
-kubectl apply -k ./overlay
-
-# or place manifests in local directory
+# place manifests in local directory
+rm ../../manifests/openebs -rf && mkdir ../../manifests/openebs
 kubectl kustomize ./overlay > ../../manifests/openebs/kustomized.yaml
+
+# verify created manifests, then
 kubectl apply -f ../../manifests/openebs
 
-# or
-kubectl apply --recursive -f ../../manifests
+# create storagepool: edit cstor-storage.yaml
+# cstor-disk-pool > spec.blockDevices.blockDeviceList
+kubectl apply -f ./cstor-storage.yaml
+
 ```
 
 

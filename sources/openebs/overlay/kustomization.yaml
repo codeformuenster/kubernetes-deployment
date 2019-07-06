@@ -4,8 +4,8 @@ kind: Kustomization
 bases:
 - ../base
 
-resources:
-- ./cstor-storage.yaml
+# resources:
+# - ./cstor-storage.yaml
 
 patchesStrategicMerge:
 - ./openebs-operator_patches.yaml

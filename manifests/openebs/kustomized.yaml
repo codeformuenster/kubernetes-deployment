@@ -5,36 +5,6 @@ metadata:
     app.kubernetes.io/part-of: openebs
   name: openebs
 ---
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  annotations:
-    cas.openebs.io/config: |
-      - name: StoragePoolClaim
-        value: "cstor-disk-pool"
-      - name: ReplicaCount
-        value: "3"
-      - name: TargetResourceLimits
-        value: |-
-            memory: 1Gi
-            cpu: 100m
-      - name: TargetResourceRequests
-        value: |-
-            memory: 1Gi
-            cpu: 100m
-      - name:  AuxResourceLimits
-        value: |-
-            memory: 0.5Gi
-            cpu: 100m
-      - name: AuxResourceRequests
-        value: |-
-            memory: 0.5Gi
-            cpu: 100m
-    openebs.io/cas-type: cstor
-    storageclass.kubernetes.io/is-default-class: "true"
-  name: cstor-localssd-3x
-provisioner: openebs.io/provisioner-iscsi
----
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -703,34 +673,3 @@ spec:
         name: sparsepath
   updateStrategy:
     type: RollingUpdate
----
-apiVersion: openebs.io/v1alpha1
-kind: StoragePoolClaim
-metadata:
-  annotations:
-    cas.openebs.io/config: |
-      - name: PoolResourceRequests
-        value: |-
-            memory: 2Gi
-      - name: PoolResourceLimits
-        value: |-
-            memory: 4Gi
-      # - name:  AuxResourceLimits
-      #   value: |-
-      #       memory: 0.5Gi
-      #       cpu: 100m
-      # - name: AuxResourceRequests
-      #   value: |-
-      #       memory: 0.5Gi
-      #       cpu: 100m
-  name: cstor-disk-pool
-spec:
-  blockDevices:
-    blockDeviceList:
-    - blockdevice-6ab12275626f63562b9fa1cd0951e34f
-    - blockdevice-a3bd014efc4bbe301f2665723ceafb39
-    - blockdevice-f76a3cf2189f70c91499968c1788f12b
-  name: cstor-disk-pool
-  poolSpec:
-    poolType: striped
-  type: disk

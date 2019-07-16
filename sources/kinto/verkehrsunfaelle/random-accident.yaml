@@ -53,11 +53,14 @@ spec:
         app.kubernetes.io/name: random-accident
     spec:
       containers:
-        - name: random-accident
-          image: quay.io/codeformuenster/verkehrsunfaelle-random-accident@sha256:cba190bd6c69058ab4e3a1e1552fa4064c56c7cb7be0d22a8e672d3598ce2ff9
-          env:
-            - name: POSTGRES_URL
-              value: postgres://kinto:kinto@postgres/kinto
-          ports:
-            - name: hooks
-              containerPort: 9000
+      - name: random-accident
+        image: quay.io/codeformuenster/verkehrsunfaelle-random-accident:random-accident-v0.1.0
+        env:
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: postgres-url
+        ports:
+        - name: hooks
+          containerPort: 9000

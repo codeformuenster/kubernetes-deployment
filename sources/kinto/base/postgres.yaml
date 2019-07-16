@@ -69,4 +69,3 @@ spec:
       resources:
         requests:
           storage: 5Gi
-      storageClassName: high-performance-high-resilience

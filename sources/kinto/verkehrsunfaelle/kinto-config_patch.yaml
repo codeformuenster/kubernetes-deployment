@@ -21,10 +21,8 @@ data:
                      kinto.plugins.accounts
 
     kinto.storage_backend = kinto.core.storage.postgresql
-    kinto.storage_url = postgres://kinto:kinto@postgres/kinto
 
     kinto.permission_backend = kinto.core.permission.postgresql
-    kinto.permission_url = postgres://kinto:kinto@postgres/kinto
 
     kinto.experimental_collection_schema_validation = True
 

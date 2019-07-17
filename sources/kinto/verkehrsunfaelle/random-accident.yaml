@@ -1,0 +1,66 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: random-accident
+  labels:
+    app.kubernetes.io/name: random-accident
+  annotations:
+    certmanager.k8s.io/cluster-issuer: letsencrypt
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    # nginx.ingress.kubernetes.io/rewrite-target: "/"
+spec:
+  rules:
+    - host: random-accident-verkehrsunfaelle.codeformuenster.org
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: random-accident
+              servicePort: hooks
+  tls:
+    - hosts:
+        - random-accident-verkehrsunfaelle.codeformuenster.org
+      secretName: random-accidents-tls
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: random-accident
+  labels:
+    app.kubernetes.io/name: random-accident
+spec:
+  ports:
+    - name: hooks
+      port: 9000
+      targetPort: hooks
+  selector:
+    app.kubernetes.io/name: random-accident
+
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: random-accident
+  labels:
+    app.kubernetes.io/name: random-accident
+spec:
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: random-accident
+    spec:
+      containers:
+      - name: random-accident
+        image: quay.io/codeformuenster/verkehrsunfaelle-random-accident:random-accident-v0.1.0
+        env:
+        - name: POSTGRES_URL
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: postgres-url
+        ports:
+        - name: hooks
+          containerPort: 9000

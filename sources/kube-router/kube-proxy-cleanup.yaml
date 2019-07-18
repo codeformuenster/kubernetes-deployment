@@ -1,4 +1,4 @@
-# docker run --privileged -v /lib/modules:/lib/modules --net=host k8s.gcr.io/kube-proxy-amd64:v1.10.2 kube-proxy --cleanup
+# docker run --privileged -v /lib/modules:/lib/modules --net=host k8s.gcr.io/kube-proxy-amd64:v1.15.0 kube-proxy --cleanup
 
 apiVersion: extensions/v1beta1
 kind: DaemonSet

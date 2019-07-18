@@ -1,4 +1,3 @@
-# based on https://raw.githubusercontent.com/Kong/kubernetes-ingress-controller/master/deploy/single/all-in-one-postgres.yaml
 ---
 apiVersion: v1
 kind: Service

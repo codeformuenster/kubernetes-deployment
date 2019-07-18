@@ -2,16 +2,27 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: verkehrsunfaelle
+commonLabels:
+  app.kubernetes.io/part-of: verkehrsunfaelle
 
 bases:
-  - ../base
+- ../base
+
 resources:
-  - namespace.yaml
-  - random-accident.yaml
-  - postgres-backup.yaml
+- random-accident.yaml
+- postgres-backup.yaml
+
 patchesStrategicMerge:
-  - kinto-image_patch.yaml
-  - kinto-pod_patch.yaml
-  - kinto-config_patch.yaml
-  - kinto-ingress_patch.yaml
-  - postgres_patch.yaml
+- kinto-patches.yaml
+- postgres-patches.yaml
+
+images:
+- name: kinto/kinto-server
+  newTag: 13.2.2
+- name: quay.io/codeformuenster/verkehrsunfaelle
+  newTag: 2019-06-06_editor-web
+
+configMapGenerator:
+- name: kinto
+  files:
+  - kinto.ini

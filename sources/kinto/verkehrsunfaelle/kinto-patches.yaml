@@ -1,16 +1,31 @@
 apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kinto
+spec:
+  rules:
+  - host: kinto-verkehrsunfaelle.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kinto
+          servicePort: api
+  tls:
+  - secretName: kinto-tls
+    hosts:
+    - kinto-verkehrsunfaelle.codeformuenster.org
+
+---
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: kinto
-  labels:
-    app.kubernetes.io/name: kinto
-    app.kubernetes.io/component: datastore
 spec:
   template:
     spec:
       containers:
       - name: kinto
-        image: kinto/kinto-server:13.2.2
         env:
         - name: KINTO_STORAGE_URL
           valueFrom:

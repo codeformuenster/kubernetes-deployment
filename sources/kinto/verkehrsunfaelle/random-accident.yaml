@@ -5,24 +5,33 @@ metadata:
   name: random-accident
   labels:
     app.kubernetes.io/name: random-accident
-  annotations:
-    certmanager.k8s.io/cluster-issuer: letsencrypt
-    kubernetes.io/tls-acme: "true"
-    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    # nginx.ingress.kubernetes.io/rewrite-target: "/"
 spec:
   rules:
-    - host: random-accident-verkehrsunfaelle.codeformuenster.org
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: random-accident
-              servicePort: hooks
+  - host: random-accident-verkehrsunfaelle.codeformuenster.org
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: random-accident
+            servicePort: hooks
   tls:
-    - hosts:
-        - random-accident-verkehrsunfaelle.codeformuenster.org
-      secretName: random-accidents-tls
+  - secretName: random-accident-tls
+    hosts:
+    - random-accident-verkehrsunfaelle.codeformuenster.org
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: random-accident
+  labels:
+    app.kubernetes.io/name: random-accident
+spec:
+  secretName: random-accident-tls
+  commonName: random-accident-verkehrsunfaelle.codeformuenster.org
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
 
 ---
 apiVersion: v1
@@ -33,9 +42,9 @@ metadata:
     app.kubernetes.io/name: random-accident
 spec:
   ports:
-    - name: hooks
-      port: 9000
-      targetPort: hooks
+  - name: hooks
+    port: 9000
+    targetPort: hooks
   selector:
     app.kubernetes.io/name: random-accident
 

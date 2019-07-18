@@ -48,6 +48,8 @@ spec:
           value: null
 
 ---
+# FIXME create certs and put in a safe place
+
 apiVersion: v1
 kind: Secret
 metadata:

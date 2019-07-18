@@ -10,7 +10,7 @@ https://docs.openebs.io/docs/overview.html
 curl -sfSL https://openebs.github.io/charts/openebs-operator-1.0.0.yaml \
     -o ./base/openebs-operator.yaml
 
-# place manifests in local directory
+# render manifests to local directory
 rm ../../manifests/openebs -rf && mkdir ../../manifests/openebs
 kubectl kustomize ./overlay > ../../manifests/openebs/kustomized.yaml
 
@@ -22,6 +22,23 @@ kubectl apply -f ../../manifests/openebs
 kubectl apply -f ./cstor-storage.yaml
 
 ```
+
+## metrics and logging
+
+https://github.com/openebs/openebs/tree/master/k8s#optional-enable-monitoring-using-prometheus-and-grafana
+https://github.com/openebs/openebs/tree/master/k8s#optional-enable-monitoring-using-prometheus-operator
+
+matrix prefixes:
+  openebs* or latest_openebs*.
+
+**maya-exporter**
+https://grafana.com/dashboards/9065
+
+https://github.com/coreos/kube-prometheus/blob/master/manifests/0prometheus-operator-0podmonitorCustomResourceDefinition.yaml
+
+
+**loki**
+
 
 
 ## debug
@@ -45,8 +62,10 @@ kubectl get cstorpools
 
 ## deleting
 
+https://docs.openebs.io/docs/next/uninstall.html
+
 ```bash
-# before deleting uncomment namespace in manifest
+# (!) before deleting uncomment namespace in manifest
 kubectl delete -f ../../manifests/openebs
 
 kubectl get storageclasses -o name | fgrep "openebs-" \
@@ -71,6 +90,51 @@ kubectl get namespace openebs -o json \
 ```
 
 
-## FIXME
+## Test
 
+```bash
+cat << EOF | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: test1
+spec:
+  # storageClassName: cstor-localssd-3x-nowait
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test1
+spec:
+  containers:
+  - name: alpine-noop
+    image: alpine:3.10
+    command: ["/bin/sh", "-c"]
+    args: [ "tail -f /dev/null" ]
+    volumeMounts:
+    - name: data
+      mountPath: "/srv/data"
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: test1
+EOF
+```
+
+
+## FIXME
+- add monitoring via prometheus/grafana
+- maybe setup free monitoring service from openebs/maya
+- add psp from openebs-docs
 - disable localpv
+- disable `openebs-jiva-default` ?
+
+check
+- https://github.com/openebs/openebs/issues/2488
+- https://github.com/openebs/openebs/issues/2467

@@ -1,34 +1,60 @@
 # https://docs.openebs.io/docs/next/ugcstor.html#creating-cStor-storage-pools
 
+
+# # should be optional since `node-disk-manager` handles this now
+# apiVersion: openebs.io/v1alpha1
+# kind: BlockDeviceClaim
+# metadata:
+#   name: bdc-0
+#   namespace: openebs
+# spec:
+#   blockDeviceName: blockdevice-7a8f643f80f28da689d2961833f91bda
+#   deviceClaimDetails:
+#     blockVolumeMode: ""
+#   deviceType: "SSD"
+#   hostName: kube2-0
+#   resources:
+#     requests:
+#       storage: 238G
+
 ---
+# (outdated?) see https://github.com/openebs/openebs/blob/master/k8s/sample-pv-yamls/pvc-sparse-claim-cstor.yaml
+# https://docs.openebs.io/v060/setupstoragepools.html#configuring-a-storage-pool-on-openebs
+#
+# https://docs.openebs.io/docs/next/postgres.html
+# https://docs.openebs.io/docs/next/ugcstor.html#creating-cStor-storage-pools
+
 apiVersion: openebs.io/v1alpha1
 kind: StoragePoolClaim
 metadata:
   name: cstor-disk-pool
-  annotations:
+  # annotations:
     # https://docs.openebs.io/docs/next/ugcstor.html#setting-pool-policies
-    cas.openebs.io/config: |
-      - name: PoolResourceRequests
-        value: |-
-            memory: 2Gi
-      - name: PoolResourceLimits
-        value: |-
-            memory: 4Gi
-      # - name:  AuxResourceLimits
-      #   value: |-
-      #       memory: 0.5Gi
-      #       cpu: 100m
-      # - name: AuxResourceRequests
-      #   value: |-
-      #       memory: 0.5Gi
-      #       cpu: 100m
-    # openebs.io/cas-type: cstor
-# provisioner: openebs.io/provisioner-iscsi
+    # cas.openebs.io/config: |
+    #   - name: PoolResourceRequests
+    #     value: |-
+    #         memory: 2Gi
+    #   - name: PoolResourceLimits
+    #     value: |-
+    #         memory: 4Gi
+    #   - name:  AuxResourceLimits
+    #     value: |-
+    #         memory: 0.5Gi
+    #         cpu: 100m
+    #   - name: AuxResourceRequests
+    #     value: |-
+    #         memory: 0.5Gi
+    #         cpu: 100m
+    #   openebs.io/cas-type: cstor
 spec:
   name: cstor-disk-pool
   type: disk
+  # maxPools: 3
+  # minPools: 3
   poolSpec:
     poolType: striped
+    # cacheFile: /var/openebs/sparse/sparse-claim-auto.cache
+    # overProvisioning: false
   blockDevices:
     # kubectl -n openebs describe blockdevices
     # kubectl -n openebs get blockdevices
@@ -42,39 +68,42 @@ spec:
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: cstor-localssd-3x
+  name: cstor-localssd-3x-nowait
   annotations:
     openebs.io/cas-type: cstor
+    # cas.openebs.io/config: |
+    #   - name: FSType
+    #     value: ext4
+    #   - name: TargetResourceLimits
+    #     value: |-
+    #         memory: 1Gi
+    #         cpu: 100m
+    #   - name: TargetResourceRequests
+    #     value: |-
+    #         memory: 1Gi
+    #         cpu: 100m
+    #   - name:  AuxResourceLimits
+    #     value: |-
+    #         memory: 0.5Gi
+    #         cpu: 100m
+    #   - name: AuxResourceRequests
+    #     value: |-
+    #         memory: 0.5Gi
+    #         cpu: 100m
     cas.openebs.io/config: |
       - name: StoragePoolClaim
         value: "cstor-disk-pool"
       - name: ReplicaCount
         value: "3"
-      - name: TargetResourceLimits
-        value: |-
-            memory: 1Gi
-            cpu: 100m
-      - name: TargetResourceRequests
-        value: |-
-            memory: 1Gi
-            cpu: 100m
-      - name:  AuxResourceLimits
-        value: |-
-            memory: 0.5Gi
-            cpu: 100m
-      - name: AuxResourceRequests
-        value: |-
-            memory: 0.5Gi
-            cpu: 100m
     storageclass.kubernetes.io/is-default-class: "true"
 provisioner: openebs.io/provisioner-iscsi
-volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
 
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: cstor-localssd-1x
+  name: cstor-localssd-1x-wait
   annotations:
     openebs.io/cas-type: cstor
     cas.openebs.io/config: |
@@ -98,6 +127,5 @@ metadata:
         value: |-
             memory: 0.5Gi
             cpu: 100m
-    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: openebs.io/provisioner-iscsi
 volumeBindingMode: WaitForFirstConsumer

@@ -1,0 +1,95 @@
+---
+# Source: loki-stack/charts/loki/templates/statefulset.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: loki
+  labels:
+    app: loki
+    chart: loki-0.10.0
+    release: loki
+    heritage: Tiller
+  annotations:
+    {}
+    
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  selector:
+    matchLabels:
+      app: loki
+      release: loki
+  serviceName: loki-headless
+  updateStrategy:
+    type: RollingUpdate
+    
+  template:
+    metadata:
+      labels:
+        app: loki
+        name: loki
+        release: loki
+      annotations:
+        checksum/config: 6c4839a928e70a9d7ec5ae52e8e1e087dc9a85a5a05ff26b0b890b8f0af48caf
+        prometheus.io/port: http-metrics
+        prometheus.io/scrape: "true"
+        
+    spec:
+      serviceAccountName: loki
+      securityContext:
+        fsGroup: 10001
+        runAsGroup: 10001
+        runAsNonRoot: true
+        runAsUser: 10001
+        
+      containers:
+        - name: loki
+          image: "grafana/loki:v0.1.0"
+          imagePullPolicy: IfNotPresent
+          args:
+            - "-config.file=/etc/loki/loki.yaml"
+          volumeMounts:
+            - name: config
+              mountPath: /etc/loki
+            - name: storage
+              mountPath: "/data"
+              subPath: 
+          ports:
+            - name: http-metrics
+              containerPort: 3100
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+            
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: http-metrics
+            initialDelaySeconds: 45
+            
+          resources:
+            {}
+            
+          securityContext:
+            readOnlyRootFilesystem: true
+          env:
+      nodeSelector:
+        {}
+        
+      affinity:
+        {}
+        
+      tolerations:
+        []
+        
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: config
+          secret:
+            secretName: loki
+        - name: storage
+          emptyDir: {}
+

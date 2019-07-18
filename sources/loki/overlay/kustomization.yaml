@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: loki
+commonLabels:
+  app.kubernetes.io/part-of: loki
+
+bases:
+- ../base
+
+patchesStrategicMerge:
+- ./promtail-config.yaml

@@ -10,9 +10,14 @@ bases:
 - ../base/cloud-generic
 - ../base/cluster-wide
 
+resources:
+- ./servicemonitor.yaml
+
 patchesStrategicMerge:
 - ./hostNetwork-patch.yaml
+- ./replicas-patch.yaml
 - ./podAntiAffinity-patch.yaml
+- ./servicemonitor-patches.yaml
 
 # replicas:
 # - name: nginx-ingress-controller

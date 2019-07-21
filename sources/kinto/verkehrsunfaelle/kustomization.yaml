@@ -7,7 +7,7 @@ bases:
   - ../base
 resources:
   - namespace.yaml
-  - random-accident.yaml
+  - editor-data-helpers.yaml
   - postgres-backup.yaml
 patchesStrategicMerge:
   - kinto-image_patch.yaml

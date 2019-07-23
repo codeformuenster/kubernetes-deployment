@@ -1,4 +1,16 @@
+# loki
 
+```bash
+jsonnet --yaml-stream --jpath ./jsonnet/vendor ./main.jsonnet \
+  > manifests-temp.json
+
+kubectl apply -f ./manifests-temp.json
+
+```
+
+
+
+---
 
 https://github.com/grafana/loki/tree/master/production/helm
 
@@ -7,20 +19,20 @@ https://github.com/grafana/loki/tree/master/production/helm
 # fetch
 rm -r ./helm/loki ; mkdir -p ./helm/loki
 helm fetch \
-    --repo https://grafana.github.io/loki/charts \
-    --untar \
-    --untardir ./helm \
-        loki-stack
+  --repo https://grafana.github.io/loki/charts \
+  --untar \
+  --untardir ./helm \
+    loki-stack
 
 # create base for kustomize
 rm -r ./base/loki ; mkdir -p ./base/loki
 
 helm template \
-    --name loki \
-    --namespace loki \
-    --values ./helm/values.yaml \
-    --output-dir ./base \
-    ./helm/loki-stack
+  --name loki \
+  --namespace loki \
+  --values ./helm/values.yaml \
+  --output-dir ./base \
+  ./helm/loki-stack
 
 
 # run kustomize

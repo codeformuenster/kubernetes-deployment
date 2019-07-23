@@ -3,8 +3,8 @@ kind: Kustomization
 
 namespace: cert-manager
 commonLabels:
-  # app.kubernetes.io/name: cert-manager
   app.kubernetes.io/part-of: cert-manager
 
 resources:
-- cert-manager.yaml
+- ./cert-manager.yaml
+- ./servicemonitor.yaml

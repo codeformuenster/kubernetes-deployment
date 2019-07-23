@@ -14,7 +14,7 @@ spec:
     targetPort: 9402
   selector:
     app: cert-manager
-    release: cert-manager
+    app.kubernetes.io/name: cert-manager
 
 ---
 apiVersion: monitoring.coreos.com/v1
@@ -33,6 +33,4 @@ spec:
   selector:
     matchLabels:
       app: cert-manager
-      release: cert-manager
-      # app.kubernetes.io/name: cert-manager
-      # app.kubernetes.io/part-of: cert-manager
+      app.kubernetes.io/name: cert-manager

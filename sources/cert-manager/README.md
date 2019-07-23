@@ -5,7 +5,7 @@
 # from upstream
 rm ./base/cert-manager.yaml
 
-curl -sfSL https://github.com/jetstack/cert-manager/releases/download/v0.8.1/cert-manager.yaml \
+curl -sfSL https://github.com/jetstack/cert-manager/releases/download/v0.9.0/cert-manager.yaml \
     -o ./base/cert-manager.yaml
 
 # remove RoleBinding cert-manager-webhook:webhook-authentication-reader
@@ -27,5 +27,18 @@ metadata:
 EOF
 kubectl apply -f ./webhook-rolebinding.yaml
 kubectl apply -k ./overlay
+```
 
+
+## on error
+
+Maybe kubectl-apply doesn't work, then delete deployments and retry:
+
+```bash
+kubectl -n cert-manager delete deployments cert-manager-cainjector
+kubectl -n cert-manager delete deployments cert-manager-webhook
+kubectl -n cert-manager delete deployments cert-manager
+
+kubectl apply -f ./webhook-rolebinding.yaml
+kubectl apply -k ./overlay
 ```

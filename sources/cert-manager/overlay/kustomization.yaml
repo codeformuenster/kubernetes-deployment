@@ -6,4 +6,3 @@ bases:
 
 resources:
 - ./cluster-issuer.yaml
-- ./servicemonitor.yaml

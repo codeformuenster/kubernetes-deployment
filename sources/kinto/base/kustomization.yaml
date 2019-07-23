@@ -18,3 +18,9 @@ images:
 # - name: kinto
 #   files:
 #   - kinto.ini
+
+# secretGenerator:
+# - name: postgres
+#   env: ./secrets/postgres
+# - name: kinto
+#   env: ./secrets/kinto

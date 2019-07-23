@@ -1,0 +1,25 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kinto
+spec:
+  rules:
+  - host: kinto.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kinto
+          servicePort: api
+  tls:
+  - secretName: kinto-tls
+    hosts:
+    - kinto.codeformuenster.org
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: kinto
+spec:
+  commonName: kinto.codeformuenster.org

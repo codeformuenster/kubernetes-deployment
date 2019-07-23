@@ -10,3 +10,12 @@ kubectl kustomize ./overlay-cfm
 ```
 kubectl kustomize ./verkehrsunfaelle
 ```
+
+---
+```bash
+kubectl kustomize ./overlay-shared > manifests-temp.yaml
+
+kubectl create namespace shared-test
+kubectl apply -k ./overlay-shared
+
+```

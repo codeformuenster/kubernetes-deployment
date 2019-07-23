@@ -45,13 +45,26 @@ spec:
           mountPath: /var/lib/postgresql/data
           subPath: pgdata
         env:
+        # FIXME create admin user here
+        # use some operator to create user and database per app
         - name: POSTGRES_USER
-          value: kinto
-        # FIXME create random password in secret on commandline
+          # value: null
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: username
         - name: POSTGRES_PASSWORD
-          value: kinto
+          # value: null
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: password
         - name: POSTGRES_DB
-          value: kinto
+          # value: null
+          valueFrom:
+            secretKeyRef:
+              name: postgres
+              key: database
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         ports:

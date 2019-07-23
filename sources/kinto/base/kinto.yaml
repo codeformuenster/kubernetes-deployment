@@ -73,8 +73,18 @@ spec:
     spec:
       containers:
       - name: kinto
-        # image: kinto/kinto-server:13.1.0
         image: kinto/kinto-server:13.0.1
+        env:
+        - name: KINTO_STORAGE_URL
+          valueFrom:
+            secretKeyRef:
+              name: kinto
+              key: postgres-url
+        - name: KINTO_PERMISSION_URL
+          valueFrom:
+            secretKeyRef:
+              name: kinto
+              key: postgres-url
         ports:
         - name: api
           containerPort: 8888

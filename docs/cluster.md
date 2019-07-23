@@ -99,12 +99,27 @@ systemctl start iscsid
 kubeadm config images pull
 
 
+# some tests here if stuff worked out? maybe extra script
+#   - crictl images? iscsi loaded? swap is off? kube* versions?
+#   - all those linux settings?
+# reboot here once?
 # enable `unattended-upgrades` for security?
+#   http://manpages.ubuntu.com/manpages/bionic/man8/unattended-upgrade.8.html
+#   https://packages.ubuntu.com/bionic/all/unattended-upgrades/filelist
+#   add /var/log/unattended-upgrades/*.log to loki, create metrics from that
+#   run via /etc/cron.daily/apt?
+# maybe install fishshell? to ease maintenance
+# install jq
 EOF
 
 chmod +x ./prepare.sh
-./prepare.sh
+# source so alias will be set?
+source ./prepare.sh
 ```
+
+*FIXME*
+  - should a node be uncordoned automatically after a reboot?
+
 
 
 ## init or join
@@ -164,3 +179,41 @@ kubectl -n kube-system delete daemonsets kube-proxy-cleanup
 ## kubeconfig
 
 scp root@212.47.232.30:/etc/kubernetes/admin.conf ~/.kube/config.d/cfm-kube-cert-admin.config
+
+
+## Outlook and Ideas
+
+- Terraform with some Kubeadm-HA support?
+  - https://github.com/inercia/terraform-provider-kubeadm
+
+
+- hardening psps, maybe like this:
+```yaml
+apiVersion: extensions/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted
+spec:
+  privileged: false
+  runAsUser:
+    rule: MustRunAsNonRoot
+  seLinux:
+    rule: RunAsAny
+  supplementalGroups:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  fsGroup:
+    rule: 'MustRunAs'
+    ranges:
+    - min: 1
+      max: 65535
+  volumes:
+  - 'secret'
+  - 'configMap'
+  hostPID: false
+  hostIPC: false
+  hostNetwork: false
+  readOnlyRootFilesystem: false
+  ```

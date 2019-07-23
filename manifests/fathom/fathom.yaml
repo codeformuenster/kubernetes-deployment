@@ -48,6 +48,7 @@ spec:
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
+
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -64,6 +65,7 @@ data:
     FATHOM_DATABASE_HOST=""
     FATHOM_DATABASE_SSLMODE=""
     FATHOM_SECRET="C2qF85BqaonNvzxomeDyOzv+4o5DfoLGw9Hs40wG2REoyg8EmUqADDM7013myiiX"
+
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -76,6 +78,7 @@ spec:
   resources:
     requests:
       storage: 5G
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -101,15 +104,15 @@ spec:
         ports:
         - containerPort: 8080
         volumeMounts:
-          - name: fathom-config
-            mountPath: /app/.env
-            subPath: .env
-          - mountPath: /fathom-db
-            name: fathom-database-volume
-      volumes:
         - name: fathom-config
-          configMap:
-            name: fathom-dot-env
-        - name: fathom-database-volume
-          persistentVolumeClaim:
-            claimName: fathom-database-volume-claim
+          mountPath: /app/.env
+          subPath: .env
+        - mountPath: /fathom-db
+          name: fathom-database-volume
+      volumes:
+      - name: fathom-config
+        configMap:
+          name: fathom-dot-env
+      - name: fathom-database-volume
+        persistentVolumeClaim:
+          claimName: fathom-database-volume-claim

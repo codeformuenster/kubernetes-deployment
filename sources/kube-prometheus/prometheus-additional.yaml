@@ -46,3 +46,7 @@
   #       target_label: instance
   #     - target_label: __address__
   #       replacement: blackbox-exporter:9115  # Blackbox exporter.
+
+
+# ICMP Pings with the Blackbox exporter
+#   https://www.robustperception.io/icmp-pings-with-the-blackbox-exporter

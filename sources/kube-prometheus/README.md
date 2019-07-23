@@ -25,6 +25,7 @@ jb init
 # jb install github.com/coreos/kube-prometheus/jsonnet/kube-prometheus@release-0.1
 
 jb install github.com/coreos/kube-prometheus/jsonnet/kube-prometheus@16a49f00d6c77ad85abbfdba49e186808daf2764
+# or better edit jsonnet/jsonnetfile.json?
 jb update
 ```
 
@@ -75,3 +76,6 @@ https://github.com/coreos/prometheus-operator/tree/master/example/additional-scr
 Linux: root user or CAP_NET_RAW capability is required.
     Can be set by executing setcap cap_net_raw+ep blackbox_exporter
 ```
+
+## FIXME
+- add loki to prometheus sources

@@ -3,25 +3,25 @@
 https://docs.openebs.io/docs/overview.html
 
 
-## setup
-
 ```bash
-# from upstream
-curl -sfSL https://openebs.github.io/charts/openebs-operator-1.0.0.yaml \
-    -o ./base/openebs-operator.yaml
+# build manifests to verify
+kubectl kustomize .
 
-# render manifests to local directory
-rm ../../manifests/openebs -rf && mkdir ../../manifests/openebs
-kubectl kustomize ./overlay > ../../manifests/openebs/kustomized.yaml
+# apply to cluster
+kubectl apply -k .
 
-# verify created manifests, then
-kubectl apply -f ../../manifests/openebs
 
 # create storagepool: edit cstor-storage.yaml
-# cstor-disk-pool > spec.blockDevices.blockDeviceList
+# StoragePoolClaim/cstor-disk-pool > spec.blockDevices.blockDeviceList
+# fill in values from `kubectl get -A blockdevices.openebs.io`
 kubectl apply -f ./cstor-storage.yaml
-
 ```
+
+
+## upgrading
+
+See https://github.com/openebs/openebs/tree/master/k8s/upgrades
+
 
 ## metrics and logging
 
@@ -38,7 +38,6 @@ https://github.com/coreos/kube-prometheus/blob/master/manifests/0prometheus-oper
 
 
 **loki**
-
 
 
 ## debug
@@ -126,15 +125,3 @@ spec:
       claimName: test1
 EOF
 ```
-
-
-## FIXME
-- add monitoring via prometheus/grafana
-- maybe setup free monitoring service from openebs/maya
-- add psp from openebs-docs
-- disable localpv
-- disable `openebs-jiva-default` ?
-
-check
-- https://github.com/openebs/openebs/issues/2488
-- https://github.com/openebs/openebs/issues/2467

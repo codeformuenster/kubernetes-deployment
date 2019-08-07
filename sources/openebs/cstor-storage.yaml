@@ -1,29 +1,6 @@
 # https://docs.openebs.io/docs/next/ugcstor.html#creating-cStor-storage-pools
 
-
-# # should be optional since `node-disk-manager` handles this now
-# apiVersion: openebs.io/v1alpha1
-# kind: BlockDeviceClaim
-# metadata:
-#   name: bdc-0
-#   namespace: openebs
-# spec:
-#   blockDeviceName: blockdevice-7a8f643f80f28da689d2961833f91bda
-#   deviceClaimDetails:
-#     blockVolumeMode: ""
-#   deviceType: "SSD"
-#   hostName: kube2-0
-#   resources:
-#     requests:
-#       storage: 238G
-
 ---
-# (outdated?) see https://github.com/openebs/openebs/blob/master/k8s/sample-pv-yamls/pvc-sparse-claim-cstor.yaml
-# https://docs.openebs.io/v060/setupstoragepools.html#configuring-a-storage-pool-on-openebs
-#
-# https://docs.openebs.io/docs/next/postgres.html
-# https://docs.openebs.io/docs/next/ugcstor.html#creating-cStor-storage-pools
-
 apiVersion: openebs.io/v1alpha1
 kind: StoragePoolClaim
 metadata:

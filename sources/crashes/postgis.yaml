@@ -1,48 +1,44 @@
----
 apiVersion: v1
 kind: Service
 metadata:
   name: postgis
-  namespace: crashes
   labels:
-    app: crashes
-    component: postgis
+    app.kubernetes.io/name: postgis
+    app.kubernetes.io/component: database
 spec:
   ports:
   - name: postgres
     port: 5432
     protocol: TCP
   selector:
-    app: crashes
-    component: postgis
+    app.kubernetes.io/name: postgis
+    app.kubernetes.io/component: database
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: postgis
-  namespace: crashes
   labels:
-    app: crashes
-    component: postgis
+    app.kubernetes.io/name: postgis
+    app.kubernetes.io/component: database
 spec:
   selector:
     matchLabels:
-      app: crashes # has to match .spec.template.metadata.labels
-      component: postgis
-  replicas: 1 # by default is 1
+      app.kubernetes.io/name: postgis
+      app.kubernetes.io/component: database
+  replicas: 1
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: crashes # has to match .spec.selector.matchLabels
-        component: postgis
+        app.kubernetes.io/name: postgis
+        app.kubernetes.io/component: database
     spec:
       terminationGracePeriodSeconds: 10
       containers:
       - name: postgis
-        # image: quay.io/codeformuenster/verkehrsunfall-postgis:master
         image: quay.io/codeformuenster/verkehrsunfaelle:2019-06-06
         ports:
         - name: postgres

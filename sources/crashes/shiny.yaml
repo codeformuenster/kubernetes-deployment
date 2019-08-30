@@ -74,3 +74,23 @@ spec:
         image: quay.io/codeformuenster/crashes-shiny:4.9.9
         ports:
         - containerPort: 3838
+        volumeMounts:
+        - name: renviron-file
+          mountPath: /srv/shiny-server/.Renviron
+          subPath: .Renviron
+      volumes:
+      - name: renviron-file
+        configMap:
+          name: renviron
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renviron
+  labels:
+    app.kubernetes.io/name: shiny
+    app.kubernetes.io/component: webserver
+data:
+  .Renviron: |
+    POSTGRES_HOST=postgis
+    FATHOM_SITEID=ESCBJ

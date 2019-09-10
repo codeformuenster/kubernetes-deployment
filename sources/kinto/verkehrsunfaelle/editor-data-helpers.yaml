@@ -9,13 +9,13 @@ metadata:
     certmanager.k8s.io/cluster-issuer: letsencrypt
     kubernetes.io/tls-acme: "true"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    # nginx.ingress.kubernetes.io/rewrite-target: "/"
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
     - host: editor-data-helpers-verkehrsunfaelle.codeformuenster.org
       http:
         paths:
-          - path: /
+          - path: /(.*)
             backend:
               serviceName: editor-data-helpers
               servicePort: hooks
@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
       - name: editor-data-helpers
-        image: quay.io/codeformuenster/verkehrsunfaelle-editor-data-helpers:editor-data-helpers-v0.1.0
+        image: quay.io/codeformuenster/verkehrsunfaelle-editor-data-helpers:editor-data-helpers-v0.1.2
         env:
         - name: POSTGRES_URL
           valueFrom:

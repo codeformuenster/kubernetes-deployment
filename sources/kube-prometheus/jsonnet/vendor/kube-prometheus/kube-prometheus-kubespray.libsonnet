@@ -1,14 +1,8 @@
-local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 local service = k.core.v1.service;
 local servicePort = k.core.v1.service.mixin.spec.portsType;
 
 {
-
-  _config+:: {
-    jobs+: {
-      CoreDNS: 'job="coredns"',
-    },
-  },
 
   prometheus+: {
     kubeControllerManagerPrometheusDiscoveryService:
@@ -21,16 +15,6 @@ local servicePort = k.core.v1.service.mixin.spec.portsType;
       service.mixin.metadata.withNamespace('kube-system') +
       service.mixin.metadata.withLabels({ 'k8s-app': 'kube-scheduler' }) +
       service.mixin.spec.withClusterIp('None'),
-
-    serviceMonitorCoreDNS+: {
-      spec+: {
-        selector: {
-          matchLabels: {
-            'k8s-app': 'coredns',
-          },
-        },
-      },
-    },
 
     serviceMonitorKubeScheduler+: {
       spec+: {

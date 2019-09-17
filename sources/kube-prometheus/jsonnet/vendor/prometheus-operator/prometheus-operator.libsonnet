@@ -1,4 +1,4 @@
-local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
 {
   _config+:: {
@@ -6,16 +6,16 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
 
     prometheusOperator+:: {
       deploymentSelectorLabels: {
-        'apps.kubernetes.io/name': 'prometheus-operator',
-        'apps.kubernetes.io/component': 'controller',
+        'app.kubernetes.io/name': 'prometheus-operator',
+        'app.kubernetes.io/component': 'controller',
       },
       commonLabels:
         $._config.prometheusOperator.deploymentSelectorLabels +
-        { 'apps.kubernetes.io/version': $._config.versions.prometheusOperator, },
+        { 'app.kubernetes.io/version': $._config.versions.prometheusOperator, },
     },
 
     versions+:: {
-      prometheusOperator: 'v0.30.0',
+      prometheusOperator: 'v0.33.0',
       prometheusConfigReloader: self.prometheusOperator,
       configmapReloader: 'v0.0.1',
     },
@@ -32,6 +32,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
     '0alertmanagerCustomResourceDefinition': import 'alertmanager-crd.libsonnet',
     '0prometheusCustomResourceDefinition': import 'prometheus-crd.libsonnet',
     '0servicemonitorCustomResourceDefinition': import 'servicemonitor-crd.libsonnet',
+    '0podmonitorCustomResourceDefinition': import 'podmonitor-crd.libsonnet',
     '0prometheusruleCustomResourceDefinition': import 'prometheusrule-crd.libsonnet',
 
     clusterRoleBinding:
@@ -64,6 +65,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
                                'prometheuses/finalizers',
                                'alertmanagers/finalizers',
                                'servicemonitors',
+                               'podmonitors',
                                'prometheusrules',
                              ]) +
                              policyRule.withVerbs(['*']);
@@ -121,15 +123,15 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       clusterRole.withRules(rules),
 
     deployment:
-      local deployment = k.apps.v1beta2.deployment;
-      local container = k.apps.v1beta2.deployment.mixin.spec.template.spec.containersType;
+      local deployment = k.apps.v1.deployment;
+      local container = k.apps.v1.deployment.mixin.spec.template.spec.containersType;
       local containerPort = container.portsType;
 
       local targetPort = 8080;
 
       local operatorContainer =
         container.new('prometheus-operator', $._config.imageRepos.prometheusOperator + ':' + $._config.versions.prometheusOperator) +
-        container.withPorts(containerPort.newNamed('http', targetPort)) +
+        container.withPorts(containerPort.newNamed(targetPort, 'http')) +
         container.withArgs([
           '--kubelet-service=kube-system/kubelet',
           // Prometheus Operator is run with a read-only root file system. By
@@ -139,7 +141,6 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
           '--prometheus-config-reloader=' + $._config.imageRepos.prometheusConfigReloader + ':' + $._config.versions.prometheusConfigReloader,
         ]) +
         container.mixin.securityContext.withAllowPrivilegeEscalation(false) +
-        container.mixin.securityContext.withReadOnlyRootFilesystem(true) +
         container.mixin.resources.withRequests({ cpu: '100m', memory: '100Mi' }) +
         container.mixin.resources.withLimits({ cpu: '200m', memory: '200Mi' });
 

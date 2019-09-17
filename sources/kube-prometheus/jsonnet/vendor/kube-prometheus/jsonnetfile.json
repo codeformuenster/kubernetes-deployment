@@ -18,7 +18,7 @@
                     "subdir": ""
                 }
             },
-            "version": "release-0.1"
+            "version": "master"
         },
         {
             "name": "grafana",
@@ -38,7 +38,7 @@
                     "subdir": "jsonnet/prometheus-operator"
                 }
             },
-            "version": "release-0.30"
+            "version": "release-0.33"
         },
         {
             "name": "etcd-mixin",
@@ -46,6 +46,26 @@
                 "git": {
                     "remote": "https://github.com/coreos/etcd",
                     "subdir": "Documentation/etcd-mixin"
+                }
+            },
+            "version": "master"
+        },
+        {
+            "name": "prometheus",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/prometheus/prometheus",
+                    "subdir": "documentation/prometheus-mixin"
+                }
+            },
+            "version": "master"
+        },
+        {
+            "name": "node-mixin",
+            "source": {
+                "git": {
+                    "remote": "https://github.com/prometheus/node_exporter",
+                    "subdir": "docs/node-mixin"
                 }
             },
             "version": "master"

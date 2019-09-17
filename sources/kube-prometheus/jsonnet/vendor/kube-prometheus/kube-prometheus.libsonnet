@@ -1,14 +1,17 @@
-local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
-local configMapList = k.core.v1.configMapList;
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local k3 = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local configMapList = k3.core.v1.configMapList;
 
 (import 'grafana/grafana.libsonnet') +
 (import 'kube-state-metrics/kube-state-metrics.libsonnet') +
 (import 'node-exporter/node-exporter.libsonnet') +
+(import 'node-mixin/mixin.libsonnet') +
 (import 'alertmanager/alertmanager.libsonnet') +
 (import 'prometheus-operator/prometheus-operator.libsonnet') +
 (import 'prometheus/prometheus.libsonnet') +
 (import 'prometheus-adapter/prometheus-adapter.libsonnet') +
 (import 'kubernetes-mixin/mixin.libsonnet') +
+(import 'prometheus/mixin.libsonnet') +
 (import 'alerts/alerts.libsonnet') +
 (import 'rules/rules.libsonnet') + {
   kubePrometheus+:: {
@@ -43,7 +46,7 @@ local configMapList = k.core.v1.configMapList;
     namespace: 'default',
 
     versions+:: {
-      grafana: '6.0.1',
+      grafana: '6.2.2',
     },
 
     tlsCipherSuites: [
@@ -86,8 +89,9 @@ local configMapList = k.core.v1.configMapList;
     coreDNSSelector: 'job="kube-dns"',
     podLabel: 'pod',
 
-    alertmanagerSelector: 'job="alertmanager-main",namespace="' + $._config.namespace + '"',
+    alertmanagerSelector: 'job="alertmanager-' + $._config.alertmanager.name + '",namespace="' + $._config.namespace + '"',
     prometheusSelector: 'job="prometheus-' + $._config.prometheus.name + '",namespace="' + $._config.namespace + '"',
+    prometheusName: '{{$labels.namespace}}/{{$labels.pod}}',
     prometheusOperatorSelector: 'job="prometheus-operator",namespace="' + $._config.namespace + '"',
 
     jobs: {
@@ -103,6 +107,20 @@ local configMapList = k.core.v1.configMapList;
       CoreDNS: $._config.coreDNSSelector,
     },
 
+    resources+:: {
+      'addon-resizer': {
+        requests: { cpu: '10m', memory: '30Mi' },
+        limits: { cpu: '50m', memory: '30Mi' },
+      },
+      'kube-rbac-proxy': {
+        requests: { cpu: '10m', memory: '20Mi' },
+        limits: { cpu: '20m', memory: '40Mi' },
+      },
+      'node-exporter': {
+        requests: { cpu: '102m', memory: '180Mi' },
+        limits: { cpu: '250m', memory: '180Mi' },
+      },
+    },
     prometheus+:: {
       rules: $.prometheusRules + $.prometheusAlerts,
     },
@@ -110,5 +128,6 @@ local configMapList = k.core.v1.configMapList;
     grafana+:: {
       dashboards: $.grafanaDashboards,
     },
+
   },
 }

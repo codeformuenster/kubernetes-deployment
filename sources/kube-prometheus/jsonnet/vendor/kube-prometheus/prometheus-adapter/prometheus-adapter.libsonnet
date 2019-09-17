@@ -1,4 +1,4 @@
-local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
 {
   _config+:: {
@@ -32,10 +32,10 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
             containerLabel: container_name
           memory:
             containerQuery: sum(container_memory_working_set_bytes{<<.LabelMatchers>>,container_name!="POD",container_name!="",pod_name!=""}) by (<<.GroupBy>>)
-            nodeQuery: sum(node:node_memory_bytes_total:sum{<<.LabelMatchers>>} - node:node_memory_bytes_available:sum{<<.LabelMatchers>>}) by (<<.GroupBy>>)
+            nodeQuery: sum(node_memory_MemTotal_bytes{job="node-exporter",<<.LabelMatchers>>} - node_memory_MemAvailable_bytes{job="node-exporter",<<.LabelMatchers>>}) by (<<.GroupBy>>)
             resources:
               overrides:
-                node:
+                instance:
                   resource: node
                 namespace:
                   resource: namespace
@@ -87,7 +87,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       service.mixin.metadata.withLabels($._config.prometheusAdapter.labels),
 
     deployment:
-      local deployment = k.apps.v1beta2.deployment;
+      local deployment = k.apps.v1.deployment;
       local volume = deployment.mixin.spec.template.spec.volumesType;
       local container = deployment.mixin.spec.template.spec.containersType;
       local containerVolumeMount = container.volumeMountsType;
@@ -113,7 +113,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       deployment.mixin.metadata.withNamespace($._config.namespace) +
       deployment.mixin.spec.selector.withMatchLabels($._config.prometheusAdapter.labels) +
       deployment.mixin.spec.template.spec.withServiceAccountName($.prometheusAdapter.serviceAccount.metadata.name) +
-      deployment.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/os': 'linux' }) +
+      deployment.mixin.spec.template.spec.withNodeSelector({ 'kubernetes.io/os': 'linux' }) +
       deployment.mixin.spec.strategy.rollingUpdate.withMaxSurge(1) +
       deployment.mixin.spec.strategy.rollingUpdate.withMaxUnavailable(0) +
       deployment.mixin.spec.template.spec.withVolumes([

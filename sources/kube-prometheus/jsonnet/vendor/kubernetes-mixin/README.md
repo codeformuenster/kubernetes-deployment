@@ -1,4 +1,5 @@
 # Prometheus Monitoring Mixin for Kubernetes
+[![CircleCI](https://circleci.com/gh/kubernetes-monitoring/kubernetes-mixin/tree/master.svg?style=shield)](https://circleci.com/gh/kubernetes-monitoring/kubernetes-mixin)
 
 > NOTE: This project is *pre-release* stage. Flags, configuration, behaviour and design may change significantly in following releases.
 
@@ -159,8 +160,10 @@ kubernetes {
     cadvisorSelector: 'job="kubernetes-cadvisor"',
     nodeExporterSelector: 'job="kubernetes-node-exporter"',
     kubeletSelector: 'job="kubernetes-kubelet"',
-    grafanaK8s.dashboardNamePrefix: 'Mixin / ',
-    grafanaK8s.dashboardTags: ['kubernetes', 'infrastucture'],
+    grafanaK8s+:: {
+      dashboardNamePrefix: 'Mixin / ',
+      dashboardTags: ['kubernetes', 'infrastucture'],
+    },
   },
 }
 ```

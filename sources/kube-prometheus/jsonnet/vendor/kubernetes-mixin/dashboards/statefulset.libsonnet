@@ -14,7 +14,7 @@ local numbersinglestat = promgrafonnet.numbersinglestat;
       local cpuStat =
         numbersinglestat.new(
           'CPU',
-          'sum(rate(container_cpu_usage_seconds_total{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod_name=~"$statefulset.*"}[3m]))' % $._config,
+          'sum(rate(container_cpu_usage_seconds_total{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod=~"$statefulset.*"}[3m]))' % $._config,
         )
         .withSpanSize(4)
         .withPostfix('cores')
@@ -23,7 +23,7 @@ local numbersinglestat = promgrafonnet.numbersinglestat;
       local memoryStat =
         numbersinglestat.new(
           'Memory',
-          'sum(container_memory_usage_bytes{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod_name=~"$statefulset.*"}) / 1024^3' % $._config,
+          'sum(container_memory_usage_bytes{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod=~"$statefulset.*"}) / 1024^3' % $._config,
         )
         .withSpanSize(4)
         .withPostfix('GB')
@@ -32,7 +32,7 @@ local numbersinglestat = promgrafonnet.numbersinglestat;
       local networkStat =
         numbersinglestat.new(
           'Network',
-          'sum(rate(container_network_transmit_bytes_total{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod_name=~"$statefulset.*"}[3m])) + sum(rate(container_network_receive_bytes_total{%(clusterLabel)s="$cluster", namespace="$namespace",pod_name=~"$statefulset.*"}[3m]))' % $._config,
+          'sum(rate(container_network_transmit_bytes_total{%(cadvisorSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace", pod=~"$statefulset.*"}[3m])) + sum(rate(container_network_receive_bytes_total{%(clusterLabel)s="$cluster", namespace="$namespace",pod=~"$statefulset.*"}[3m]))' % $._config,
         )
         .withSpanSize(4)
         .withPostfix('Bps')
@@ -136,7 +136,7 @@ local numbersinglestat = promgrafonnet.numbersinglestat;
         template.new(
           'namespace',
           '$datasource',
-          'label_values(kube_statefulset_metadata_generation{%(kubeStateMetricsSelector)s}, namespace)' % $._config,
+          'label_values(kube_statefulset_metadata_generation{%(kubeStateMetricsSelector)s}, %(clusterLabel)s="$cluster", namespace)' % $._config,
           label='Namespace',
           refresh='time',
         )
@@ -145,7 +145,7 @@ local numbersinglestat = promgrafonnet.numbersinglestat;
         template.new(
           'statefulset',
           '$datasource',
-          'label_values(kube_statefulset_metadata_generation{%(kubeStateMetricsSelector)s, namespace="$namespace"}, statefulset)' % $._config,
+          'label_values(kube_statefulset_metadata_generation{%(kubeStateMetricsSelector)s, %(clusterLabel)s="$cluster", namespace="$namespace"}, statefulset)' % $._config,
           label='Name',
           refresh='time',
         )

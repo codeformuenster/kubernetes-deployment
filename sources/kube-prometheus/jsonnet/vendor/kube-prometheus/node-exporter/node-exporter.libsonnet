@@ -1,11 +1,11 @@
-local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
 
 {
   _config+:: {
     namespace: 'default',
 
     versions+:: {
-      nodeExporter: 'v0.17.0',
+      nodeExporter: 'v0.18.1',
       kubeRbacProxy: 'v0.4.1',
     },
 
@@ -55,7 +55,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       clusterRole.withRules(rules),
 
     daemonset:
-      local daemonset = k.apps.v1beta2.daemonSet;
+      local daemonset = k.apps.v1.daemonSet;
       local container = daemonset.mixin.spec.template.spec.containersType;
       local volume = daemonset.mixin.spec.template.spec.volumesType;
       local containerPort = container.portsType;
@@ -97,8 +97,8 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
           '--collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$',
         ]) +
         container.withVolumeMounts([procVolumeMount, sysVolumeMount, rootVolumeMount]) +
-        container.mixin.resources.withRequests({ cpu: '102m', memory: '180Mi' }) +
-        container.mixin.resources.withLimits({ cpu: '250m', memory: '180Mi' });
+        container.mixin.resources.withRequests($._config.resources['node-exporter'].requests) +
+        container.mixin.resources.withLimits($._config.resources['node-exporter'].limits);
 
       local ip = containerEnv.fromFieldPath('IP', 'status.podIP');
       local proxy =
@@ -119,7 +119,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
         // it so that the scheduler can decide if the pod is schedulable.
         container.withPorts(containerPort.new($._config.nodeExporter.port) + containerPort.withHostPort($._config.nodeExporter.port) + containerPort.withName('https')) +
         container.mixin.resources.withRequests({ cpu: '10m', memory: '20Mi' }) +
-        container.mixin.resources.withLimits({ cpu: '20m', memory: '40Mi' }) +
+        container.mixin.resources.withLimits({ cpu: '20m', memory: '60Mi' }) +
         container.withEnv([ip]);
 
       local c = [nodeExporter, proxy];
@@ -131,7 +131,7 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
       daemonset.mixin.spec.selector.withMatchLabels(podLabels) +
       daemonset.mixin.spec.template.metadata.withLabels(podLabels) +
       daemonset.mixin.spec.template.spec.withTolerations([existsToleration]) +
-      daemonset.mixin.spec.template.spec.withNodeSelector({ 'beta.kubernetes.io/os': 'linux' }) +
+      daemonset.mixin.spec.template.spec.withNodeSelector({ 'kubernetes.io/os': 'linux' }) +
       daemonset.mixin.spec.template.spec.withContainers(c) +
       daemonset.mixin.spec.template.spec.withVolumes([procVolume, sysVolume, rootVolume]) +
       daemonset.mixin.spec.template.spec.securityContext.withRunAsNonRoot(true) +
@@ -170,6 +170,15 @@ local k = import 'ksonnet/ksonnet.beta.3/k.libsonnet';
               scheme: 'https',
               interval: '30s',
               bearerTokenFile: '/var/run/secrets/kubernetes.io/serviceaccount/token',
+              relabelings: [
+                {
+                  action: 'replace',
+                  regex: '(.*)',
+                  replacment: '$1',
+                  sourceLabels: ['__meta_kubernetes_pod_node_name'],
+                  targetLabel: 'instance',
+                },
+              ],
               tlsConfig: {
                 insecureSkipVerify: true,
               },

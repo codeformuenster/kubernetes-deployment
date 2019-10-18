@@ -92,6 +92,14 @@ spec:
         # FIXME
         # resources:
         #   null
+    volumeMounts:
+        - name: renviron-file
+          mountPath: /srv/shiny-server/.Renviron
+          subPath: .Renviron
+      volumes:
+      - name: renviron-file
+        configMap:
+          name: renviron
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -100,6 +108,7 @@ metadata:
   labels:
     app.kubernetes.io/name: shiny
     app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
 data:
   .Renviron: |
     FATHOM_SITEID=UFRTE

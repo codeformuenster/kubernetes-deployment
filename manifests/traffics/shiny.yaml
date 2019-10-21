@@ -92,7 +92,7 @@ spec:
         # FIXME
         # resources:
         #   null
-    volumeMounts:
+        volumeMounts:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron
           subPath: .Renviron

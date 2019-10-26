@@ -10,7 +10,6 @@ resources:
   - editor-data-helpers.yaml
   - postgres-backup.yaml
 patchesStrategicMerge:
-  - kinto-image_patch.yaml
   - kinto-pod_patch.yaml
   - kinto-config_patch.yaml
   - kinto-ingress_patch.yaml

@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: digitransit-ui
+spec:
+  selector:
+    app: digitransit-ui
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digitransit-ui
+  labels:
+    app: digitransit-ui
+spec:
+  selector:
+    matchLabels:
+      app: digitransit-ui
+  template:
+    metadata:
+      labels:
+        app: digitransit-ui
+    spec:
+      containers:
+      - name: digitransit-ui
+        image: verschwoerhaus/digitransit-ui:1172406
+        ports:
+        - containerPort: 8080
+        env:
+        - name: CONFIG
+          value: vsh
+        - name: OTP_URL
+          # value: "https://api.digitransit.im.verschwoerhaus.de/routing/v1/routers/vsh/"
+          value: "https://api.digitransit.codeformuenster.org/routing/v1/routers/vsh/"
+        - name: GEOCODING_BASE_URL
+          # value: "https://api.digitransit.im.verschwoerhaus.de/geocoding/v1"
+          value: "https://api.digitransit.codeformuenster.org/geocoding/v1"
+        - name: LOCATIONIQ_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: locationiq
+              key: access-token

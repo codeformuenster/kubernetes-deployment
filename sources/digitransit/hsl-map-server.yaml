@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hsl-map-server
+spec:
+  selector:
+    app: hsl-map-server
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hsl-map-server
+  labels:
+    app: hsl-map-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hsl-map-server
+  template:
+    metadata:
+      labels:
+        app: hsl-map-server
+    spec:
+      containers:
+      - name: hsl-map-server
+        image: verschwoerhaus/hsl-map-server:b4adf23
+        ports:
+        - containerPort: 8080
+        env:
+        - name: OTP_URL
+          value: opentripplanner-vsh:8080/otp/routers/vsh/index/graphql

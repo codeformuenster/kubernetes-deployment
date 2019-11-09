@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: photon-pelias-adapter
+spec:
+  selector:
+    app: photon-pelias-adapter
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: photon-pelias-adapter
+  labels:
+    app: photon-pelias-adapter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photon-pelias-adapter
+  template:
+    metadata:
+      labels:
+        app: photon-pelias-adapter
+    spec:
+      containers:
+      - name: photon-pelias-adapter
+        image: stadtulm/photon-pelias-adapter:5903fc0
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PHOTON_URL
+          value: https://api.mfdz.de/photon/
+          # FIXME

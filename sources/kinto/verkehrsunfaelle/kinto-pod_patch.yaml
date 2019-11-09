@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: kinto
-        image: kinto/kinto-server:13.2.2
+        image: kinto/kinto-server:13.6.1
         env:
         - name: KINTO_STORAGE_URL
           valueFrom:

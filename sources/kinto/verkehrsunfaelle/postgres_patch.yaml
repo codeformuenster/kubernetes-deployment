@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: quay.io/codeformuenster/verkehrsunfaelle:2019-09-03_editor-web
+        image: quay.io/codeformuenster/verkehrsunfaelle:2019-11-03
         env:
         - name: POSTGRES_USER
           value: null

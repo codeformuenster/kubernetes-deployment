@@ -54,7 +54,7 @@ spec:
     spec:
       containers:
       - name: editor-data-helpers
-        image: quay.io/codeformuenster/verkehrsunfaelle-editor-data-helpers:editor-data-helpers-v0.3.2
+        image: quay.io/codeformuenster/verkehrsunfaelle-editor-data-helpers:editor-data-helpers-v0.4.1
         env:
         - name: POSTGRES_URL
           valueFrom:

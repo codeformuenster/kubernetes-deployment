@@ -1,0 +1,84 @@
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: digitrans
+spec:
+  rules:
+  - host: digitrans.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: digitransit-ui-vsh
+          servicePort: 8080
+  tls:
+  - hosts:
+    - digitrans.codeformuenster.org
+    - api.digitrans.codeformuenster.org
+    secretName: digitrans-ingress-cert
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: digitrans-api
+spec:
+  rules:
+  - host: api.digitrans.codeformuenster.org
+    http:
+      paths:
+        # # Health check
+        # location / {
+        #   root /opt/nginx/www;
+        #   index index.html;
+        # }
+      - path: /geocoding/v1
+        backend:
+          serviceName: photon-pelias-adapter
+          servicePort: 8080
+      - path: /routing/v1/routers/vsh
+        backend:
+          serviceName: opentripplanner-vsh
+          servicePort: 8080
+      - path: /routing-data/v2/vsh
+        backend:
+          serviceName: opentripplanner-data-con-vsh
+          servicePort: 8080
+        # include            cors.conf;
+        #   ; add_header 'Access-Control-Allow-Origin' '*';
+        #   ; add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+        #   ; add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+      - path: /ui/v1/vsh
+        backend:
+          serviceName: digitransit-ui-vsh
+          servicePort: 8080
+      - path: /map/v1
+        backend:
+          serviceName: hsl-map-server
+          servicePort: 8080
+        # proxy_cache        tiles; 
+      - path: /graphiql
+        backend:
+          serviceName: graphiql
+          servicePort: 8080
+  tls:
+  - hosts:
+    - digitrans.codeformuenster.org
+    - api.digitrans.codeformuenster.org
+    secretName: digitrans-ingress-cert
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: digitrans-ingress
+spec:
+  secretName: digitrans-ingress-cert
+  # commonName: digitrans.codeformuenster.org
+  dnsNames:
+  - digitrans.codeformuenster.org
+  - api.digitrans.codeformuenster.org
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt

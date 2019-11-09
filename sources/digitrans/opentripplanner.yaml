@@ -1,0 +1,80 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentripplanner-data-con-vsh
+spec:
+  selector:
+    app: opentripplanner-data-container-vsh
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opentripplanner-vsh
+spec:
+  selector:
+    app: opentripplanner
+  ports:
+  - name: http
+    protocol: TCP
+    port: 8080
+    targetPort: 8080
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentripplanner-data-container-vsh
+  labels:
+    app: opentripplanner-data-container-vsh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opentripplanner-data-container-vsh
+  template:
+    metadata:
+      labels:
+        app: opentripplanner-data-container-vsh
+    spec:
+      containers:
+      - name: opentripplanner-data-container-vsh
+        image: verschwoerhaus/opentripplanner-data-container-vsh:2019-10-28-latest
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opentripplanner
+  labels:
+    app: opentripplanner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opentripplanner
+  template:
+    metadata:
+      labels:
+        app: opentripplanner
+    spec:
+      containers:
+      - name: opentripplanner
+        image: hsldevcom/opentripplanner:a0c7971f62251a3a1070652a3895c628557e1b62
+        imagePullPolicy: "Always"
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ROUTER_NAME
+          value: vsh
+        - name: ROUTER_DATA_CONTAINER_URL
+          value: http://opentripplanner-data-con-vsh:8080

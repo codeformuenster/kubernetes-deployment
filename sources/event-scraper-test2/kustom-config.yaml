@@ -1,0 +1,41 @@
+images:
+- kind: Gateway
+  path: spec/template/spec/containers/image
+
+nameReference:
+- kind: ConfigMap
+  fieldSpecs:
+  - kind: Gateway
+    path: spec/eventSource
+
+# - kind: Secret
+#   fieldSpecs:
+#   - kind: ConfigMap
+#     path: data/
+
+
+# nameReference:
+# # Configure named references to Secret objects to be updated by Transformers and Generators - e.g. namePrefix, secretGenerator, etc
+# - kind: Secret
+#   version: v1
+#   fieldSpecs:
+#   # v1.Pods that reference a Secret in spec.volumes.secret.secretName will have it updated
+#   - path: spec/volumes/secret/secretName
+#     version: v1
+#     kind: Pod
+#   # v1.Pods that reference a Secret in spec.containers.env.valueFrom.secretKeyRef.name will have it updated
+#   - path: spec/containers/env/valueFrom/secretKeyRef/name
+#     version: v1
+#     kind: Pod
+
+
+# nameReference:
+# - kind: Bee
+#   fieldSpecs:
+#   - path: spec/beeRef/name
+#     kind: MyKind
+# - kind: Secret
+#   fieldSpecs:
+#   - path: spec/secretRef/name
+#     kind: MyKind
+

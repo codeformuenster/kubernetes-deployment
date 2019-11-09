@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-controller-configmap
+data:
+  config: |
+    instanceID: argo-events
+    namespace: event-scraper-flow-test2
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sensor-controller-configmap
+data:
+  config: |
+    instanceID: argo-events
+    namespace: event-scraper-flow-test2
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/part-of: argo
+  name: workflow-controller-configmap
+data:
+  config: |
+    namespace: event-scraper-flow-test2
+    executorImage: argoproj/argoexec:v2.4.3
+
+    # https://github.com/argoproj/argo/issues/970#issuecomment-485036572
+    # > PNS (Process Namespace Sharing)
+    # > + secure. cannot escape privileges of service account
+    # > + artifact collection can be collected from base image layer
+    # > + scalable - process polling is done over procfs and not kubelet/k8s API
+    # > - processes will no longer run with pid 1
+    # > - artifact collection from base image may fail for containers which complete too fast
+    # > - cannot capture artifact directories from base image layer which has a volume mounted under it
+    # > - immature
+    containerRuntimeExecutor: pns
+
+    # https://github.com/argoproj/argo/issues/1711
+    # Parallelism ?
+
+    artifactRepository:
+      s3:
+        bucket: workflow
+        keyPrefix: artifacts
+        endpoint: minio:9000
+        insecure: true
+        accessKeySecret:
+          name: minio
+          key: access-key
+        secretKeySecret:
+          name: minio
+          key: secret-key

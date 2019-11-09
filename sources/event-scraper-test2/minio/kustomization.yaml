@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- github.com/codeformuenster/kustomized//minio?ref=5bac644696662fc2e6d9dd2b281d8362cc0cfeb8
+- ./minio-ingress.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+  annotations:
+    kustomize.generated.resource: somevalue
+
+secretGenerator:
+- name: minio
+  behavior: replace
+  envs:
+  - ./secrets/minio.env

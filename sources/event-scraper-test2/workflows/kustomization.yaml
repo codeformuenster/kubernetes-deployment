@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+
+# when adding a new workflow check
+# - configmap "webhook-event-source"
+# - gateway "webhook-gateway" spec.service.spec.ports
+# - ingress "workflow" spec.rules[].http.paths[]
+# check for errors `kubectl -n event-scraper-flow-test2 logs -f deployments/gateway-controller`
+
+resources:
+- ./events-v0/sensor.yaml
+- ./example/sensor.yaml
+- ./testing1/sensor.yaml
+
+generatorOptions:
+  labels:
+    # needed by "webhook-event-source"
+    argo-events-event-source-version: v0.10
+
+configMapGenerator:
+- name: webhook-event-source
+  behavior: create
+  files:
+  - events-v0=./events-v0/endpoint.yaml
+  - example=./example/endpoint.yaml
+  - testing1=./testing1/endpoint.yaml

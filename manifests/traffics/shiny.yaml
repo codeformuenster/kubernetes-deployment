@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
       - name: shiny
-        image: codeformuenster/traffic-dynamics-shiny:v0.6.0
+        image: codeformuenster/traffic-dynamics-shiny:v0.6.3
         ports:
         - containerPort: 3838
         # FIXME

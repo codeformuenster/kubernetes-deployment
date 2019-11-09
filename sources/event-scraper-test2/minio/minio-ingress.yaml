@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: minio-workflow
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: s3
+spec:
+  rules:
+  - host: minio-workflow.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: minio
+          servicePort: 9000
+  tls:
+  - hosts:
+    - minio-workflow.codeformuenster.org
+    secretName: minio-workflow-ingress-cert
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: minio-workflow-ingress
+  labels:
+    app.kubernetes.io/name: minio
+    app.kubernetes.io/component: s3
+spec:
+  secretName: minio-workflow-ingress-cert
+  commonName: minio-workflow.codeformuenster.org
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt

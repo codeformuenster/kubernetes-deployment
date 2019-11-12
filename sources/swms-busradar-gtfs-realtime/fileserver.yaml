@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: swms-busradar-gtfs-realtime-fileserver
+  labels:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+spec:
+  ports:
+  - port: 2015
+  selector:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: swms-busradar-gtfs-realtime-fileserver
+  labels:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+spec:
+  rules:
+  - host: swms-busradar-gtfs-realtime.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: swms-busradar-gtfs-realtime-fileserver
+          servicePort: 2015
+  tls:
+  - hosts:
+    - swms-busradar-gtfs-realtime.codeformuenster.org
+    secretName: swms-busradar-gtfs-realtime-tls
+
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: swms-busradar-gtfs-realtime-tls
+  labels:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+spec:
+  secretName: swms-busradar-gtfs-realtime-tls
+  commonName: swms-busradar-gtfs-realtime.codeformuenster.org
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swms-busradar-gtfs-realtime-fileserver
+  labels:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+      app.kubernetes.io/component: fileserver
+      app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+        app.kubernetes.io/component: fileserver
+        app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+    spec:
+      containers:
+      - name: swms-busradar-gtfs-realtime-fileserver
+        image: abiosoft/caddy:1.0.3-no-stats
+        ports:
+        - containerPort: 2015
+        volumeMounts:
+        - name: caddyfile
+          mountPath: /etc/Caddyfile
+          subPath: Caddyfile
+      volumes:
+      - name: caddyfile
+        configMap:
+          name: caddyfile
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caddyfile
+  labels:
+    app.kubernetes.io/name: swms-busradar-gtfs-realtime-fileserver
+    app.kubernetes.io/component: fileserver
+    app.kubernetes.io/part-of: swms-busradar-gtfs-realtime
+data:
+  Caddyfile: |
+    0.0.0.0
+    root /srv
+    gzip
+    log stdout
+    errors stdout

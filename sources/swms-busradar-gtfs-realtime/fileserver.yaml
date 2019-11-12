@@ -85,10 +85,16 @@ spec:
         - name: caddyfile
           mountPath: /etc/Caddyfile
           subPath: Caddyfile
+        - name: realtime-feed-volume
+          mountPath: /srv
+          readOnly: true
       volumes:
       - name: caddyfile
         configMap:
           name: caddyfile
+      - name: realtime-feed-volume
+        persistentVolumeClaim:
+          claimName: swms-busradar-gtfs-realtime-volume
 
 ---
 apiVersion: v1

@@ -1,3 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swms-busradar-gtfs-realtime-volume
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5M
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,12 +35,26 @@ spec:
       volumes:
       - name: static-feed-volume
         emptyDir: {}
-      - name:
+      - name: realtime-feed-volume
+        persistentVolumeClaim:
+          claimName: swms-busradar-gtfs-realtime-volume
       initContainers:
       - name: swms-busradar-gtfs-realtime-init
+        image: quay.io/codeformuenster/swms-busradar-gtfs-realtime-init:0.2.0
         volumeMounts:
-          - mountPath: /dumps
-            name: static-feed-volume
+        - mountPath: /gtfsfeed
+          name: static-feed-volume
       containers:
       - name: swms-busradar-gtfs-realtime
         image: quay.io/codeformuenster/swms-busradar-gtfs-realtime:0.2.0
+        env:
+        - name: GTFS_FEED_PATH
+          value: /gtfs-static-feed
+        - name: GTFS_REALTIME_FEED_PATH
+          value: /gtfs-realtime-feed/feed
+        volumeMounts:
+        - mountPath: /gtfs-static-feed
+          name: static-feed-volume
+          readOnly: true
+        - mountPath: /gtfs-realtime-feed
+          name: realtime-feed-volume

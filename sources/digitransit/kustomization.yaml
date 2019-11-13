@@ -3,10 +3,9 @@ kind: Kustomization
 
 namespace: digitransit
 commonLabels:
-  app.kubernetes.io/part-of: digitrans
+  app.kubernetes.io/part-of: digitransit
 
 resources:
-# - ./digitransit-proxy.yaml
 - ./digitransit-ui.yaml
 - ./graphiql.yaml
 - ./hsl-map-server.yaml
@@ -14,24 +13,21 @@ resources:
 - ./photon-pelias.yaml
 - ./ingress.yaml
 
-# patches:
-# - ./controller-configmap-patches.yaml
-
-images:
-- name: verschwoerhaus/digitransit-proxy-vsh
-  newTag: 01671d2
-- name: verschwoerhaus/digitransit-ui
-  newTag: "1172406"
-- name: verschwoerhaus/graphiql
-  newTag: 2019-10-30
-- name: verschwoerhaus/hsl-map-server
-  newTag: b4adf23
-- name: verschwoerhaus/opentripplanner-data-container-vsh
-  newTag: 2019-10-28-latest
-- name: hsldevcom/opentripplanner
-  newTag: a0c7971f62251a3a1070652a3895c628557e1b62
-- name: stadtulm/photon-pelias-adapter
-  newTag: 5903fc0
+# images:
+# - name: verschwoerhaus/digitransit-proxy-vsh
+#   newTag: 01671d2
+# - name: verschwoerhaus/digitransit-ui
+#   newTag: "1172406"
+# - name: verschwoerhaus/graphiql
+#   newTag: 2019-10-30
+# - name: verschwoerhaus/hsl-map-server
+#   newTag: b4adf23
+# - name: verschwoerhaus/opentripplanner-data-container-vsh
+#   newTag: 2019-10-28-latest
+# - name: hsldevcom/opentripplanner
+#   newTag: a0c7971f62251a3a1070652a3895c628557e1b62
+# - name: stadtulm/photon-pelias-adapter
+#   newTag: 5903fc0
 
 secretGenerator:
 - name: locationiq

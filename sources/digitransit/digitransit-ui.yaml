@@ -29,7 +29,8 @@ spec:
     spec:
       containers:
       - name: digitransit-ui
-        image: verschwoerhaus/digitransit-ui:1172406
+        # image: verschwoerhaus/digitransit-ui:1172406
+        image: hsldevcom/digitransit-ui:ci-f62dbcf83f828ccbd6721b24ad4dabf9335e3407
         ports:
         - containerPort: 8080
         env:
@@ -37,7 +38,7 @@ spec:
           value: vsh
         - name: OTP_URL
           # value: "https://api.digitransit.im.verschwoerhaus.de/routing/v1/routers/vsh/"
-          value: "https://api.digitransit.codeformuenster.org/routing/v1/routers/vsh/"
+          value: "https://api.digitransit.codeformuenster.org/routing/v1/routers/cfm/"
         - name: GEOCODING_BASE_URL
           # value: "https://api.digitransit.im.verschwoerhaus.de/geocoding/v1"
           value: "https://api.digitransit.codeformuenster.org/geocoding/v1"

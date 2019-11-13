@@ -6,7 +6,7 @@ commonLabels:
   app.kubernetes.io/part-of: digitransit
 
 resources:
-- ./digitransit-ui.yaml
+- ./digitransit.yaml
 - ./graphiql.yaml
 - ./hsl-map-server.yaml
 - ./opentripplanner.yaml
@@ -34,3 +34,9 @@ secretGenerator:
   behavior: create
   envs:
   - ./secrets/locationiq.env
+
+configMapGenerator:
+- name: digitransit-cfm
+  behavior: create
+  files:
+  - config.cfm.js=./digitransit-config-cfm.js

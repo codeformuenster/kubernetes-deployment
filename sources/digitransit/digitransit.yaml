@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: digitransit-ui
+  name: digitransit
 spec:
   selector:
-    app: digitransit-ui
+    app: digitransit
   ports:
   - name: http
     protocol: TCP
@@ -15,27 +15,28 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digitransit-ui
+  name: digitransit
   labels:
-    app: digitransit-ui
+    app: digitransit
 spec:
   selector:
     matchLabels:
-      app: digitransit-ui
+      app: digitransit
   template:
     metadata:
       labels:
-        app: digitransit-ui
+        app: digitransit
     spec:
       containers:
-      - name: digitransit-ui
+      - name: digitransit
         # image: verschwoerhaus/digitransit-ui:1172406
         image: hsldevcom/digitransit-ui:ci-f62dbcf83f828ccbd6721b24ad4dabf9335e3407
         ports:
         - containerPort: 8080
         env:
         - name: CONFIG
-          value: vsh
+          # value: vsh
+          value: cfm
         - name: OTP_URL
           # value: "https://api.digitransit.im.verschwoerhaus.de/routing/v1/routers/vsh/"
           value: "https://api.digitransit.codeformuenster.org/routing/v1/routers/cfm/"
@@ -47,3 +48,11 @@ spec:
             secretKeyRef:
               name: locationiq
               key: access-token
+        volumeMounts:
+        - name: digitransit-cfm-config
+          mountPath: /opt/digitransit-ui/app/configurations/config.cfm.js
+          subPath: config.cfm.js
+      volumes:
+      - name: digitransit-cfm-config
+        configMap:
+          name: digitransit-cfm

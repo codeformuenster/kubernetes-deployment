@@ -9,7 +9,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: digitransit-ui
+          serviceName: digitransit
           servicePort: 8080
   tls:
   - secretName: digitransit-ingress-cert

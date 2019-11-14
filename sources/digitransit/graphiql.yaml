@@ -30,9 +30,34 @@ spec:
     spec:
       containers:
       - name: graphiql
-        image: verschwoerhaus/graphiql:2019-10-30
+        # image: verschwoerhaus/graphiql:2019-10-30
+        image: codeformuenster/digitransit-graphiql:master@sha256:1bf841ff6012008e827b73c3354edb5576f6cfecf8534ca62a380e800bf278b6
         ports:
         - containerPort: 8080
-        env:
-        - name: URL_PREFIX
-          value: https://api.digitransit.codeformuenster.org
+        # env:
+        # - name: URL_PREFIX
+        #   # ${URL_PREFIX}/routing/v1/routers/${router}/index/graphql
+        #   value: https://api.digitransit.codeformuenster.org
+        #   # https://api.digitransit.codeformuenster.org/graphiql/cfm
+        readinessProbe:
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 2
+          httpGet:
+            port: 8080
+            path: "/graphiql/cfm"
+        livenessProbe:
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          timeoutSeconds: 10
+          failureThreshold: 2
+          httpGet:
+            port: 8080
+            path: "/graphiql/cfm"
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "200m"
+          limits:
+            memory: "64Mi"
+            cpu: "1000m"  

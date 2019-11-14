@@ -18,6 +18,7 @@ export default {
 
   URL: {
     API_URL,
+    ASSET_URL: 'https://digitransit.codeformuenster.org',
     OTP: process.env.OTP_URL || `${API_URL}/routing/v1/routers/cfm/`,
     MAP_URL,
     MAP: {

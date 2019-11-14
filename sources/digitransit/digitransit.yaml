@@ -34,6 +34,8 @@ spec:
         ports:
         - containerPort: 8080
         env:
+        - name: NODE_ENV
+          value: production
         - name: CONFIG
           # value: vsh
           value: cfm

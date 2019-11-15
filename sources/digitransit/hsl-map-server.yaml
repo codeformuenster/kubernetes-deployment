@@ -19,7 +19,6 @@ metadata:
   labels:
     app: hsl-map-server
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: hsl-map-server
@@ -35,4 +34,5 @@ spec:
         - containerPort: 8080
         env:
         - name: OTP_URL
-          value: opentripplanner-vsh:8080/otp/routers/vsh/index/graphql
+          # value: opentripplanner:8080/otp/routers/vsh/index/graphql
+          value: opentripplanner:8080/otp/routers/cfm/index/graphql

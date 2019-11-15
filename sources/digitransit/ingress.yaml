@@ -1,4 +1,3 @@
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -10,70 +9,86 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: digitransit-ui
+          serviceName: digitransit
           servicePort: 8080
   tls:
-  - hosts:
+  - secretName: digitransit-ingress-cert
+    hosts:
     - digitransit.codeformuenster.org
     - api.digitransit.codeformuenster.org
-    secretName: digitransit-ingress-cert
 
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: digitransit-api
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-    # only needed for `/routing-data/v2/vsh`
-    nginx.ingress.kubernetes.io/enable-cors: "true"
-    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
-    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
-    # nginx.ingress.kubernetes.io/cors-allow-origin: "https://origin-site.com:4443"
 spec:
   rules:
   - host: api.digitransit.codeformuenster.org
     http:
       paths:
-        # # Health check
-        # location / {
-        #   root /opt/nginx/www;
-        #   index index.html;
-        # }
-      - path: /geocoding/v1
-        backend:
-          serviceName: photon-pelias-adapter
-          servicePort: 8080
-      - path: /routing/v1/routers/vsh
-        backend:
-          serviceName: opentripplanner
-          servicePort: 8080
-      - path: /routing-data/v2/vsh
-        backend:
-          serviceName: opentripplanner-data
-          servicePort: 8080
-        # include            cors.conf;
-        #   ; add_header 'Access-Control-Allow-Origin' '*';
-        #   ; add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-        #   ; add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
-      - path: /ui/v1/vsh
-        backend:
-          serviceName: digitransit-ui
-          servicePort: 8080
       - path: /map/v1
         backend:
           serviceName: hsl-map-server
           servicePort: 8080
-        # proxy_cache        tiles; 
       - path: /graphiql
         backend:
           serviceName: graphiql
           servicePort: 8080
   tls:
-  - hosts:
+  - secretName: digitransit-ingress-cert
+    hosts:
     - digitransit.codeformuenster.org
     - api.digitransit.codeformuenster.org
-    secretName: digitransit-ingress-cert
+    
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: digitransit-api-geocoding
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /v1/$2
+spec:
+  rules:
+  - host: api.digitransit.codeformuenster.org
+    http:
+      paths:
+      - path: /geocoding/v1(/|$)(.*)
+        backend:
+          serviceName: photon-pelias-adapter
+          servicePort: 8080
+  tls:
+  - secretName: digitransit-ingress-cert
+    hosts:
+    - digitransit.codeformuenster.org
+    - api.digitransit.codeformuenster.org
+    
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: digitransit-api-routing
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /otp/$2
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,OTPTimeout,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
+    # nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+spec:
+  rules:
+  - host: api.digitransit.codeformuenster.org
+    http:
+      paths:
+      - path: /routing/v1(/|$)(.*)
+      # - path: /routing/v1/(.*)
+        backend:
+          serviceName: opentripplanner
+          servicePort: 8080
+  tls:
+  - secretName: digitransit-ingress-cert
+    hosts:
+    - digitransit.codeformuenster.org
+    - api.digitransit.codeformuenster.org
 
 ---
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -82,7 +97,6 @@ metadata:
   name: digitransit-ingress
 spec:
   secretName: digitransit-ingress-cert
-  # commonName: digitransit.codeformuenster.org
   dnsNames:
   - digitransit.codeformuenster.org
   - api.digitransit.codeformuenster.org

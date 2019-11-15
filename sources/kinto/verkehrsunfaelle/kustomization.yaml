@@ -14,3 +14,7 @@ patchesStrategicMerge:
   - kinto-config_patch.yaml
   - kinto-ingress_patch.yaml
   - postgres_patch.yaml
+
+images:
+- name: quay.io/codeformuenster/verkehrsunfaelle
+  newTag: 2019-11-15

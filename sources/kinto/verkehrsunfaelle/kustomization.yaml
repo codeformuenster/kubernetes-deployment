@@ -18,3 +18,5 @@ patchesStrategicMerge:
 images:
 - name: quay.io/codeformuenster/verkehrsunfaelle
   newTag: 2019-11-15
+- name: quay.io/codeformuenster/postgres-minio-mc
+  newTag: 0.2.0

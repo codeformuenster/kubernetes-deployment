@@ -69,21 +69,18 @@ kind: Ingress
 metadata:
   name: digitransit-api-routing
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /otp/$1
-    # nginx.ingress.kubernetes.io/app-root: /otp
-    # nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /otp/$2
     nginx.ingress.kubernetes.io/enable-cors: "true"
-    # nginx.ingress.kubernetes.io/cors-allow-methods: "GET,POST,OPTIONS"
+    # nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,OTPTimeout,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
     # nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-    # allow: GET ?
 spec:
   rules:
   - host: api.digitransit.codeformuenster.org
     http:
       paths:
-      # - path: /routing/v1(/|$)(.*)
-      - path: /routing/v1/(.*)
+      - path: /routing/v1(/|$)(.*)
+      # - path: /routing/v1/(.*)
         backend:
           serviceName: opentripplanner
           servicePort: 8080
@@ -92,32 +89,6 @@ spec:
     hosts:
     - digitransit.codeformuenster.org
     - api.digitransit.codeformuenster.org
-    
-# ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: digitransit-api-data
-#   annotations:
-#     nginx.ingress.kubernetes.io/rewrite-target: /
-#     nginx.ingress.kubernetes.io/enable-cors: "true"
-#     nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, OPTIONS"
-#     nginx.ingress.kubernetes.io/cors-allow-headers: "DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range"
-#     nginx.ingress.kubernetes.io/cors-allow-origin: "*"
-# spec:
-#   rules:
-#   - host: api.digitransit.codeformuenster.org
-#     http:
-#       paths:
-#       - path: /routing-data/v2/cfm
-#         backend:
-#           serviceName: opentripplanner-data
-#           servicePort: 8080
-#   tls:
-#   - secretName: digitransit-ingress-cert
-#     hosts:
-#     - digitransit.codeformuenster.org
-#     - api.digitransit.codeformuenster.org
 
 ---
 apiVersion: certmanager.k8s.io/v1alpha1

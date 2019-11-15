@@ -29,7 +29,6 @@ spec:
     spec:
       containers:
       - name: opentripplanner
-        # image: hsldevcom/opentripplanner:a0c7971f62251a3a1070652a3895c628557e1b62
         image: codeformuenster/opentripplanner-graph:latest
         command: ["java", 
           "-Duser.timezone=Europe/Berlin", 
@@ -38,9 +37,25 @@ spec:
           "--basePath", "./", 
           "--graphs", "./graphs", 
           "--router", "cfm"]
+
+        # --basePath
+        #   Set the path under which graphs, caches, etc. are stored by default.
+        #   Default: /var/otp
+        # --cache # pv?
+        #   The directory under which to cache OSM and NED tiles. Default is
+        #   BASE_PATH/cache.
+
         ports:
         - containerPort: 8080
-        
+        volumeMounts:
+        - name: config
+          mountPath: /opt/opentripplanner/graphs/cfm/router-config.json
+          subPath: router-config.json
+      volumes:
+      - name: config
+        configMap:
+          name: router-config
+
         # FIXME add readiness probe for:
         # 22:40:06.192 INFO (NetworkListener.java:755) Started listener bound to [0.0.0.0:8080]
         # 22:40:06.227 INFO (NetworkListener.java:755) Started listener bound to [0.0.0.0:8081]

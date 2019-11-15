@@ -5,8 +5,10 @@ const CONFIG = 'cfm';
 const APP_TITLE = 'Digitransit';
 const APP_DESCRIPTION = 'Digitransit';
 
-const MAP_URL =
-  process.env.MAP_URL || 'https://maps.wikimedia.org/osm-intl/';
+const API_URL = 'https://api.digitransit.codeformuenster.org';
+const MAP_URL = 'https://maps.wikimedia.org/osm-intl/';
+const GEOCODING_BASE_URL = 'https://pelias.locationiq.org/v1';
+const LOCATIONIQ_API_KEY = process.env.LOCATIONIQ_API_KEY;
 
 const walttiConfig = require('./waltti').default;
 
@@ -19,9 +21,14 @@ export default configMerger(walttiConfig, {
   CONFIG,
 
   URL: {
+    OTP: 'https://api.digitransit.codeformuenster.org/routing/v1/routers/cfm/',
     MAP: {
       default: MAP_URL,
     },
+    STOP_MAP: `${API_URL}/map/v1/stop-map/`,
+    // FIXME api-key via url
+    PELIAS: `${GEOCODING_BASE_URL}/search${LOCATIONIQ_API_KEY ? '?api_key=' + LOCATIONIQ_API_KEY : ''}`,
+    PELIAS_REVERSE_GEOCODER: `${GEOCODING_BASE_URL}/reverse${LOCATIONIQ_API_KEY ? '?api_key=' + LOCATIONIQ_API_KEY : ''}`,
   },
 
   appBarLink: { name: 'Cfm', href: 'https://codeformuenster.org/' },
@@ -75,16 +82,32 @@ export default configMerger(walttiConfig, {
     // FIXME
     // address: 'Domplatz',
     address: 'Cfm',
-    lat: 0.5 * (minLat + maxLat),
-    lon: 0.5 * (minLon + maxLon),
+    lat: 51.9625,
+    lon: 7.626,
   },
 
   defaultOrigins: [
     // FIXME lat/lon
-    { icon: 'icon-icon_star', label: 'Bült', lat: 51.964022, lon: 7.630633 },
-    { icon: 'icon-icon_rail', label: 'Hauptbahnhof', lat: 51.957418, lon: 7.635712 },
+    { 
+      icon: 'icon-icon_star', 
+      label: 'Bült', 
+      lat: 51.9635, 
+      lon: 7.6314
+    }, { 
+      icon: 'icon-icon_rail', 
+      label: 'Hauptbahnhof', 
+      lat: 51.9568,
+      lon: 7.63415
+    }, { 
+      icon: 'icon-icon_star', 
+      label: 'Coesfelder Kreuz', 
+      lat: 51.9649,
+      lon: 7.6
+    },
     // { icon: 'icon-icon_tram', label: 'Uni Süd', lat: 48.42153, lon: 9.95652 },
   ],
+
+  showAllBusses: true,
 
   footer: {
     content: [

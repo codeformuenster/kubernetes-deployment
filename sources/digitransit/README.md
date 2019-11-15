@@ -302,3 +302,26 @@ kubectl -n digitransit exec -ti opentripplanner-67fc7d954d-z7lfq -- cat /opt/ope
 2019-11-13T03:59:22.960+0100  WARNING  There is no way how to transform value "true" [java.lang.Boolean] to type [java.lang.String].
 03:59:23.133 INFO (GrizzlyServer.java:154) Grizzly server running.
 
+
+
+---
+
+exec
+
+./sass/themes/cfm/_theme.scss
+./sass/themes/cfm/main.scss
+./app/configurations/config.cfm.js
+./app/configurations/config.default.js
+
+root@digitransit-7bb9df4db-2n8hv:~# ls ./sass/themes/hsl/ -l
+total 20
+-rw-rw-r-- 1 root root  466 Nov 14 14:31 _icon.scss
+-rw-rw-r-- 1 root root 1307 Nov 14 14:31 _theme.scss
+-rw-rw-r-- 1 root root 1790 Nov 14 14:31 hsl-spinner.png
+-rw-rw-r-- 1 root root 3453 Nov 14 14:31 icon_favicon-reittiopas.svg
+-rw-rw-r-- 1 root root   69 Nov 14 14:31 main.scss
+
+
+---
+
+const imageDir = 'app/configurations/images/' + theme;

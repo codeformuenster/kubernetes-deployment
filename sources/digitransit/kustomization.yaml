@@ -39,4 +39,11 @@ configMapGenerator:
 - name: digitransit-cfm
   behavior: create
   files:
-  - config.cfm.js=./digitransit-config-cfm.js
+  - config.cfm.js=./configs/config.cfm.js
+  - config.default.js=./configs/config.default.js
+  - main.scss=./configs/theme-cfm-main.scss
+  - _theme.scss=./configs/theme-cfm.scss
+- name: router-config
+  behavior: create
+  files:
+  - router-config.json=./configs/router-config.json

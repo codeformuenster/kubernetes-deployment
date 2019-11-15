@@ -32,25 +32,14 @@ spec:
         # image: codeformuenster/digitransit-ui:master-test4
         # image: codeformuenster/digitransit-ui:master-test1
         image: codeformuenster/digitransit-ui:master-test3
-        # command: ["/usr/local/bin/node", "server/server"]
-        command: ["yarn", "run", "start"]
+        # image: hsldevcom/digitransit-ui:ci-059f14a09bdd93ee45c05ddbdb54b20331c89160
+        # command: ["yarn", "run", "start"]
+        command: ["/usr/local/bin/node", "server/server"]
         ports:
         - containerPort: 8080
         env:
         - name: CONFIG
           value: cfm
-        - name: API_URL
-          value: https://api.digitransit.codeformuenster.org
-        - name: MAP_URL
-          value: https://maps.wikimedia.org/osm-intl/
-        - name: GEOCODING_BASE_URL
-          value: https://pelias.locationiq.org/v1
-        # - name: ASSET_URL
-        #   value: 
-        - name: OTP_URL
-          value: "https://api.digitransit.codeformuenster.org/routing/v1/routers/cfm/"
-        - name: GEOCODING_BASE_URL
-          value: "https://api.digitransit.codeformuenster.org/geocoding/v1"
         - name: LOCATIONIQ_API_KEY
           valueFrom:
             secretKeyRef:
@@ -60,6 +49,15 @@ spec:
         - name: digitransit-cfm-config
           mountPath: /opt/digitransit-ui/app/configurations/config.cfm.js
           subPath: config.cfm.js
+      #   - name: digitransit-cfm-config
+      #     mountPath: /opt/digitransit-ui/app/configurations/config.default.js
+      #     subPath: config.default.js
+      #   - name: digitransit-cfm-config
+      #     mountPath: /opt/digitransit-ui/sass/themes/cfm/main.scss
+      #     subPath: main.scss
+      #   - name: digitransit-cfm-config
+      #     mountPath: /opt/digitransit-ui/sass/themes/cfm/_theme.scss
+      #     subPath: _theme.scss
       volumes:
       - name: digitransit-cfm-config
         configMap:

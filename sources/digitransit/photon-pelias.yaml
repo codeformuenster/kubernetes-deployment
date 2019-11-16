@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: photon-pelias-adapter
-        image: stadtulm/photon-pelias-adapter:5903fc0
+        image: stadtulm/photon-pelias-adapter
         ports:
         - containerPort: 8080
         env:

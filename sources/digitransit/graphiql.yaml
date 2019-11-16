@@ -30,8 +30,7 @@ spec:
     spec:
       containers:
       - name: graphiql
-        # image: verschwoerhaus/graphiql:2019-10-30
-        image: codeformuenster/digitransit-graphiql:master@sha256:1bf841ff6012008e827b73c3354edb5576f6cfecf8534ca62a380e800bf278b6
+        image: codeformuenster/digitransit-graphiql
         ports:
         - containerPort: 8080
         # env:

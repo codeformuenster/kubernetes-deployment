@@ -34,5 +34,4 @@ spec:
         - containerPort: 8080
         env:
         - name: OTP_URL
-          # value: opentripplanner:8080/otp/routers/vsh/index/graphql
           value: opentripplanner:8080/otp/routers/cfm/index/graphql

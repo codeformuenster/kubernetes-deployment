@@ -16,18 +16,16 @@ resources:
 images:
 # - name: verschwoerhaus/digitransit-proxy-vsh
 #   newTag: 01671d2
-# - name: verschwoerhaus/digitransit-ui
-#   newTag: "1172406"
-# - name: verschwoerhaus/graphiql
-#   newTag: 2019-10-30
-# - name: verschwoerhaus/hsl-map-server
-#   newTag: b4adf23
+- name: codeformuenster/digitransit-ui
+  newTag: master-test3
+- name: codeformuenster/digitransit-graphiql
+  newTag: master@sha256:1bf841ff6012008e827b73c3354edb5576f6cfecf8534ca62a380e800bf278b6
+- name: verschwoerhaus/hsl-map-server
+  newTag: b4adf23
 - name: codeformuenster/opentripplanner-graph
   newTag: 0.1.0
-# - name: hsldevcom/opentripplanner
-#   newTag: a0c7971f62251a3a1070652a3895c628557e1b62
-# - name: stadtulm/photon-pelias-adapter
-#   newTag: 5903fc0
+- name: stadtulm/photon-pelias-adapter
+  newTag: 5903fc0
 
 secretGenerator:
 - name: locationiq

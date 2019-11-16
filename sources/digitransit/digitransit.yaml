@@ -29,10 +29,7 @@ spec:
     spec:
       containers:
       - name: digitransit
-        # image: codeformuenster/digitransit-ui:master-test4
-        # image: codeformuenster/digitransit-ui:master-test1
-        image: codeformuenster/digitransit-ui:master-test3
-        # image: hsldevcom/digitransit-ui:ci-059f14a09bdd93ee45c05ddbdb54b20331c89160
+        image: codeformuenster/digitransit-ui
         # command: ["yarn", "run", "start"]
         command: ["/usr/local/bin/node", "server/server"]
         ports:

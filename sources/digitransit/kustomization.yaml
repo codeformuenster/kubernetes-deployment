@@ -45,3 +45,4 @@ configMapGenerator:
   behavior: create
   files:
   - router-config.json=./configs/router-config.json
+  - debug-logback.xml=./configs/debug-logback.xml

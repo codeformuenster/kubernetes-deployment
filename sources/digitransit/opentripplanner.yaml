@@ -30,12 +30,13 @@ spec:
       containers:
       - name: opentripplanner
         image: codeformuenster/opentripplanner-graph
-        command: ["java", 
-          "-Duser.timezone=Europe/Berlin", 
-          "-jar", "/opt/opentripplanner/otp-shaded.jar", 
-          "--server", 
-          "--basePath", "./", 
-          "--graphs", "./graphs", 
+        command: ["java",
+          "-Duser.timezone=Europe/Berlin",
+          "-Dlogback.configurationFile=/opt/opentripplanner/debug-logback.xml",
+          "-jar", "/opt/opentripplanner/otp-shaded.jar",
+          "--server",
+          "--basePath", "./",
+          "--graphs", "./graphs",
           "--router", "cfm"]
 
         # --basePath
@@ -51,6 +52,9 @@ spec:
         - name: config
           mountPath: /opt/opentripplanner/graphs/cfm/router-config.json
           subPath: router-config.json
+        - name: config
+          mountPath: /opt/opentripplanner/debug-logback.xml
+          subPath: debug-logback.xml
       volumes:
       - name: config
         configMap:

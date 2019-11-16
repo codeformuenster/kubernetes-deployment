@@ -23,7 +23,7 @@ images:
 - name: verschwoerhaus/hsl-map-server
   newTag: b4adf23
 - name: codeformuenster/opentripplanner-graph
-  newTag: 0.1.0
+  newTag: 0.1.1
 - name: stadtulm/photon-pelias-adapter
   newTag: 5903fc0
 

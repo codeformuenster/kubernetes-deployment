@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: opentripplanner
-        image: codeformuenster/opentripplanner-graph:latest
+        image: codeformuenster/opentripplanner-graph
         command: ["java", 
           "-Duser.timezone=Europe/Berlin", 
           "-jar", "/opt/opentripplanner/otp-shaded.jar", 

@@ -13,7 +13,7 @@ resources:
 - ./photon-pelias.yaml
 - ./ingress.yaml
 
-# images:
+images:
 # - name: verschwoerhaus/digitransit-proxy-vsh
 #   newTag: 01671d2
 # - name: verschwoerhaus/digitransit-ui
@@ -22,8 +22,8 @@ resources:
 #   newTag: 2019-10-30
 # - name: verschwoerhaus/hsl-map-server
 #   newTag: b4adf23
-# - name: verschwoerhaus/opentripplanner-data-container-vsh
-#   newTag: 2019-10-28-latest
+- name: codeformuenster/opentripplanner-graph
+  newTag: 0.1.0
 # - name: hsldevcom/opentripplanner
 #   newTag: a0c7971f62251a3a1070652a3895c628557e1b62
 # - name: stadtulm/photon-pelias-adapter

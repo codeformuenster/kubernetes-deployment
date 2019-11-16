@@ -13,10 +13,11 @@
   "updaters": [
     {
       "type": "stop-time-updater",
-      "frequencySec": 60,
+      "frequencySec": 20,
       "sourceType": "gtfs-http",
       "url": "https://swms-busradar-gtfs-realtime.codeformuenster.org/feed",
-      "feedId": "STWMS"
+      "feedId": "STWMS",
+      "fuzzyTripMatching": true
     }
   ]
 }

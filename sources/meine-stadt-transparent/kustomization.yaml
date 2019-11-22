@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: meine-stadt-transparent
+commonLabels:
+  app.kubernetes.io/part-of: meine-stadt-transparent
+
+resources:
+- github.com/codeformuenster/kustomized//minio?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
+- github.com/codeformuenster/kustomized//elasticsearch?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
+- github.com/codeformuenster/kustomized//mariadb?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
+- ./meine-stadt-transparent.yaml
+- ./nginx.yaml
+- ./ingress.yaml

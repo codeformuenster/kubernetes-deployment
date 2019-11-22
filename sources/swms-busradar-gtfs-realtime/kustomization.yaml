@@ -11,8 +11,8 @@ resources:
 
 images:
 - name: quay.io/codeformuenster/swms-busradar-gtfs-realtime
-  newTag: 0.2.0
+  newTag: 0.3.1
 - name: quay.io/codeformuenster/swms-busradar-gtfs-realtime-init
-  newTag: 0.2.0
+  newTag: 0.3.0
 - name: abiosoft/caddy
   newTag: 1.0.3-no-stats

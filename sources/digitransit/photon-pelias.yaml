@@ -19,7 +19,7 @@ metadata:
   labels:
     app: photon-pelias-adapter
 spec:
-  replicas: 1
+  # replicas: 1
   selector:
     matchLabels:
       app: photon-pelias-adapter

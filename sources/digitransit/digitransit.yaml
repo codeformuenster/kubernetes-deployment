@@ -19,6 +19,12 @@ metadata:
   labels:
     app: digitransit
 spec:
+  # replicas: 8
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 25%
+  #     maxUnavailable: 0
   selector:
     matchLabels:
       app: digitransit
@@ -42,19 +48,41 @@ spec:
             secretKeyRef:
               name: locationiq
               key: access-token
+        # readinessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #   periodSeconds: 5
+        #   timeoutSeconds: 10
+        #   failureThreshold: 2
+        # livenessProbe:
+        #   httpGet:
+        #     path: /
+        #     port: 8080
+        #   initialDelaySeconds: 150
+        #   periodSeconds: 10
+        #   timeoutSeconds: 10
+        #   failureThreshold: 10
+        # resources:
+        #   requests:
+        #     memory: "1536Mi"
+        #     cpu: 600m
+        #   limits:
+        #     memory: "1536Mi"
+        #     cpu: 2000m
         volumeMounts:
         - name: digitransit-cfm-config
           mountPath: /opt/digitransit-ui/app/configurations/config.cfm.js
           subPath: config.cfm.js
-      #   - name: digitransit-cfm-config
-      #     mountPath: /opt/digitransit-ui/app/configurations/config.default.js
-      #     subPath: config.default.js
-      #   - name: digitransit-cfm-config
-      #     mountPath: /opt/digitransit-ui/sass/themes/cfm/main.scss
-      #     subPath: main.scss
-      #   - name: digitransit-cfm-config
-      #     mountPath: /opt/digitransit-ui/sass/themes/cfm/_theme.scss
-      #     subPath: _theme.scss
+        - name: digitransit-cfm-config
+          mountPath: /opt/digitransit-ui/app/configurations/config.default.js
+          subPath: config.default.js
+        - name: digitransit-cfm-config
+          mountPath: /opt/digitransit-ui/sass/themes/cfm/main.scss
+          subPath: main.scss
+        - name: digitransit-cfm-config
+          mountPath: /opt/digitransit-ui/sass/themes/cfm/_theme.scss
+          subPath: _theme.scss
       volumes:
       - name: digitransit-cfm-config
         configMap:

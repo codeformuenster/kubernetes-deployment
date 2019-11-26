@@ -11,9 +11,9 @@ resources:
 
 images:
 - name: quay.io/codeformuenster/crashes-shiny
-  newTag: v6.6.5
+  newTag: v6.6.6
 - name: quay.io/codeformuenster/verkehrsunfaelle
-  newTag: 2019-06-06
+  newTag: 2019-11-15
 
 # inventory:
 #   type: ConfigMap

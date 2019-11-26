@@ -13,11 +13,18 @@
   "updaters": [
     {
       "type": "stop-time-updater",
-      "frequencySec": 20,
       "sourceType": "gtfs-http",
       "url": "https://swms-busradar-gtfs-realtime.codeformuenster.org/feed",
       "feedId": "STWMS",
-      "fuzzyTripMatching": true
+      "fuzzyTripMatching": true,
+      "frequencySec": 20
+    }, {
+      "id": "leihleeze-bike-rental",
+      "type": "bike-rental",
+      "sourceType": "gbfs",
+      "url": "https://buchen.leihleeze.de/gbfs",
+      "network": "leihleeze",
+      "frequencySec": 20
     }
   ]
 }

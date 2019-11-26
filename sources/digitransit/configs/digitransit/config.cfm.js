@@ -26,6 +26,7 @@ export default configMerger(walttiConfig, {
       default: MAP_URL,
     },
     STOP_MAP: `${API_URL}/map/v1/stop-map/`,
+    CITYBIKE_MAP: `${API_URL}/map/v1/citybike-map/`,
     // FIXME api-key via url
     PELIAS: `${GEOCODING_BASE_URL}/search${LOCATIONIQ_API_KEY ? '?api_key=' + LOCATIONIQ_API_KEY : ''}`,
     PELIAS_REVERSE_GEOCODER: `${GEOCODING_BASE_URL}/reverse${LOCATIONIQ_API_KEY ? '?api_key=' + LOCATIONIQ_API_KEY : ''}`,
@@ -120,6 +121,31 @@ export default configMerger(walttiConfig, {
           }/#`
         );
       },
+    },
+  },
+
+  cityBike: {
+    showCityBikes: true,
+    networks: {}
+  },
+
+  streetModes: {
+    bicycle: {
+      availableForSelection: true,
+      defaultValue: false,
+      icon: 'biking',
+    },
+
+    car_park: {
+      availableForSelection: true,
+      defaultValue: false,
+      icon: 'car-withoutBox',
+    },
+
+    car: {
+      availableForSelection: false,
+      defaultValue: false,
+      icon: 'car_park-withoutBox',
     },
   },
 

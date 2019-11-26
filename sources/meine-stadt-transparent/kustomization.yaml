@@ -6,9 +6,40 @@ commonLabels:
   app.kubernetes.io/part-of: meine-stadt-transparent
 
 resources:
-- github.com/codeformuenster/kustomized//minio?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
-- github.com/codeformuenster/kustomized//elasticsearch?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
-- github.com/codeformuenster/kustomized//mariadb?ref=879c9573397556006a675e9b1c8bfe691ebbcfd4
-- ./meine-stadt-transparent.yaml
-- ./nginx.yaml
-- ./ingress.yaml
+- ../../../kustomized/minio
+- ../../../kustomized/elasticsearch
+- ../../../kustomized/mariadb
+
+# - github.com/codeformuenster/kustomized//minio?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
+# - github.com/codeformuenster/kustomized//elasticsearch?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
+# - github.com/codeformuenster/kustomized//mariadb?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
+
+#- ./meine-stadt-transparent.yaml
+#- ./nginx.yaml
+#- ./ingress.yaml
+#
+configMapGenerator:
+- name: mariadb-env-vars
+  behavior: replace
+  literals:
+  - user=meine-stadt-transparent
+  - database=meine-stadt-transparent
+
+secretGenerator:
+- name: minio
+  behavior: replace
+  envs:
+  - ./secrets/minio.env
+- name: mariadb-passwords
+  behavior: replace
+  envs:
+  - ./secrets/mariadb.env
+
+images:
+- name: minio/minio
+  newTag: RELEASE.2019-10-12T01-39-57Z
+- name: mariadb
+  newTag: 10.4.10
+- name: konstin2/meine-stadt-transparent
+  newName: quay.io/codeformuenster/meine-stadt-transparent
+  newTag: container-image-0.1.0

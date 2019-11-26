@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gtfsrt-mqtt
+  labels:
+    app: gtfsrt-mqtt
+spec:
+  selector:
+    matchLabels:
+      app: gtfsrt-mqtt
+  template:
+    metadata:
+      labels:
+        app: gtfsrt-mqtt
+    spec:
+      containers:
+      - name: gtfsrt-mqtt
+        image: hsldevcom/gtfsrthttp2mqtt
+        # https://github.com/HSLdevcom/gtfsrthttp2mqtt#configuration
+        env:
+        - name: MQTT_BROKER_URL
+          value: mosquitto
+        - name: FEED_TYPE
+          value: vp
+        - name: FEED_NAME
+          value: STWMS
+        - name: FEED_URL
+          value: https://swms-busradar-gtfs-realtime.codeformuenster.org/feed
+          # value: http://swms-busradar-gtfs-realtime-fileserver.swms-busradar-gtfs-realtime.svc/feed
+        - name: OTP_URL
+          value: https://api.digitransit.codeformuenster.org/routing/v1/routers/cfm/index/graphql
+          # value: http://digitransit/routing/v1/routers/cfm/index/graphql
+        - name: USERNAME
+          value: user
+        - name: PASSWORD
+          value: userpass
+        - name: INTERVAL
+          value: "20"

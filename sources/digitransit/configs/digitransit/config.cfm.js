@@ -31,7 +31,7 @@ export default configMerger(walttiConfig, {
     PELIAS_REVERSE_GEOCODER: `${GEOCODING_BASE_URL}/reverse${LOCATIONIQ_API_KEY ? '?api_key=' + LOCATIONIQ_API_KEY : ''}`,
   },
 
-  appBarLink: { name: 'Cfm', href: 'https://codeformuenster.org/' },
+  appBarLink: { name: 'cfm', href: 'https://codeformuenster.org/' },
 
   colors: {
     primary: '$livi-blue',
@@ -62,7 +62,66 @@ export default configMerger(walttiConfig, {
 
   textLogo: true,
 
+
+  availableLanguages: ['de', 'en'],
+  defaultLanguage: 'de',
+  // This timezone data will expire on 31.12.2020
+  // https://momentjs.com/timezone/docs/#/data-formats/packed-format/
+  // timezoneData:
+  //   'Europe/Helsinki|EET EEST|-20 -30|01010101010101010101010|1BWp0 1qM0 WM0 1qM0 ' +
+  //   'WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|35e5',
+  timezoneData: 'Europe/Berlin|CET CEST CEMT|-10 -20 -30|01010101010101210101210101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010101010|-2aFe0 11d0 1iO0 11A0 1o00 11A0 Qrc0 6i00 WM0 1fA0 1cM0 1cM0 1cM0 kL0 Nc0 m10 WM0 1ao0 1cp0 dX0 jz0 Dd0 1io0 17c0 1fA0 1a00 1ehA0 1a00 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1cM0 1fA0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00 11A0 1qM0 WM0 1qM0 WM0 1qM0 WM0 1qM0 11A0 1o00 11A0 1o00|41e5',
+
+  mainMenu: {
+    // Whether to show the left menu toggle button at all
+    show: true,
+    showDisruptions: true,
+    showLoginCreateAccount: true,
+    showOffCanvasList: true,
+  },
+
+  // mainMenu: {
+  //   // Whether to show the left menu toggle button at all
+  //   show: true,
+  //   showDisruptions: false,
+  //   showLoginCreateAccount: false,
+  //   showOffCanvasList: true,
+  // },
+
   feedIds: ['STWMS'],
+
+  realTime: {
+    STWMS: {
+      active: true,
+      gtfsrt: true,
+      credentials: { username: 'user', password: 'userpass' },
+      mqtt: 'wss://mosquitto.digitransit.codeformuenster.org/mqtt',
+      routeSelector (routePageProps) {
+        const route = routePageProps.route.gtfsId.split(':');
+        return route[1];
+      },
+      mqttTopicResolver: (
+        route,
+        direction,
+        tripStartTime,
+        headsign, // eslint-disable-line no-unused-vars
+        feedId, // eslint-disable-line no-unused-vars
+        tripId, // eslint-disable-line no-unused-vars
+        geoHash, // eslint-disable-line no-unused-vars
+      ) => {
+        // console.log('resolver', { route, direction, tripStartTime, headsign, feedId, tripId, geoHash });
+        return (
+          `/gtfsrt/vp/${feedId}/+/+/+/${
+            route
+          }/${
+            direction
+          }/+/${
+            tripStartTime
+          }/#`
+        );
+      },
+    },
+  },
 
   searchParams: {
     'boundary.rect.min_lat': minLat,
@@ -79,15 +138,12 @@ export default configMerger(walttiConfig, {
   ],
 
   defaultEndpoint: {
-    // FIXME
-    // address: 'Domplatz',
-    address: 'Cfm',
+    address: 'Domplatz',
     lat: 51.9625,
     lon: 7.626,
   },
 
   defaultOrigins: [
-    // FIXME lat/lon
     { 
       icon: 'icon-icon_star', 
       label: 'Bült', 
@@ -104,14 +160,21 @@ export default configMerger(walttiConfig, {
       lat: 51.9649,
       lon: 7.6
     },
-    // { icon: 'icon-icon_tram', label: 'Uni Süd', lat: 48.42153, lon: 9.95652 },
   ],
 
   showAllBusses: true,
+  showVehiclesOnStopPage: true,
+  showRouteInformation: true,
+
+  map: {
+    useRetinaTiles: true,
+    tileSize: 256,
+    zoomOffset: 0,
+  },
 
   footer: {
     content: [
-      { label: `Cfm ${walttiConfig.YEAR}` },
+      { label: `cfm ${walttiConfig.YEAR}` },
       {},
       {
         name: 'footer-feedback',

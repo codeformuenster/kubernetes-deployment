@@ -91,6 +91,27 @@ spec:
     - api.digitransit.codeformuenster.org
 
 ---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: digitransit-mosquitto
+spec:
+  rules:
+  - host: mosquitto.digitransit.codeformuenster.org
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: mosquitto
+          servicePort: 9001
+  tls:
+  - secretName: digitransit-ingress-cert
+    hosts:
+    # - digitransit.codeformuenster.org
+    # - api.digitransit.codeformuenster.org
+    - mosquitto.digitransit.codeformuenster.org
+
+---
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
@@ -100,6 +121,7 @@ spec:
   dnsNames:
   - digitransit.codeformuenster.org
   - api.digitransit.codeformuenster.org
+  - mosquitto.digitransit.codeformuenster.org
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt

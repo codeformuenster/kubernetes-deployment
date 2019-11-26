@@ -5,6 +5,7 @@ namespace: digitransit
 commonLabels:
   app.kubernetes.io/part-of: digitransit
 
+# for example settings see https://github.com/HSLdevcom/digitransit-kubernetes-deploy/tree/master/roles/aks-apply/files/prod
 resources:
 - ./digitransit.yaml
 - ./graphiql.yaml
@@ -12,10 +13,10 @@ resources:
 - ./opentripplanner.yaml
 - ./photon-pelias.yaml
 - ./ingress.yaml
+- ./mosquitto.yaml
+- ./gtfsrt-mqtt.yaml
 
 images:
-# - name: verschwoerhaus/digitransit-proxy-vsh
-#   newTag: 01671d2
 - name: codeformuenster/digitransit-ui
   newTag: master-test3
 - name: codeformuenster/digitransit-graphiql
@@ -24,8 +25,15 @@ images:
   newTag: b4adf23
 - name: codeformuenster/opentripplanner-graph
   newTag: 0.1.1
+# - name: codeformuenster/opentripplanner-cfm
+#   newTag: 2019-11-18
 - name: stadtulm/photon-pelias-adapter
   newTag: 5903fc0
+- name: eclipse-mosquitto
+  newTag: 1.6.7
+- name: hsldevcom/gtfsrthttp2mqtt
+  newTag: ci-14c182ec2bf04a5ba965100781ca5aedb230238d
+
 
 secretGenerator:
 - name: locationiq
@@ -37,11 +45,16 @@ configMapGenerator:
 - name: digitransit-cfm
   behavior: create
   files:
-  - config.cfm.js=./configs/config.cfm.js
-  - config.default.js=./configs/config.default.js
-  - main.scss=./configs/theme-cfm-main.scss
-  - _theme.scss=./configs/theme-cfm.scss
+  - config.cfm.js=./configs/digitransit/config.cfm.js
+  - config.default.js=./configs/digitransit/config.default.js
+  - main.scss=./configs/digitransit/theme-cfm-main.scss
+  - _theme.scss=./configs/digitransit/theme-cfm.scss
 - name: router-config
   behavior: create
   files:
-  - router-config.json=./configs/router-config.json
+  - router-config.json=./configs/opentripplanner/router-config.json
+  - debug-logback.xml=./configs/opentripplanner/debug-logback.xml
+- name: mosquitto
+  behavior: create
+  files:
+  - mosquitto.conf=./configs/mosquitto/mosquitto.conf

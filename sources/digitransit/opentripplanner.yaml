@@ -19,6 +19,12 @@ metadata:
   labels:
     app: opentripplanner
 spec:
+  # replicas: 5
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #     maxSurge: 25%
+  #     maxUnavailable: 0
   selector:
     matchLabels:
       app: opentripplanner
@@ -30,27 +36,52 @@ spec:
       containers:
       - name: opentripplanner
         image: codeformuenster/opentripplanner-graph
-        command: ["java", 
-          "-Duser.timezone=Europe/Berlin", 
-          "-jar", "/opt/opentripplanner/otp-shaded.jar", 
-          "--server", 
-          "--basePath", "./", 
-          "--graphs", "./graphs", 
+        # image: codeformuenster/opentripplanner-cfm
+        command: ["java",
+          "-Duser.timezone=Europe/Berlin",
+          # "-Dlogback.configurationFile=/opt/opentripplanner/debug-logback.xml",
+          "-jar", "/opt/opentripplanner/otp-shaded.jar",
+          "--server",
+          "--basePath", "./",
+          "--graphs", "./graphs",
+          # "--basePath", "/var/otp",
+          # "--graphs", "/var/otp/graphs",
           "--router", "cfm"]
 
-        # --basePath
-        #   Set the path under which graphs, caches, etc. are stored by default.
-        #   Default: /var/otp
         # --cache # pv?
         #   The directory under which to cache OSM and NED tiles. Default is
         #   BASE_PATH/cache.
 
+        # env:
+        # - name: JAVA_OPTS
+        #   value: "-Xms8G -Xmx8G"
+
         ports:
         - containerPort: 8080
+        # readinessProbe:
+        #   periodSeconds: 10
+        #   timeoutSeconds: 15
+        #   failureThreshold: 2
+        #   httpGet:
+        #     port: 8080
+        #     path: "/otp/routers/finland/"
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        # resources:
+        #   requests:
+        #     memory: 11216Mi
+        #     cpu: "6000m"
+        #   limits:
+        #     memory: 11216Mi
+        #     cpu: "7000m"
         volumeMounts:
         - name: config
           mountPath: /opt/opentripplanner/graphs/cfm/router-config.json
+          # mountPath: /var/otp/graphs/cfm/router-config.json
           subPath: router-config.json
+        - name: config
+          mountPath: /opt/opentripplanner/debug-logback.xml
+          subPath: debug-logback.xml
       volumes:
       - name: config
         configMap:

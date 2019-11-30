@@ -9,11 +9,13 @@ spec:
       - name: elasticsearch
         env:
         - name: ELASTIC_USERNAME
+          value: null
           valueFrom:
             secretKeyRef:
               name: elasticsearch-passwords
               key: username
         - name: ELASTIC_PASSWORD
+          value: null
           valueFrom:
             secretKeyRef:
               name: elasticsearch-passwords

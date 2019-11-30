@@ -6,18 +6,21 @@ commonLabels:
   app.kubernetes.io/part-of: meine-stadt-transparent
 
 resources:
-- ../../../kustomized/minio
-- ../../../kustomized/elasticsearch
-- ../../../kustomized/mariadb
+# - ../../../kustomized/minio
+# - ../../../kustomized/elasticsearch
+# - ../../../kustomized/mariadb
 
-# - github.com/codeformuenster/kustomized//minio?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
-# - github.com/codeformuenster/kustomized//elasticsearch?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
-# - github.com/codeformuenster/kustomized//mariadb?ref=5fb3d9618b12363240e50ecca6413e0c727a4979
+- github.com/codeformuenster/kustomized//minio?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+- github.com/codeformuenster/kustomized//elasticsearch?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+- github.com/codeformuenster/kustomized//mariadb?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
 
 #- ./meine-stadt-transparent.yaml
 #- ./nginx.yaml
 #- ./ingress.yaml
-#
+
+patchesStrategicMerge:
+- ./elasticsearch_patch.yaml
+
 configMapGenerator:
 - name: mariadb-env-vars
   behavior: replace
@@ -34,6 +37,20 @@ secretGenerator:
   behavior: replace
   envs:
   - ./secrets/mariadb.env
+- name: elasticsearch-passwords
+  behavior: create
+  envs:
+  - ./secrets/elasticsearch.env
+- name: elasticsearch-certificates
+  behavior: create
+  files:
+  - root-ca.pem=./secrets/certificates/elasticsearch-ca.crt
+  - node.pem=./secrets/certificates/elasticsearch-node-0.crt
+  - node-key.pem=./secrets/certificates/elasticsearch-node-0.key
+  # - node-1.pem=./secrets/certificates/elasticsearch-node-1.crt
+  # - node-1-key.pem=./secrets/certificates/elasticsearch-node-1.key
+  # - node-2.pem=./secrets/certificates/elasticsearch-node-2.crt
+  # - node-2-key.pem=./secrets/certificates/elasticsearch-node-2.key
 
 images:
 - name: minio/minio

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch-master
+spec:
+  template:
+    spec:
+      containers:
+      - name: elasticsearch
+        env:
+        - name: ELASTIC_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-passwords
+              key: username
+        - name: ELASTIC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-passwords
+              key: password
+        - name: ES_JAVA_OPTS
+          value: "-Xmx1g -Xms1g"
+          # special `-D` settings needed for the performance_analyzer to start:
+          # value: |-
+          #   -Xmx1g
+          #   -Xms1g
+          #   -Djava.security.policy=file:///usr/share/elasticsearch/plugins/opendistro_performance_analyzer/pa_config/es_security.policy
+          #   -Dclk.tck=100
+          #   -Djdk.attach.allowAttachSelf=true
+        volumeMounts:
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/root-ca.pem
+          subPath: root-ca.pem
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/node-key.pem
+          subPath: node-key.pem
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/node.pem
+          subPath: node.pem
+      volumes:
+      - name: elasticsearch-certificates
+        secret:
+          secretName: elasticsearch-certificates
+          defaultMode: 0600

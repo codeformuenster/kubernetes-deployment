@@ -33,12 +33,15 @@ spec:
         - name: elasticsearch-certificates
           mountPath: /usr/share/elasticsearch/config/root-ca.pem
           subPath: root-ca.pem
+          readOnly: true
         - name: elasticsearch-certificates
           mountPath: /usr/share/elasticsearch/config/node-key.pem
           subPath: node-key.pem
+          readOnly: true
         - name: elasticsearch-certificates
           mountPath: /usr/share/elasticsearch/config/node.pem
           subPath: node.pem
+          readOnly: true
       volumes:
       - name: elasticsearch-certificates
         secret:

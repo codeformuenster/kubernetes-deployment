@@ -45,12 +45,8 @@ secretGenerator:
   behavior: create
   files:
   - root-ca.pem=./secrets/certificates/elasticsearch-ca.crt
-  - node.pem=./secrets/certificates/elasticsearch-node-0.crt
-  - node-key.pem=./secrets/certificates/elasticsearch-node-0.key
-  # - node-1.pem=./secrets/certificates/elasticsearch-node-1.crt
-  # - node-1-key.pem=./secrets/certificates/elasticsearch-node-1.key
-  # - node-2.pem=./secrets/certificates/elasticsearch-node-2.crt
-  # - node-2-key.pem=./secrets/certificates/elasticsearch-node-2.key
+  - node.pem=./secrets/certificates/elasticsearch.crt
+  - node-key.pem=./secrets/certificates/elasticsearch-pk8.key
 
 images:
 - name: minio/minio

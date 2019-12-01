@@ -2,6 +2,10 @@
 
 Kubernetes deployment for [https://github.com/meine-stadt-transparent/meine-stadt-transparent](https://github.com/meine-stadt-transparent/meine-stadt-transparent)
 
+## Todo
+
+- Figure out why elasticsearch uses admin:admin
+
 ## Instructions
 
 - Use the `secrets/*.env-example` files to create service secrets in the `secrets` folder. Fill your newly created files with random strings

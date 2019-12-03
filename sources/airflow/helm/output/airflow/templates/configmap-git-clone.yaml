@@ -1,0 +1,37 @@
+---
+# Source: airflow/templates/configmap-git-clone.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: airflow-git-clone
+  labels:
+    app: airflow
+    chart: airflow-5.2.0
+    release: airflow
+    heritage: Tiller
+data:
+  git-clone.sh: |
+    #!/bin/sh -e
+    REPO=$1
+    REF=$2
+    DIR=$3
+    REPO_HOST=$4
+    PRIVATE_KEY=$5
+    # Init Containers will re-run on Pod restart. Remove the directory's contents
+    # and reprovision when this happens.
+    if [ -d "$DIR" ]; then
+        rm -rf $( find $DIR -mindepth 1 )
+    fi
+    git clone $REPO $DIR
+    cd $DIR
+    git reset --hard $REF
+  git-sync.sh: |
+    #!/bin/sh -e
+    REPO=$1
+    REF=$2
+    DIR=$3
+    REPO_HOST=$4
+    PRIVATE_KEY=$5
+    SYNC_TIME=$6
+    cd $DIR
+    while true; do git pull; date; sleep $SYNC_TIME; done

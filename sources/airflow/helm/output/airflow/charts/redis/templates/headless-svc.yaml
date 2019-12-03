@@ -1,0 +1,21 @@
+---
+# Source: airflow/charts/redis/templates/headless-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: airflow-redis-headless
+  labels:
+    app: redis
+    chart: redis-7.0.0
+    release: "airflow"
+    heritage: "Tiller"
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+  selector:
+    app: redis
+    release: "airflow"

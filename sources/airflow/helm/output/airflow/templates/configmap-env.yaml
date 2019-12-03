@@ -1,0 +1,42 @@
+---
+# Source: airflow/templates/configmap-env.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "airflow-env"
+  labels:
+    app: airflow
+    chart: airflow-5.2.0
+    release: airflow
+    heritage: Tiller
+data:
+  ## Force UTC timezone
+  TZ: Etc/UTC
+  ## Postgres DB configuration
+  POSTGRES_HOST: "airflow-postgresql"
+  POSTGRES_PORT: "5432"
+  POSTGRES_DB: "airflow"
+  ## Redis DB configuration
+  REDIS_HOST: "airflow-redis-master"
+  REDIS_PORT: ""
+  AIRFLOW__CELERY__FLOWER_URL_PREFIX: ""
+  AIRFLOW__CELERY__WORKER_CONCURRENCY: "1"
+  ## Flower PORT
+  FLOWER_PORT: "5555"
+  # For backwards compat with AF < 1.10, CELERY_CONCURRENCY got renamed to WORKER_CONCURRENCY
+  AIRFLOW__CELERY__CELERY_CONCURRENCY: "1"
+  # Configure puckel's docker-airflow entrypoint
+  EXECUTOR: "Celery"
+  FERNET_KEY: ""
+  DO_WAIT_INITDB: "false"
+  ## Custom Airflow settings
+  AIRFLOW__CORE__DONOT_PICKLE: "false"
+  AIRFLOW__CORE__DAGS_FOLDER: "/usr/local/airflow/dags"
+  AIRFLOW__CORE__BASE_LOG_FOLDER: "/usr/local/airflow/logs"
+  AIRFLOW__CORE__DAG_PROCESSOR_MANAGER_LOG_LOCATION: "/usr/local/airflow/logs/dag_processor_manager/dag_processor_manager.log"
+  AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY: "/usr/local/airflow/logs/scheduler"
+  AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080"
+  # Disabling XCom pickling for forward compatibility
+  AIRFLOW__CORE__ENABLE_XCOM_PICKLING: "false"
+  # Note: changing `Values.airflow.config` won't change the configmap checksum and so won't make
+  # the pods to restart

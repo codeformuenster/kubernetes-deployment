@@ -1,0 +1,105 @@
+---
+# Source: airflow/templates/deployments-web.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: airflow-web
+  labels:
+    app: airflow
+    component: web
+    chart: airflow-5.2.0
+    release: airflow
+    heritage: Tiller
+spec:
+  replicas: 1
+  minReadySeconds: 120
+  strategy:
+    # Smooth rolling update of the Web UI
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: airflow
+      component: web
+      release: airflow
+  template:
+    metadata:
+      annotations:
+        checksum/config-env: 4ee020624b4c4e6c7e5b7a1e9161839eaeb06c462968cd4c3e1066cdef5eaeca
+        checksum/config-git-clone: f1ccca4494c87cfd3b6a582326f8b995ffb3c65bf4ed4341c188de9e98dd9ae5
+        checksum/config-scripts: c286309579b6482ec7922f5bf3d1c509aecd617e8ea9c9a305af610658a21dc0
+      labels:
+        app: airflow
+        component: web
+        release: airflow
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: airflow-web
+          image: puckel/docker-airflow:1.10.4
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: "airflow-env"
+          env:          
+            - name: POSTGRES_USER
+              value: "postgres"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-postgresql
+                  key: postgres-password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: airflow-redis
+                  key: redis-password
+          resources:
+            {}
+            
+          volumeMounts:
+            - name: scripts
+              mountPath: /usr/local/scripts
+          args:
+            - "bash"
+            - "-c"
+            - >
+              echo 'waiting 60s...' &&
+              sleep 60 &&
+              mkdir -p /usr/local/airflow/.local/bin &&
+              export PATH=/usr/local/airflow/.local/bin:$PATH &&
+              echo 'executing webserver...' &&
+              airflow webserver
+          # livenessProbe:
+          #   httpGet:
+          #     path: "/health"
+          #     port: web
+          #   ## Keep 6 minutes the delay to allow clean wait of postgres and redis containers
+          #   initialDelaySeconds: 360
+          #   periodSeconds: 60
+          #   timeoutSeconds: 1
+          #   successThreshold: 1
+          #   failureThreshold: 5
+
+          # readinessProbe:
+          #   httpGet:
+          #     path: "/health"
+          #     port: web
+          #   initialDelaySeconds: 360
+          #   periodSeconds: 60
+          #   timeoutSeconds: 1
+          #   successThreshold: 1
+          #   failureThreshold: 5
+      volumes:
+        - name: scripts
+          configMap:
+            name: airflow-scripts
+            defaultMode: 0755
+        - name: dags-data
+          emptyDir: {}

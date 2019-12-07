@@ -132,3 +132,8 @@ spec:
             secretKeyRef:
               name: minio
               key: secret-key
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: access-key

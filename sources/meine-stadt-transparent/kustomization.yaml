@@ -16,6 +16,7 @@ resources:
 
 - ./meine-stadt-transparent.yaml
 - ./nginx.yaml
+- ./scraping.yaml
 #- ./ingress.yaml
 
 patchesStrategicMerge:

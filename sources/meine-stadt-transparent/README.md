@@ -17,5 +17,11 @@ Then:
 
 ```bash
 kubectl create namespace meine-stadt-transparent
-kustomize build . | kubectl apply -f -
+kustomize build . | kubectl -n meine-stadt-transparent apply -f -
+```
+
+## Image pull secret
+
+```
+kubectl -n meine-stadt-transparent create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```

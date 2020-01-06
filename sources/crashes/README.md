@@ -1,11 +1,10 @@
 # crashes
 
-
 ```bash
 # build manifests to verify
-kubectl kustomize
+kustomize build .
 
 # apply to cluster
-kubectl create namespace shiny
-kubectl apply -k .
+kubectl create namespace crashes
+kustomize build . | kubectl apply -f -
 ```

@@ -22,29 +22,26 @@ spec:
           initContainers:
           - name: download-and-parse
             image: konstin2/scrape-session:latest
+            imagePullPolicy: Always
             command:
             - /bin/bash
             - -c
             args:
             - 'set -e &&
-              /app/.venv/bin/python -m scrape_session.main download Münster --skip-existing &&
-              sleep 60 &&
-              /app/.venv/bin/python -m scrape_session.main download Münster --skip-existing &&
-              sleep 60 &&
-              /app/.venv/bin/python -m scrape_session.main download Münster --skip-existing &&
-              /app/.venv/bin/python -m scrape_session.main parse Münster'
+              /app/.venv/bin/python -m scrape_session.main scrape Münster'
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume
           containers:
           - name: import-scraped-json
             image: konstin2/meine-stadt-transparent:latest
+            imagePullPolicy: Always
             command:
             - /bin/bash
             - -c
             args:
             - 'set -e &&
-              /app/.venv/bin/python /app/manage.py import_json /app/storage/json/Münster.json &&
+              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json &&
               /app/.venv/bin/python /app/manage.py search_index --populate'
             volumeMounts:
             - mountPath: /app/storage
@@ -60,6 +57,10 @@ spec:
               value: "minio:9000"
             - name: STATIC_ROOT
               value: /static
+            - name: ELASTICSEARCH_QUERYSET_PAGINATION
+              value: "5"
+            - name: ELASTICSEARCH_TIMEOUT
+              value: "30"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

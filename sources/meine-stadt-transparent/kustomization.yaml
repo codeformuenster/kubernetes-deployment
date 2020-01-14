@@ -61,9 +61,6 @@ secretGenerator:
 
 images:
 - name: minio/minio
-  newTag: RELEASE.2019-10-12T01-39-57Z
+  newTag: RELEASE.2020-01-03T19-12-21Z
 - name: mariadb
-  newTag: 10.4.10
-- name: konstin2/meine-stadt-transparent
-  newName: quay.io/codeformuenster/meine-stadt-transparent
-  newTag: container-image-0.1.2
+  newTag: 10.4.11

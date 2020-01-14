@@ -46,14 +46,14 @@ spec:
               name: elasticsearch-passwords
               key: password
         - name: ES_JAVA_OPTS
-          value: "-Xmx1g -Xms1g"
+          #value: "-Xmx1g -Xms1g"
           # special `-D` settings needed for the performance_analyzer to start:
-          # value: |-
-          #   -Xmx1g
-          #   -Xms1g
-          #   -Djava.security.policy=file:///usr/share/elasticsearch/plugins/opendistro_performance_analyzer/pa_config/es_security.policy
-          #   -Dclk.tck=100
-          #   -Djdk.attach.allowAttachSelf=true
+          value: |-
+            -Xmx1g
+            -Xms1g
+            -Djava.security.policy=file:///usr/share/elasticsearch/plugins/opendistro_performance_analyzer/pa_config/es_security.policy
+            -Dclk.tck=100
+            -Djdk.attach.allowAttachSelf=true
         volumeMounts:
         - name: elasticsearch-certificates
           mountPath: /usr/share/elasticsearch/config/root-ca.pem

@@ -40,6 +40,7 @@ spec:
       initContainers:
       - name: django-migrate
         image: konstin2/meine-stadt-transparent:latest
+        imagePullPolicy: Always
         command:
         - /bin/bash
         - -c
@@ -76,6 +77,7 @@ spec:
       containers:
       - name: meine-stadt-transparent
         image: konstin2/meine-stadt-transparent:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:

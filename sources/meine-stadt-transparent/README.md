@@ -25,3 +25,12 @@ kustomize build . | kubectl -n meine-stadt-transparent apply -f -
 ```
 kubectl -n meine-stadt-transparent create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```
+
+## Map shows Japan
+
+Find your Gemeindeschlüssel
+
+```
+kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_outline <gemeindeschlüssel> 1
+kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_streets <gemeindeschlüssel> 1
+```

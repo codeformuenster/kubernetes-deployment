@@ -31,6 +31,6 @@ kubectl -n meine-stadt-transparent create secret docker-registry regcred --docke
 Find your Gemeindeschlüssel
 
 ```
-kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_outline <gemeindeschlüssel> 1
-kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_streets <gemeindeschlüssel> 1
+kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_outline 1 --ags <gemeindeschlüssel>
+kubectl -n meine-stadt-transparent exec deployments/meine-stadt-transparent .venv/bin/python manage.py import_streets 1 --ags <gemeindeschlüssel>
 ```

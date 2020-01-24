@@ -21,7 +21,7 @@ spec:
             emptyDir: {}
           initContainers:
           - name: download-and-parse
-            image: konstin2/scrape-session:latest
+            image: konstin2/scrape-session:v0.1.1
             imagePullPolicy: Always
             command:
             - /bin/bash
@@ -34,8 +34,7 @@ spec:
               name: scraping-data-volume
           containers:
           - name: import-scraped-json
-            image: konstin2/meine-stadt-transparent:latest
-            imagePullPolicy: Always
+            image: konstin2/meine-stadt-transparent:v0.2.0
             command:
             - /bin/bash
             - -c

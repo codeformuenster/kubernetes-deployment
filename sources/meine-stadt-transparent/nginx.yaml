@@ -85,7 +85,7 @@ spec:
           name: nginx-config
       initContainers:
       - name: copy-static
-        image: konstin2/meine-stadt-transparent:latest
+        image: konstin2/meine-stadt-transparent:v0.2.0
         command:
           - cp
           - -r

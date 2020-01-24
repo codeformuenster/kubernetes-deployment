@@ -76,8 +76,7 @@ spec:
               key: secret-key
       containers:
       - name: meine-stadt-transparent
-        image: konstin2/meine-stadt-transparent:latest
-        imagePullPolicy: Always
+        image: konstin2/meine-stadt-transparent:v0.2.0
         ports:
         - containerPort: 8000
         env:

@@ -33,6 +33,10 @@ configMapGenerator:
   literals:
   - user=meine-stadt-transparent
   - database=meine-stadt-transparent
+- name: meine-stadt-transparent-dot-env
+  behavior: create
+  files:
+  - .env=./configs/meine-stadt-transparent.env
 
 secretGenerator:
 - name: minio

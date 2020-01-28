@@ -19,6 +19,9 @@ spec:
           volumes:
           - name: scraping-data-volume
             emptyDir: {}
+          - name: dotenv
+            configMap:
+              name: meine-stadt-transparent-dot-env
           initContainers:
           - name: download-and-parse
             image: konstin2/scrape-session:v0.1.1
@@ -45,21 +48,10 @@ spec:
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume
+            - name: dotenv
+              mountPath: /app/.env
+              subPath: .env
             env:
-            - name: DEBUG
-              value: "False"
-            - name: REAL_HOST
-              value: meine-stadt-transparent.codeformuenster.org
-            - name: ELASTICSEARCH_URL
-              value: "elasticsearch-master:9200"
-            - name: MINIO_HOST
-              value: "minio:9000"
-            - name: STATIC_ROOT
-              value: /static
-            - name: ELASTICSEARCH_QUERYSET_PAGINATION
-              value: "5"
-            - name: ELASTICSEARCH_TIMEOUT
-              value: "30"
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:

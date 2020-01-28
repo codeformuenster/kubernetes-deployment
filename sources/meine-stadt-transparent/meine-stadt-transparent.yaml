@@ -37,6 +37,10 @@ spec:
         app.kubernetes.io/component: django
         app.kubernetes.io/part-of: meine-stadt-transparent
     spec:
+      volumes:
+      - name: dotenv
+        configMap:
+          name: meine-stadt-transparent-dot-env
       initContainers:
       - name: django-migrate
         image: konstin2/meine-stadt-transparent:latest
@@ -47,23 +51,18 @@ spec:
         args:
         - 'set -e &&
           /app/.venv/bin/python /app/manage.py migrate &&
-          /app/.venv/bin/python /app/manage.py search_index --create'
+          /app/.venv/bin/python /app/manage.py search_index --create || true'
         env:
-        - name: DEBUG
-          value: "False"
-        - name: REAL_HOST
-          value: meine-stadt-transparent.codeformuenster.org
-        - name: ELASTICSEARCH_URL
-          value: "elasticsearch-master:9200"
-        - name: MINIO_HOST
-          value: "minio:9000"
-        - name: STATIC_ROOT
-          value: /static
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: meine-stadt-transparent-secrets
               key: database_url
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: sentry_dsn
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
@@ -74,27 +73,30 @@ spec:
             secretKeyRef:
               name: minio
               key: secret-key
+        volumeMounts:
+        - name: dotenv
+          mountPath: /app/.env
+          subPath: .env
       containers:
       - name: meine-stadt-transparent
         image: konstin2/meine-stadt-transparent:v0.2.0
         ports:
         - containerPort: 8000
+        volumeMounts:
+        - name: dotenv
+          mountPath: /app/.env
+          subPath: .env
         env:
-        - name: DEBUG
-          value: "False"
-        - name: REAL_HOST
-          value: meine-stadt-transparent.codeformuenster.org
-        - name: ELASTICSEARCH_URL
-          value: "elasticsearch-master:9200"
-        - name: MINIO_HOST
-          value: "minio:9000"
-        - name: STATIC_ROOT
-          value: /static
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: meine-stadt-transparent-secrets
               key: database_url
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: sentry_dsn
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:

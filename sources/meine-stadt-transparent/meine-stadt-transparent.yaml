@@ -111,3 +111,8 @@ spec:
             secretKeyRef:
               name: minio
               key: access-key
+        - name: EMAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: email_url

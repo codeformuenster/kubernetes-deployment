@@ -68,3 +68,7 @@ images:
   newTag: RELEASE.2020-01-03T19-12-21Z
 - name: mariadb
   newTag: 10.4.11
+- name: konstin2/scrape-session
+  newTag: v0.1.2
+- name: konstin2/meine-stadt-transparent
+  newTag: 0.2.2

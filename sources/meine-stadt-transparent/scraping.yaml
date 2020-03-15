@@ -35,6 +35,12 @@ spec:
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume
+            env:
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: sentry_dsn
           containers:
           - name: import-scraped-json
             image: konstin2/meine-stadt-transparent:v0.2.0
@@ -72,5 +78,10 @@ spec:
                 secretKeyRef:
                   name: minio
                   key: access-key
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: sentry_dsn
           imagePullSecrets:
           - name: regcred

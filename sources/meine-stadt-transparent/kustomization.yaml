@@ -71,4 +71,4 @@ images:
 - name: konstin2/scrape-session
   newTag: v0.1.2
 - name: konstin2/meine-stadt-transparent
-  newTag: 0.2.2
+  newTag: v0.2.2

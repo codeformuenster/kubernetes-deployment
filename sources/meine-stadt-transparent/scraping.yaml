@@ -25,13 +25,9 @@ spec:
           initContainers:
           - name: download-and-parse
             image: konstin2/scrape-session:v0.1.1
-            imagePullPolicy: Always
-            command:
-            - /bin/bash
-            - -c
             args:
-            - 'set -e &&
-              /app/.venv/bin/python -m scrape_session.main scrape Münster'
+            - 'scrape'
+            - 'Münster'
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume
@@ -44,13 +40,14 @@ spec:
           containers:
           - name: import-scraped-json
             image: konstin2/meine-stadt-transparent:v0.2.0
+            imagePullPolicy: Always
             command:
             - /bin/bash
             - -c
             args:
             - 'set -e &&
-              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json &&
-              /app/.venv/bin/python /app/manage.py search_index --populate'
+              /app/.venv/bin/python /app/manage.py setup &&
+              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json'
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume

@@ -49,8 +49,7 @@ spec:
         - -c
         args:
         - 'set -e &&
-          /app/.venv/bin/python /app/manage.py migrate &&
-          /app/.venv/bin/python /app/manage.py search_index --create || true'
+          /app/.venv/bin/python /app/manage.py setup'
         env:
         - name: DATABASE_URL
           valueFrom:
@@ -72,6 +71,11 @@ spec:
             secretKeyRef:
               name: minio
               key: secret-key
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: access-key
         volumeMounts:
         - name: dotenv
           mountPath: /app/.env

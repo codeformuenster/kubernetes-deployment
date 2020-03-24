@@ -1,0 +1,74 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elasticsearch-master-config
+data:
+  elasticsearch.yml: |
+    path.data: /usr/share/elasticsearch/data
+
+    opendistro_security:
+      disabled: true
+      allow_default_init_securityindex: true
+      ssl.transport.enabled: true
+      ssl.transport.enforce_hostname_verification: false
+      ssl.transport.pemtrustedcas_filepath: root-ca.pem
+      ssl.transport.pemcert_filepath: node.pem
+      ssl.transport.pemkey_filepath: node-key.pem
+      ssl.http.enabled: false
+      nodes_dn:
+      - "CN=elasticsearch,O=cfm,L=ms,ST=nrw,C=DE"
+      authcz.admin_dn:
+      - "CN=admin,O=cfm,L=ms,ST=nrw,C=DE"
+
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch-master
+spec:
+  template:
+    spec:
+      containers:
+      - name: elasticsearch
+        env:
+        - name: ELASTIC_USERNAME
+          value: null
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-passwords
+              key: username
+        - name: ELASTIC_PASSWORD
+          value: null
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-passwords
+              key: password
+        - name: ES_JAVA_OPTS
+          #value: "-Xmx1g -Xms1g"
+          # special `-D` settings needed for the performance_analyzer to start:
+          value: |-
+            -Xmx1g
+            -Xms1g
+            -Djava.security.policy=file:///usr/share/elasticsearch/plugins/opendistro_performance_analyzer/pa_config/es_security.policy
+            -Dclk.tck=100
+            -Djdk.attach.allowAttachSelf=true
+        volumeMounts:
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/root-ca.pem
+          subPath: root-ca.pem
+          readOnly: true
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/node-key.pem
+          subPath: node-key.pem
+          readOnly: true
+        - name: elasticsearch-certificates
+          mountPath: /usr/share/elasticsearch/config/node.pem
+          subPath: node.pem
+          readOnly: true
+      volumes:
+      - name: elasticsearch-certificates
+        secret:
+          secretName: elasticsearch-certificates
+          defaultMode: 0600

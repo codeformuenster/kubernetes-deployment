@@ -64,6 +64,6 @@ images:
 - name: mariadb
   newTag: 10.4.11
 - name: konstin2/scrape-session
-  newTag: v0.1.3
+  newTag: v0.1.4
 - name: konstin2/meine-stadt-transparent
   newTag: v0.2.5

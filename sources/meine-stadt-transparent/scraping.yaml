@@ -5,7 +5,6 @@ metadata:
   labels:
     app.kubernetes.io/name: sessionnet-scraper-cronjob
     app.kubernetes.io/component: sessionnet-scraper
-    app.kubernetes.io/part-of: meine-stadt-transparent
 spec:
   schedule: "5 4 * * *"
   concurrencyPolicy: Replace
@@ -47,7 +46,8 @@ spec:
             args:
             - 'set -e &&
               /app/.venv/bin/python /app/manage.py setup &&
-              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json'
+              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json &&
+              /app/.venv/bin/python /app/manage.py notifyusers'
             volumeMounts:
             - mountPath: /app/storage
               name: scraping-data-volume

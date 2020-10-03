@@ -28,6 +28,7 @@ kind: StatefulSet
 metadata:
   name: elasticsearch-master
 spec:
+  replicas: 1 # for single node cluster
   template:
     spec:
       containers:
@@ -54,6 +55,10 @@ spec:
             -Djava.security.policy=file:///usr/share/elasticsearch/plugins/opendistro_performance_analyzer/pa_config/es_security.policy
             -Dclk.tck=100
             -Djdk.attach.allowAttachSelf=true
+        - name: cluster.initial_master_nodes
+          value: null
+        - name: discovery.type # for single node k8s cluster
+          value: single-node
         volumeMounts:
         - name: elasticsearch-certificates
           mountPath: /usr/share/elasticsearch/config/root-ca.pem

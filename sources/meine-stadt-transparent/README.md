@@ -26,6 +26,12 @@ kustomize build . | kubectl -n meine-stadt-transparent apply -f -
 kubectl -n meine-stadt-transparent create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```
 
+## Initial scrape
+
+```
+kubectl -n meine-stadt-transparent create job initial-scrape --from=cronjob/sessionnet-scraper
+```
+
 ## Map shows Japan
 
 Find your Gemeindeschlüssel

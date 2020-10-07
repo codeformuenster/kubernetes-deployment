@@ -1,0 +1,26 @@
+namespace: nextcloud-test
+
+resources:
+# - ./kibana-ingress.yaml
+# - ./elasticsearch-single-master-client-service.yaml
+
+generators:
+# - nextcloud-chart.yaml
+- nextcloud-chart-kind.yaml
+
+images:
+- name: docker.io/bitnami/mariadb
+  newTag: 10.4.14-debian-10-r39
+- name: nextcloud
+  # newTag: 19.0.3-apache
+  newTag: 20.0.0RC2-apache
+
+# secretGenerator:
+# - name: securityconfig
+#   files:
+#   - ./securityconfig/config.yml
+#   - ./securityconfig/internal_users.yml
+
+patches:
+# - ./elasticsearch-writable-configmap-patch.yaml
+# - ./elasticsearch-single-master-statefulset.yaml

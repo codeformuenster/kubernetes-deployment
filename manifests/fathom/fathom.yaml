@@ -119,3 +119,46 @@ spec:
       - name: fathom-database-volume
         persistentVolumeClaim:
           claimName: fathom-database-volume-claim
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fathom-backup
+  namespace: fathom
+  labels:
+    app.kubernetes.io/name: fathom
+spec:
+  schedule: "3 2 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          containers:
+            - name: backup-uploader
+              image: quay.io/codeformuenster/fathom-backup:2021-02-12
+              volumeMounts:
+                - mountPath: /tmp/backup
+                  name: temp-volume
+                - mountPath: /fathom-db
+                  name: fathom-database-volume
+                  readOnly: true
+              env:
+                - name: MC_HOST_c4m
+                  valueFrom:
+                    secretKeyRef:
+                      name: fathom-backup-s3-credentials
+                      key: MC_HOST_c4m
+                - name: FATHOM_DATABASE_NAME
+                  value: /fathom-db/fathom.db
+          restartPolicy: OnFailure
+          volumes:
+            - name: temp-volume
+              emptyDir:
+                medium: Memory
+            - name: fathom-database-volume
+              persistentVolumeClaim:
+                claimName: fathom-database-volume-claim
+                readOnly: true

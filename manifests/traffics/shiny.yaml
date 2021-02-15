@@ -17,7 +17,7 @@ spec:
     app.kubernetes.io/part-of: traffics
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: shiny
@@ -41,7 +41,7 @@ spec:
     secretName: traffics-tls
 
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: traffics-tls
@@ -52,7 +52,8 @@ metadata:
     app.kubernetes.io/part-of: traffics
 spec:
   secretName: traffics-tls
-  commonName: traffics.codeformuenster.org
+  dnsNames:
+  - traffics.codeformuenster.org
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
@@ -86,7 +87,7 @@ spec:
     spec:
       containers:
       - name: shiny
-        image: codeformuenster/traffic-dynamics-shiny:v0.6.3
+        image: codeformuenster/traffic-dynamics-shiny:v0.6.4
         ports:
         - containerPort: 3838
         # FIXME

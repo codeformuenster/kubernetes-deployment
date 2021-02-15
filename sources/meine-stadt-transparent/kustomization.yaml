@@ -66,7 +66,7 @@ images:
 - name: mariadb
   newTag: 10.4.14
 - name: konstin2/scrape-session
-  newTag: v0.1.8
+  newTag: v0.1.15
 - name: konstin2/meine-stadt-transparent
   newTag: v0.2.9
   # newName: quay.io/codeformuenster/meine-stadt-transparent-customization

@@ -13,7 +13,7 @@ spec:
     app.kubernetes.io/name: fathom
 
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: fathom
@@ -22,7 +22,7 @@ metadata:
     app.kubernetes.io/name: fathom
 spec:
   rules:
-  - host: fathom.codeformuenster.org
+  - host: ct.codeformuenster.org
     http:
       paths:
       - path: /
@@ -31,20 +31,21 @@ spec:
           servicePort: 8080
   tls:
   - hosts:
-    - fathom.codeformuenster.org
+    - ct.codeformuenster.org
     secretName: fathom-tls
 
 ---
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
-  name: fathom
+  name: fathom-tls
   namespace: fathom
   labels:
     app.kubernetes.io/name: fathom
 spec:
   secretName: fathom-tls
-  commonName: fathom.codeformuenster.org
+  dnsNames:
+    - ct.codeformuenster.org
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt
@@ -54,8 +55,9 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: fathom-dot-env
+  namespace: fathom
 data:
-  fathom-env: |
+  .env: |
     FATHOM_GZIP=true
     FATHOM_DEBUG=false
     FATHOM_DATABASE_DRIVER="sqlite3"
@@ -77,7 +79,7 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 5G
+      storage: 200Mi
 
 ---
 apiVersion: apps/v1
@@ -100,13 +102,14 @@ spec:
     spec:
       containers:
       - name: fathom
-        image: docker.io/usefathom/fathom@sha256:c2996d283c14f8b37424324080b32ad2aac0055b4c12572cf19d61e6d90784bf
+        image: quay.io/codeformuenster/fathom:flopp-fathom-93caa1a
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: fathom-config
           mountPath: /app/.env
           subPath: .env
+          readOnly: true
         - mountPath: /fathom-db
           name: fathom-database-volume
       volumes:
@@ -116,3 +119,46 @@ spec:
       - name: fathom-database-volume
         persistentVolumeClaim:
           claimName: fathom-database-volume-claim
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: fathom-backup
+  namespace: fathom
+  labels:
+    app.kubernetes.io/name: fathom
+spec:
+  schedule: "3 2 * * *"
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          containers:
+            - name: backup-uploader
+              image: quay.io/codeformuenster/fathom-backup:2021-02-12
+              volumeMounts:
+                - mountPath: /tmp/backup
+                  name: temp-volume
+                - mountPath: /fathom-db
+                  name: fathom-database-volume
+                  readOnly: true
+              env:
+                - name: MC_HOST_c4m
+                  valueFrom:
+                    secretKeyRef:
+                      name: fathom-backup-s3-credentials
+                      key: MC_HOST_c4m
+                - name: FATHOM_DATABASE_NAME
+                  value: /fathom-db/fathom.db
+          restartPolicy: OnFailure
+          volumes:
+            - name: temp-volume
+              emptyDir:
+                medium: Memory
+            - name: fathom-database-volume
+              persistentVolumeClaim:
+                claimName: fathom-database-volume-claim
+                readOnly: true

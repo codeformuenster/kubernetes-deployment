@@ -60,6 +60,11 @@ spec:
                 secretKeyRef:
                   name: meine-stadt-transparent-secrets
                   key: database_url
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: sentry_dsn
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
@@ -75,10 +80,10 @@ spec:
                 secretKeyRef:
                   name: minio
                   key: access-key
-            - name: SENTRY_DSN
+            - name: EMAIL_URL
               valueFrom:
                 secretKeyRef:
                   name: meine-stadt-transparent-secrets
-                  key: sentry_dsn
+                  key: email_url
           imagePullSecrets:
           - name: regcred

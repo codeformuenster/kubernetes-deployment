@@ -3,7 +3,7 @@ kind: Kustomization
 
 namespace: nominatim
 commonLabels:
-  app.kubernetes.io/part-of: nominatim
+  app.kubernetes.io/part-of: nominatim-geocoder
 
 resources:
 - postgis.yaml

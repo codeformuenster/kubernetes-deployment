@@ -6,13 +6,19 @@ commonLabels:
   app.kubernetes.io/part-of: meine-stadt-transparent
 
 resources:
-- github.com/codeformuenster/kustomized//minio?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
-- github.com/codeformuenster/kustomized//elasticsearch?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
-- github.com/codeformuenster/kustomized//mariadb?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+- ../../../kustomized/minio
+- ../../../kustomized/elasticsearch
+- ../../../kustomized/mariadb
+#- github.com/codeformuenster/kustomized//minio?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+#- github.com/codeformuenster/kustomized//elasticsearch?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+#- github.com/codeformuenster/kustomized//mariadb?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
 
 - ./meine-stadt-transparent.yaml
 - ./nginx.yaml
 - ./scraping.yaml
+
+#- ./meine-stadt-transparent-fe-staging.yaml
+#- ./nginx-fe-staging.yaml
 
 patchesStrategicMerge:
 - ./elasticsearch_patch.yaml
@@ -23,6 +29,10 @@ configMapGenerator:
   behavior: create
   files:
   - nginx.conf=./configs/nginx-http.conf
+#- name: nginx-fe-staging-config
+#  behavior: create
+#  files:
+#  - nginx.conf=./configs/nginx-http-fe-staging.conf
 - name: mariadb-env-vars
   behavior: replace
   literals:

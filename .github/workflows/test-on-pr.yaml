@@ -9,9 +9,10 @@ jobs:
       - name: 'checkout'
         uses: actions/checkout@v2
       - name: 'yamllint'
-        uses: ibiqlik/action-yamllint@v1
+        uses: ibiqlik/action-yamllint@v3
         with:
           config_file: .github/ci/yamllint.yml
+          file_or_dir: vsh-cluster
       - name: 'kustomize build'
         id: kustomize-build
         uses: karancode/kustomize-github-action@master

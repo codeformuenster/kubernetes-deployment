@@ -1,0 +1,27 @@
+name: 'check manifests'
+on: pull_request
+
+jobs:
+  check:
+    name: 'lint'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'checkout'
+        uses: actions/checkout@v2
+      - name: 'yamllint'
+        uses: ibiqlik/action-yamllint@v1
+        with:
+          config_file: .github/ci/yamllint.yml
+      - name: 'kustomize build'
+        id: kustomize-build
+        uses: karancode/kustomize-github-action@master
+        with:
+          kustomize_version: '4.0.5'
+          kustomize_build_dir: 'vsh-cluster'
+          kustomize_output_file: "rendered_output.yaml"
+      - name: 'install kubeval'
+        uses: lra/setup-kubeval@v1
+        # passing no version just uses the latest version
+      - name: 'validate rendered output'
+        # we need --ignore-missing-schemas because it doesn't understand some CRDs
+        run: kubeval --ignore-missing-schemas rendered_output.yaml

@@ -11,3 +11,11 @@ configMapGenerator:
 - name: cert-manager-clusterissuer
   files:
   - ./cluster-issuer.yaml
+
+patches:
+- path: ./cert-manager-webhook-patch.yaml
+  target:
+    group: apps
+    version: v1
+    kind: Deployment
+    name: cert-manager-webhook

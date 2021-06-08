@@ -5,4 +5,4 @@ resources:
 - ./longhorn
 - ./flux
 - ./ingress-nginx
-- ./cert-manager-chart.yaml
+- ./cert-manager.yaml

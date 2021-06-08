@@ -23,12 +23,22 @@ spec:
         name: jetstack
         namespace: flux-system
       version: v1.3.1
+  interval: 5m0s
+  releaseName: cert-manager
+  targetNamespace: cert-manager
   install:
     createNamespace: true
-  interval: 5m0s
-  targetNamespace: cert-manager
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
+
+  
+  # https://artifacthub.io/packages/helm/cert-manager/cert-manager#configuration
   values:
     installCRDs: true
+    # global:
+    #   podSecurityPolicy:
+    #     enabled: true
 
 ---
 apiVersion: cert-manager.io/v1

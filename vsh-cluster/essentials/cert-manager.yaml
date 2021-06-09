@@ -32,7 +32,6 @@ spec:
   upgrade:
     crds: CreateReplace
 
-  
   # https://artifacthub.io/packages/helm/cert-manager/cert-manager#configuration
   values:
     installCRDs: true

@@ -58,4 +58,3 @@ spec:
 ---
 # create configmaps for each dashboard
 # see https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards
-

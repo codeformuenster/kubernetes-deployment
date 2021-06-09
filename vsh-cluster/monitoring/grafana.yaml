@@ -1,0 +1,68 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://grafana.github.io/helm-charts
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: flux-system
+spec:
+  chart:
+    spec:
+      chart: grafana
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      version: "6.12.0"
+  dependsOn:
+  - name: kube-prometheus
+    namespace: flux-system
+  interval: 5m0s
+  releaseName: grafana
+  targetNamespace: monitoring
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    # remediation:
+  upgrade:
+    crds: CreateReplace
+    # force:
+  # postRenderers:
+  # - kustomize:
+
+  # https://github.com/grafana/helm-charts/tree/main/charts/grafana#configuration
+  values:
+    # ingress:
+    #   enabled: true
+    #   hosts:
+    #   - grafana-test.kube.vsh.codeformuenster.org
+    persistence: 
+      enabled: false
+    # datasources:
+    # dashboardsConfigMaps:
+    sidecar:
+      dashboards:
+        enabled: true
+    # admin:
+    #   existingSecret: ""
+  # rbac:
+  #   namespaced:
+    serviceMonitor:
+      enabled: true
+
+---
+# add admin secret
+# use sops
+
+---
+# create configmaps for each dashboard
+# see https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards
+

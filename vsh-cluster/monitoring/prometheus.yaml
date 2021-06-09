@@ -1,0 +1,61 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: prometheus
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://prometheus-community.github.io/helm-charts
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus
+  namespace: flux-system
+
+# https://github.com/fluxcd/helm-controller/blob/main/docs/spec/v2beta1/helmreleases.md
+spec:
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: flux-system
+      version: "16.5.0"
+  interval: 5m0s
+  releaseName: kube-prometheus
+  targetNamespace: monitoring
+  install:
+    createNamespace: true
+    crds: CreateReplace
+    remediation:
+      retries: 3
+      # retries: -1
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 1
+      remediateLastFailure: true
+    # force:
+  # postRenderers:
+  # - kustomize:
+
+  # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack#configuration
+  values:
+    kubeStateMetrics:
+      enabled: true
+    nodeExporter:
+      enabled: true
+    grafana:
+      enabled: false
+
+---
+# add admin secret
+# use sops
+
+---
+# create configmaps for each dashboard
+# see https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards
+

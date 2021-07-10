@@ -1,5 +1,22 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: ingress-nginx
+
 resources:
-- github.com/kubernetes/ingress-nginx/deploy/static/provider/baremetal?ref=helm-chart-3.31.0
+- https://raw.githubusercontent.com/kubernetes/ingress-nginx/helm-chart-3.34.0/deploy/static/provider/baremetal/deploy.yaml
+
+configMapGenerator:
+- name: ingress-nginx-controller
+  literals:
+  - use-forwarded-headers=true
+  - use-proxy-protocol=true
+  namespace: ingress-nginx
+  behavior: replace
+
+patches:
+- path: ./node-port-patch.yaml
+  target:
+    version: v1
+    kind: Service
+    name: ingress-nginx-controller

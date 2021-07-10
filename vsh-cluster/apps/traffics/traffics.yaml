@@ -19,7 +19,8 @@ spec:
       - backend:
           service:
             name: shiny
-            port: 3838
+            port:
+              number: 3838
         path: /
         pathType: Prefix
   tls:

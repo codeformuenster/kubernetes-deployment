@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: traffics
+spec:
+  ports:
+  - port: 3838
+    protocol: TCP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: traffics
+spec:
+  rules:
+  - host: traffics.kube.vsh.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: shiny
+            port: 3838
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - traffics.kube.vsh.codeformuenster.org
+    secretName: traffics-tls
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffics
+spec:
+  replicas: 1
+  template:
+    metadata:
+    spec:
+      containers:
+      - name: shiny
+        image: codeformuenster/traffic-dynamics-shiny:v0.6.4
+        ports:
+        - containerPort: 3838
+        securityContext:
+          runAsUser: 998
+          runAsGroup: 998
+          runAsNonRoot: true
+          allowPrivilegeEscalation: false
+        resources:
+          requests:
+            cpu: "0.5"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        volumeMounts:
+        - name: renviron-file
+          mountPath: /srv/shiny-server/.Renviron
+          subPath: .Renviron
+      volumes:
+      - name: renviron-file
+        configMap:
+          name: renviron
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renviron
+data:
+  .Renviron: |
+    FATHOM_SITEID=UFRTE

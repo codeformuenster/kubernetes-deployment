@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: traffics
 
 resources:
+- ./0-namespace.yaml
 - ./traffics.yaml
-
 
 commonLabels:
   app.kubernetes.io/name: traffics

@@ -6,11 +6,15 @@ spec:
   ports:
   - port: 3838
     protocol: TCP
+    name: shiny
+    targetPort: shiny
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: traffics
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
   - host: traffics.kube.vsh.codeformuenster.org
@@ -18,9 +22,9 @@ spec:
       paths:
       - backend:
           service:
-            name: shiny
+            name: traffics
             port:
-              number: 3838
+              name: shiny
         path: /
         pathType: Prefix
   tls:
@@ -42,6 +46,7 @@ spec:
         image: codeformuenster/traffic-dynamics-shiny:v0.6.4
         ports:
         - containerPort: 3838
+          name: shiny
         securityContext:
           runAsUser: 998
           runAsGroup: 998
@@ -58,10 +63,14 @@ spec:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron
           subPath: .Renviron
+        - name: cache-volume
+          mountPath: /var/lib/shiny-server
       volumes:
       - name: renviron-file
         configMap:
           name: renviron
+      - emptyDir: {}
+        name: cache-volume
 ---
 apiVersion: v1
 kind: ConfigMap

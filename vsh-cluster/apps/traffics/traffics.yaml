@@ -11,6 +11,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: traffics
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
   - host: traffics.kube.vsh.codeformuenster.org

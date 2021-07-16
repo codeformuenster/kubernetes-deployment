@@ -15,6 +15,7 @@ metadata:
   name: traffics
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/server-alias: "traffics.codeformuenster.org"
 spec:
   rules:
   - host: traffics.kube.vsh.codeformuenster.org
@@ -30,6 +31,7 @@ spec:
   tls:
   - hosts:
     - traffics.kube.vsh.codeformuenster.org
+    - traffics.codeformuenster.org
     secretName: traffics-tls
 ---
 apiVersion: apps/v1

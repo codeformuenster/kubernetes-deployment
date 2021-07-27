@@ -20,6 +20,9 @@ patchesStrategicMerge:
 - ./minio_pvc_patch.yaml
 
 configMapGenerator:
+- name: ingress-properties
+  literals:
+  - HOST=mst.kube.vsh.codeformuenster.org
 - name: nginx-config
   behavior: create
   files:
@@ -58,6 +61,14 @@ secretGenerator:
   envs:
   - ./secrets/meine-stadt-transparent.env
 
+vars:
+- name: HOST
+  objref:
+    apiVersion: v1
+    kind: ConfigMap
+    name: ingress-properties
+  fieldref:
+    fieldpath: data.HOST
 
 images:
 - name: minio/minio

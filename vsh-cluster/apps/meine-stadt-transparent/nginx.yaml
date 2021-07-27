@@ -27,7 +27,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
-  - host: mst.kube.vsh.codeformuenster.org
+  - host: $(HOST)
     http:
       paths:
       - backend:
@@ -39,7 +39,7 @@ spec:
         pathType: Prefix
   tls:
   - hosts:
-    - mst.kube.vsh.codeformuenster.org
+    - $(HOST)
     secretName: meine-stadt-transparent-tls
 
 ---

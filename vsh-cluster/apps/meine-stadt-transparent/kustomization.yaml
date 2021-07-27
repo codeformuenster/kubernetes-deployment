@@ -1,0 +1,73 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: meine-stadt-transparent
+commonLabels:
+  app.kubernetes.io/part-of: meine-stadt-transparent
+
+resources:
+- ./0-namespace.yaml
+- github.com/codeformuenster/kustomized//minio?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+- github.com/codeformuenster/kustomized//elasticsearch?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+- github.com/codeformuenster/kustomized//mariadb?ref=1e7ba4237e771b4281c0df468bd7177d3db15511
+
+- ./meine-stadt-transparent.yaml
+- ./nginx.yaml
+- ./scraping.yaml
+
+patchesStrategicMerge:
+- ./elasticsearch_patch.yaml
+- ./minio_pvc_patch.yaml
+
+configMapGenerator:
+- name: nginx-config
+  behavior: create
+  files:
+  - nginx.conf=./configs/nginx-http.conf
+- name: mariadb-env-vars
+  behavior: replace
+  literals:
+  - user=meine-stadt-transparent
+  - database=meine-stadt-transparent
+- name: meine-stadt-transparent-dot-env
+  behavior: create
+  files:
+  - .env=./configs/meine-stadt-transparent.env
+
+secretGenerator:
+- name: minio
+  behavior: replace
+  envs:
+  - ./secrets/minio.env
+- name: mariadb-passwords
+  behavior: replace
+  envs:
+  - ./secrets/mariadb.env
+- name: elasticsearch-passwords
+  behavior: create
+  envs:
+  - ./secrets/elasticsearch.env
+- name: elasticsearch-certificates
+  behavior: create
+  files:
+  - root-ca.pem=./secrets/certificates/elasticsearch-ca.crt
+  - node.pem=./secrets/certificates/elasticsearch.crt
+  - node-key.pem=./secrets/certificates/elasticsearch-pk8.key
+- name: meine-stadt-transparent-secrets
+  behavior: create
+  envs:
+  - ./secrets/meine-stadt-transparent.env
+
+
+images:
+- name: minio/minio
+  newTag: RELEASE.2021-07-27T02-40-15Z
+- name: mariadb
+  newTag: 10.6.3
+- name: konstin2/meine-stadt-transparent
+  digest: sha256:6c425aab7c6d4000c500982e82cd9385dd782ed7a44824db829dce3e6ee427b1
+  # newName: quay.io/codeformuenster/meine-stadt-transparent-customization
+  # digest: sha256:bb19fc3f870612570cb1e118c97d752412d0d5cd552f4cba226b0a61f3ba6d2f
+  #newTag: v0.2.5
+  #- name: quay.io/codeformuenster/meine-stadt-transparent-customization
+  #  digest: sha256:c3c31b9fa459881e14bc91e48b4a3fdc85c85d89117ed55481d20c23ec1d87c0

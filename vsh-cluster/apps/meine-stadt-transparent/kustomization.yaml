@@ -66,8 +66,3 @@ images:
   newTag: 10.6.3
 - name: konstin2/meine-stadt-transparent
   digest: sha256:6c425aab7c6d4000c500982e82cd9385dd782ed7a44824db829dce3e6ee427b1
-  # newName: quay.io/codeformuenster/meine-stadt-transparent-customization
-  # digest: sha256:bb19fc3f870612570cb1e118c97d752412d0d5cd552f4cba226b0a61f3ba6d2f
-  #newTag: v0.2.5
-  #- name: quay.io/codeformuenster/meine-stadt-transparent-customization
-  #  digest: sha256:c3c31b9fa459881e14bc91e48b4a3fdc85c85d89117ed55481d20c23ec1d87c0

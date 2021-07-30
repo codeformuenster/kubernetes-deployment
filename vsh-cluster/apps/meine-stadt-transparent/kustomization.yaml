@@ -13,7 +13,8 @@ resources:
 
 - ./meine-stadt-transparent.yaml
 - ./nginx.yaml
-- ./scraping.yaml
+- ./initial-import.yaml
+- ./update.yaml
 
 patchesStrategicMerge:
 - ./elasticsearch_patch.yaml

@@ -1,10 +1,10 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: sessionnet-import
+  name: update
   labels:
-    app.kubernetes.io/name: sessionnet-import
-    app.kubernetes.io/component: sessionnet-import
+    app.kubernetes.io/name: update
+    app.kubernetes.io/component: update
 spec:
   schedule: "5 4 * * *"
   concurrencyPolicy: Replace
@@ -16,41 +16,20 @@ spec:
         spec:
           restartPolicy: OnFailure
           volumes:
-          - name: scraping-data-volume
-            emptyDir: {}
           - name: dotenv
             configMap:
               name: meine-stadt-transparent-dot-env
-          initContainers:
-          - name: download-and-parse
-            image: konstin2/scrape-session:v0.1.1
-            args:
-            - 'scrape'
-            - 'Münster'
-            volumeMounts:
-            - mountPath: /app/storage
-              name: scraping-data-volume
-            env:
-            - name: SENTRY_DSN
-              valueFrom:
-                secretKeyRef:
-                  name: meine-stadt-transparent-secrets
-                  key: sentry_dsn
           containers:
           - name: import-scraped-json
-            image: konstin2/meine-stadt-transparent:v0.2.0
+            image: konstin2/meine-stadt-transparent:v0.2.9
             imagePullPolicy: Always
             command:
             - /bin/bash
             - -c
             args:
             - 'set -e &&
-              /app/.venv/bin/python /app/manage.py setup &&
-              /app/.venv/bin/python /app/manage.py import_json --allow-shrinkage /app/storage/json/Münster.json &&
-              /app/.venv/bin/python /app/manage.py notifyusers'
+              /app/.venv/bin/python /app/manage.py cron'
             volumeMounts:
-            - mountPath: /app/storage
-              name: scraping-data-volume
             - name: dotenv
               mountPath: /app/.env
               subPath: .env

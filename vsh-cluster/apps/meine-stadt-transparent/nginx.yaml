@@ -98,13 +98,29 @@ spec:
         ports:
         - containerPort: 8080
           name: nginx
+        - containerPort: 8081
+          name: probe
+        livenessProbe:
+          httpGet:
+            path: /ok
+            port: probe
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /ok
+            port: probe
+          initialDelaySeconds: 3
+          periodSeconds: 3
         volumeMounts:
         - mountPath: /static
           name: static-files-volume
           subPath: static
+          readOnly: true
         - mountPath: /etc/nginx/conf.d/meine-stadt-transparent.conf
           name: nginxconfig
           subPath: nginx.conf
+          readOnly: true
         - mountPath: /tmp
           name: nginx-tmp
         securityContext:

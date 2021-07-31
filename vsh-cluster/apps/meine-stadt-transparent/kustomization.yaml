@@ -21,9 +21,11 @@ patchesStrategicMerge:
 - ./minio_pvc_patch.yaml
 
 configMapGenerator:
-- name: ingress-properties
+- name: deployment-properties
   literals:
   - HOST=mst.kube.vsh.codeformuenster.org
+  - OPARL_BODY=https://oparl.stadt-muenster.de/bodies/0001
+  - AGS=05515000
 - name: nginx-config
   behavior: create
   files:
@@ -67,7 +69,7 @@ vars:
   objref:
     apiVersion: v1
     kind: ConfigMap
-    name: ingress-properties
+    name: deployment-properties
   fieldref:
     fieldpath: data.HOST
 

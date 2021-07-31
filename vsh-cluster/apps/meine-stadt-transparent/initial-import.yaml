@@ -38,9 +38,15 @@ spec:
           subPath: .env
         env:
         - name: OPARL_BODY
-          value: https://oparl.stadt-muenster.de/bodies/0001
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: OPARL_BODY
         - name: AGS
-          value: "05515000"
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: AGS
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:

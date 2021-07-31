@@ -26,10 +26,10 @@ configMapGenerator:
   - HOST=mst.kube.vsh.codeformuenster.org
   - OPARL_BODY=https://oparl.stadt-muenster.de/bodies/0001
   - AGS=05515000
-- name: nginx-config
+- name: nginx-template
   behavior: create
   files:
-  - nginx.conf=./configs/nginx-http.conf
+  - nginx-conf.template=./configs/nginx-conf.template
 - name: mariadb-env-vars
   behavior: replace
   literals:

@@ -1,7 +1,8 @@
 server {
     listen 8080;
     listen [::]:8080;
-    server_name mst.kube.vsh.codeformuenster.org;
+    #server_name mst.kube.vsh.codeformuenster.org;
+    server_name $HOST;
 
     # The actual application
     location / {

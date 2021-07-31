@@ -67,9 +67,11 @@ spec:
         emptyDir: {}
       - name: nginx-tmp
         emptyDir: {}
-      - name: nginxconfig
+      - name: nginx-confd
+        emptyDir: {}
+      - name: template
         configMap:
-          name: nginx-config
+          name: nginx-template
       initContainers:
       - name: copy-static
         image: konstin2/meine-stadt-transparent:v0.2.9
@@ -117,12 +119,20 @@ spec:
           name: static-files-volume
           subPath: static
           readOnly: true
-        - mountPath: /etc/nginx/conf.d/meine-stadt-transparent.conf
-          name: nginxconfig
-          subPath: nginx.conf
+        - mountPath: /etc/nginx/templates/meine-stadt-transparent.conf.template
+          name: template
+          subPath: nginx-conf.template
           readOnly: true
         - mountPath: /tmp
           name: nginx-tmp
+        - mountPath: /etc/nginx/conf.d
+          name: nginx-confd
+        env:
+        - name: HOST
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: HOST
         securityContext:
           runAsUser: 101
           runAsGroup: 101

@@ -1,0 +1,35 @@
+replicaCount: 1
+
+updateStrategy:
+  type: Recreate
+
+image:
+  repository: mediagis/nominatim
+  pullPolicy: IfNotPresent
+  tag: "3.7-5d18c6c6be68015c2a44b970e1d6ec9e3ab22af1"
+
+nominatimInitialize:
+  enabled: false
+  pbfUrl: https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.pbf
+
+nominatimReplications:
+  enabled: false
+  replicationUrl: https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-updates/
+
+nominatimUi:
+  enabled: false
+
+postgresql:
+  image:
+    repository: robjuz/postgresql-nominatim
+    tag: latest
+
+  persistence:
+    size: 50Gi
+
+  postgresqlExtendedConf:
+#    {
+#      "fsync": "off",
+#      "fullPageWrites": "off"
+#    }
+

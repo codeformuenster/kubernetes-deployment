@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/component: nginx
 spec:
   ports:
-  - port: 80
+  - port: 8080
     protocol: TCP
     name: http
     targetPort: nginx
@@ -65,6 +65,8 @@ spec:
       volumes:
       - name: static-files-volume
         emptyDir: {}
+      - name: nginx-tmp
+        emptyDir: {}
       - name: nginxconfig
         configMap:
           name: nginx-config
@@ -79,11 +81,22 @@ spec:
         volumeMounts:
         - mountPath: /static-files
           name: static-files-volume
+        securityContext:
+          runAsUser: 33
+          runAsGroup: 33
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 50m
+            memory: 50Mi
+          limits:
+            cpu: 60m
+            memory: 64Mi
       containers:
       - name: nginx
-        image: nginx:1.20-alpine
+        image: nginxinc/nginx-unprivileged:1.20-alpine
         ports:
-        - containerPort: 80
+        - containerPort: 8080
           name: nginx
         volumeMounts:
         - mountPath: /static
@@ -92,3 +105,16 @@ spec:
         - mountPath: /etc/nginx/conf.d/meine-stadt-transparent.conf
           name: nginxconfig
           subPath: nginx.conf
+        - mountPath: /tmp
+          name: nginx-tmp
+        securityContext:
+          runAsUser: 101
+          runAsGroup: 101
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi

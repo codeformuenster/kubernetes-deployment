@@ -26,6 +26,9 @@ configMapGenerator:
   - HOST=mst.kube.vsh.codeformuenster.org
   - OPARL_BODY=https://oparl.stadt-muenster.de/bodies/0001
   - AGS=05515000
+  - TEMPLATE_LOGO_NAME=Münster
+  - EMAIL_FROM=meine-stadt-transparent@codeformuenster.org
+  - EMAIL_FROM_NAME=Meine Stadt Transparent Münster
 - name: nginx-template
   behavior: create
   files:

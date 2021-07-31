@@ -74,6 +74,31 @@ spec:
             secretKeyRef:
               name: minio
               key: access-key
+        - name: EMAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: email_url
+        - name: REAL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: HOST
+        - name: TEMPLATE_LOGO_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: TEMPLATE_LOGO_NAME
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM
+        - name: EMAIL_FROM_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM_NAME
         volumeMounts:
         - name: dotenv
           mountPath: /app/.env
@@ -119,3 +144,23 @@ spec:
             secretKeyRef:
               name: meine-stadt-transparent-secrets
               key: email_url
+        - name: REAL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: HOST
+        - name: TEMPLATE_LOGO_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: TEMPLATE_LOGO_NAME
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM
+        - name: EMAIL_FROM_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM_NAME

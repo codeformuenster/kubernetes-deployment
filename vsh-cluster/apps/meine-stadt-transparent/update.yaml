@@ -1,13 +1,13 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: update
+  name: import-cron
   labels:
-    app.kubernetes.io/name: update
-    app.kubernetes.io/component: update
+    app.kubernetes.io/name: import-cron
+    app.kubernetes.io/component: import-cron
 spec:
   schedule: "5 4 * * *"
-  concurrencyPolicy: Replace
+  concurrencyPolicy: Forbid
   suspend: false
   jobTemplate:
     spec:
@@ -20,9 +20,8 @@ spec:
             configMap:
               name: meine-stadt-transparent-dot-env
           containers:
-          - name: import-scraped-json
+          - name: import-cron
             image: konstin2/meine-stadt-transparent:v0.2.9
-            imagePullPolicy: Always
             command:
             - /bin/bash
             - -c
@@ -64,5 +63,23 @@ spec:
                 secretKeyRef:
                   name: meine-stadt-transparent-secrets
                   key: email_url
-          imagePullSecrets:
-          - name: regcred
+            - name: REAL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: HOST
+            - name: TEMPLATE_LOGO_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: TEMPLATE_LOGO_NAME
+            - name: EMAIL_FROM
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: EMAIL_FROM
+            - name: EMAIL_FROM_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: EMAIL_FROM_NAME

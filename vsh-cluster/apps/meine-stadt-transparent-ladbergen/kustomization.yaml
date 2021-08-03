@@ -10,7 +10,7 @@ configMapGenerator:
 - name: deployment-properties
   behavior: merge
   literals:
-  - HOST=mst-ladbergen.kube.vsh.codeformuenster.org
+  - HOST=ratsinfo.mein-ladbergen.de
   - OPARL_BODY=https://ladbergen.ratsinfomanagement.net/webservice/oparl/v1.1/body/1
   - AGS=05566032
   - TEMPLATE_LOGO_NAME=Ladbergen

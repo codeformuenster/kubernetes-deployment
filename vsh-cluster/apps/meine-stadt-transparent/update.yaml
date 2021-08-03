@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: import-cron
     app.kubernetes.io/component: import-cron
 spec:
-  schedule: "5 4 * * *"
+  schedule: "*/30 6-18 * * 1-5" # At every 30th minute past every hour from 6 through 18 on every day-of-week from Monday through Friday
   concurrencyPolicy: Forbid
   suspend: false
   jobTemplate:

@@ -80,6 +80,12 @@ images:
 - name: minio/minio
   newTag: RELEASE.2021-07-27T02-40-15Z
 - name: mariadb
-  newTag: 10.6.3
+  newTag: 10.6.4
+- name: codeformuenster/elasticsearch-oss-plugins
+  # newName: docker.elastic.co/elasticsearch/elasticsearch
+  newTag: 7.10.2-testing1
 - name: konstin2/meine-stadt-transparent
-  digest: sha256:6c425aab7c6d4000c500982e82cd9385dd782ed7a44824db829dce3e6ee427b1
+  digest: sha256:f30d46e974bff2a832f1eb06edda1f47aa03eb6b7e5ff2838fde306d28cffb74
+
+  # newName: quay.io/codeformuenster/meine-stadt-transparent
+  # digest: sha256:0b8f7fe9281a6eb9aa0bb725159d16cb24766ed041797344863d42d0b599e925

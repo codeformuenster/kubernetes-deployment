@@ -7,6 +7,7 @@ metadata:
     app.kubernetes.io/component: initial-import
 spec:
   parallelism: 1
+  completions: 1
   template:
     spec:
       restartPolicy: OnFailure
@@ -14,23 +15,108 @@ spec:
       - name: dotenv
         configMap:
           name: meine-stadt-transparent-dot-env
+      initContainers:
+      - name: import
+        image: konstin2/meine-stadt-transparent:v0.2.9
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - |
+          set -e
+          echo "Initial Import of $OPARL_BODY"
+          /app/.venv/bin/python /app/manage.py setup
+
+          set +e
+          /app/.venv/bin/python /app/manage.py import "$OPARL_BODY" --ags "$AGS" --skip-files
+          retval=$?
+          set -e
+
+          if [[ "${retval}" != 0 ]]; then
+            /app/.venv/bin/python /app/manage.py import_retry
+          fi
+
+          echo "done"
+        stdin: true
+        tty: true
+        volumeMounts:
+        - name: dotenv
+          mountPath: /app/.env
+          subPath: .env
+        env:
+        - name: OPARL_BODY
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: OPARL_BODY
+        - name: AGS
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: AGS
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: database_url
+        - name: SENTRY_DSN
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: sentry_dsn
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: secret_key
+        - name: MINIO_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: secret-key
+        - name: MINIO_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: minio
+              key: access-key
+        - name: EMAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: meine-stadt-transparent-secrets
+              key: email_url
+        - name: REAL_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: HOST
+        - name: TEMPLATE_LOGO_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: TEMPLATE_LOGO_NAME
+        - name: EMAIL_FROM
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM
+        - name: EMAIL_FROM_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: deployment-properties
+              key: EMAIL_FROM_NAME
       containers:
-      - name: import-scraped-json
+      - name: import-files
         image: konstin2/meine-stadt-transparent:v0.2.9
         command:
         - /bin/bash
         - -c
         args:
         - 'set -e &&
-          echo "Initial Import of $OPARL_BODY" &&
-          /app/.venv/bin/python /app/manage.py setup &&
-          /app/.venv/bin/python /app/manage.py import_body --manual "$OPARL_BODY" &&
-          /app/.venv/bin/python /app/manage.py import_streets 1 --ags "$AGS" &&
-          /app/.venv/bin/python /app/manage.py import_amenities school 1 --ags "$AGS" &&
-          /app/.venv/bin/python /app/manage.py import_outline 1 --ags "$AGS" &&
-          /app/.venv/bin/python /app/manage.py import_fetch &&
-          /app/.venv/bin/python /app/manage.py import_objects &&
-          /app/.venv/bin/python /app/manage.py import_files'
+          echo "Importing files" &&
+          /app/.venv/bin/python /app/manage.py import_files &&
+          echo "done"'
+        stdin: true
+        tty: true
         volumeMounts:
         - name: dotenv
           mountPath: /app/.env

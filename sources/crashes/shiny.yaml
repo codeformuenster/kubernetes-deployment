@@ -13,10 +13,12 @@ spec:
     app.kubernetes.io/component: webserver
 
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: shiny
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
   labels:
     app.kubernetes.io/name: shiny
     app.kubernetes.io/component: webserver
@@ -26,29 +28,16 @@ spec:
     http:
       paths:
       - path: /
+        pathType: Prefix
         backend:
-          serviceName: shiny
-          servicePort: 3838
+          service:
+            name: shiny
+            port:
+              number: 3838
   tls:
   - hosts:
     - crashes.codeformuenster.org
     secretName: crashes-tls
-
----
-apiVersion: cert-manager.io/v1alpha2
-kind: Certificate
-metadata:
-  name: crashes-tls
-  labels:
-    app.kubernetes.io/name: shiny
-    app.kubernetes.io/component: webserver
-spec:
-  secretName: crashes-tls
-  dnsNames:
-  - crashes.codeformuenster.org
-  issuerRef:
-    kind: ClusterIssuer
-    name: letsencrypt
 
 ---
 apiVersion: apps/v1

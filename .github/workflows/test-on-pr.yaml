@@ -9,10 +9,10 @@ jobs:
       - name: 'checkout'
         uses: actions/checkout@v2
 
-      - name: Build and validate kustomizations
+      - name: Build and validate crashes kustomizations
         uses: ubergesundheit/kube-check-action@v1.0.2
         with:
-          kustomize_build_input: manifests/traffics
+          kustomize_build_input: sources/crashes
           kubeconform_flags: "-strict -kubernetes-version 1.24.10"
 
   check-traffics:
@@ -22,33 +22,8 @@ jobs:
       - name: 'checkout'
         uses: actions/checkout@v2
 
-      - name: Build and validate kustomizations
+      - name: Build and validate traffics kustomizations
         uses: ubergesundheit/kube-check-action@v1.0.2
         with:
-          kustomize_build_input: manifests/traffics
+          kustomize_build_input: sources/traffics
           kubeconform_flags: "-strict -kubernetes-version 1.24.10"
-
-      # - name: 'yamllint'
-      #   uses: ibiqlik/action-yamllint@v3
-      #   with:
-      #     config_file: .github/ci/yamllint.yml
-      #     file_or_dir: vsh-cluster
-
-      # - name: 'kustomize build'
-      #   id: kustomize-build
-      #   uses: karancode/kustomize-github-action@v1.2.2
-      #   with:
-      #     kustomize_version: "4.1.3"
-      #     kustomize_build_dir: "vsh-cluster"
-      #     kustomize_output_file: "rendered_output.yaml"
-
-      # - name: 'install kubeval'
-      #   uses: lra/setup-kubeval@v1
-      #   # passing no version just uses the latest version
-      # - name: 'validate rendered output'
-      #   # we need --ignore-missing-schemas because it doesn't understand some CRDs
-      #   run: |
-      #     echo "INFO - Downloading Flux OpenAPI schemas"
-      #     mkdir -p /tmp/flux-crd-schemas/master-standalone-strict
-      #     curl -sL https://github.com/fluxcd/flux2/releases/latest/download/crd-schemas.tar.gz | tar zxf - -C /tmp/flux-crd-schemas/master-standalone-strict
-      #     kubeval --ignore-missing-schemas rendered_output.yaml --additional-schema-locations=file:///tmp/flux-crd-schemas

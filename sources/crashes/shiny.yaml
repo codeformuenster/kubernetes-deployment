@@ -62,6 +62,10 @@ spec:
       containers:
       - name: shiny
         image: quay.io/codeformuenster/crashes-shiny:4.9.9
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "640m"
         ports:
         - containerPort: 3838
         volumeMounts:

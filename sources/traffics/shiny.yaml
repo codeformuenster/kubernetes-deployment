@@ -55,9 +55,6 @@ metadata:
     app.kubernetes.io/name: shiny
     app.kubernetes.io/component: webserver
     app.kubernetes.io/part-of: traffics
-  # annotations:
-  #   flux.weave.works/automated: "true"
-  #   flux.weave.works/tag.elasticsearch: glob:v0.*
 spec:
   replicas: 1
   selector:
@@ -77,9 +74,10 @@ spec:
         image: codeformuenster/traffic-dynamics-shiny:v0.6.4
         ports:
         - containerPort: 3838
-        # FIXME
-        # resources:
-        #   null
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "640m"
         volumeMounts:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron

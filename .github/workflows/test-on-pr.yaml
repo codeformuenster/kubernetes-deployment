@@ -2,8 +2,8 @@ name: 'check manifests'
 on: pull_request
 
 jobs:
-  lint:
-    name: 'Lint ${{ matrix.directory }}'
+  "lint '${{ matrix.directory }}'":
+    name: "Lint '${{ matrix.directory }}' kustomization"
     runs-on: ubuntu-latest
     strategy:
        fail-fast: false
@@ -22,17 +22,3 @@ jobs:
           kustomize_build_input: ${{ matrix.directory }}
           kube-linter_flags: "--config ${{ matrix.directory }}/.kube-linter.yaml"
           kubeconform_flags: "-strict -kubernetes-version 1.24.10"
-
-  # check-traffics:
-  #   name: 'lint traffics'
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: 'checkout'
-  #       uses: actions/checkout@v3
-
-  #     - name: Build and validate traffics kustomizations
-  #       uses: ubergesundheit/kube-check-action@v1.0.2
-  #       with:
-  #         kustomize_build_input: sources/traffics
-  #         kube-linter_flags: "--config sources/traffics/.kube-linter.yaml"
-  #         kubeconform_flags: "-strict -kubernetes-version 1.24.10"

@@ -2,7 +2,7 @@ name: 'check manifests'
 on: pull_request
 
 jobs:
-  "lint '${{ matrix.directory }}'":
+  "Lint kustomizations":
     name: "Lint '${{ matrix.directory }}' kustomization"
     runs-on: ubuntu-latest
     strategy:

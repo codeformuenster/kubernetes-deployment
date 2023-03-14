@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build and validate ${{ matrix.directory }} kustomizations
-        uses: ubergesundheit/kube-check-action@v1.0.2
+        uses: ubergesundheit/kube-check-action@main
         with:
           kustomize_build_input: ${{ matrix.directory }}
           kube-linter_flags: "--config ${{ matrix.directory }}/.kube-linter.yaml"

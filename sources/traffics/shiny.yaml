@@ -44,7 +44,12 @@ spec:
   - hosts:
     - traffics.codeformuenster.org
     secretName: traffics-tls
-
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shiny-traffics
+automountServiceAccountToken: false
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -69,11 +74,23 @@ spec:
         app.kubernetes.io/component: webserver
         app.kubernetes.io/part-of: traffics
     spec:
+      serviceAccountName: shiny-traffics
       containers:
       - name: shiny
         image: codeformuenster/traffic-dynamics-shiny:v0.6.4
         ports:
         - containerPort: 3838
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 998
+          runAsNonRoot: true
+          runAsUser: 998
+          seccompProfile:
+            type: RuntimeDefault
         resources:
           requests:
             memory: "1024Mi"
@@ -82,10 +99,21 @@ spec:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron
           subPath: .Renviron
+        - name: varlogshinyserver
+          mountPath: /var/log/shiny-server
+        - name: varlibshinyserver
+          mountPath: /var/lib/shiny-server
       volumes:
       - name: renviron-file
         configMap:
           name: renviron
+      - name: varlogshinyserver
+        emptyDir:
+          sizeLimit: 100Mi
+      - name: varlibshinyserver
+        emptyDir:
+          sizeLimit: 100Mi
+
 ---
 apiVersion: v1
 kind: ConfigMap

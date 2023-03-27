@@ -1,5 +1,11 @@
 name: 'check manifests'
-on: pull_request
+
+on:
+  pull_request:
+    paths:
+    - 'sources/crashes/*.yaml'
+    - 'sources/traffics/*.yaml'
+    - '.github/workflows/test-on-pr.yaml'
 
 jobs:
   lint:

@@ -49,6 +49,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: shiny-traffics
+  namespace: traffics
 automountServiceAccountToken: false
 ---
 apiVersion: apps/v1

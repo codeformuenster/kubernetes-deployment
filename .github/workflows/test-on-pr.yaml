@@ -21,4 +21,4 @@ jobs:
         with:
           kustomize_build_input: ${{ matrix.directory }}
           kube-linter_flags: "--config ${{ matrix.directory }}/.kube-linter.yaml"
-          kubeconform_flags: "-strict -kubernetes-version 1.24.10"
+          kubeconform_flags: "-strict -kubernetes-version 1.25.8"

@@ -1,0 +1,85 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: import-cron
+  labels:
+    app.kubernetes.io/name: import-cron
+    app.kubernetes.io/component: import-cron
+spec:
+  schedule: "*/30 6-18 * * 1-5"  # At every 30th minute past every hour from 6 through 18 on every day-of-week from Monday through Friday
+  concurrencyPolicy: Forbid
+  suspend: false
+  jobTemplate:
+    spec:
+      parallelism: 1
+      template:
+        spec:
+          restartPolicy: OnFailure
+          volumes:
+          - name: dotenv
+            configMap:
+              name: meine-stadt-transparent-dot-env
+          containers:
+          - name: import-cron
+            image: konstin2/meine-stadt-transparent:v0.2.9
+            command:
+            - /bin/bash
+            - -c
+            args:
+            - 'set -e &&
+              /app/.venv/bin/python /app/manage.py cron'
+            volumeMounts:
+            - name: dotenv
+              mountPath: /app/.env
+              subPath: .env
+            env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: database_url
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: sentry_dsn
+            - name: SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: secret_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: secret-key
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio
+                  key: access-key
+            - name: EMAIL_URL
+              valueFrom:
+                secretKeyRef:
+                  name: meine-stadt-transparent-secrets
+                  key: email_url
+            - name: REAL_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: HOST
+            - name: TEMPLATE_LOGO_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: TEMPLATE_LOGO_NAME
+            - name: EMAIL_FROM
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: EMAIL_FROM
+            - name: EMAIL_FROM_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: deployment-properties
+                  key: EMAIL_FROM_NAME

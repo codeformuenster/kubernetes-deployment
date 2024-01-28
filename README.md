@@ -1,13 +1,7 @@
 # Deployment on Kubernetes
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcodeformuenster%2Fkubernetes-deployment.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcodeformuenster%2Fkubernetes-deployment?ref=badge_shield)
 
+License: [MIT](LICENSE)
 
-> experimental, work in progress, please fix me
+### Old master
 
-For now see:
-- [terraform](terraform)
-- [manifests](manifests)
-
-
-## License
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fcodeformuenster%2Fkubernetes-deployment.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fcodeformuenster%2Fkubernetes-deployment?ref=badge_large)
+Old master branch has been preserved in [`old-master`](https://github.com/codeformuenster/kubernetes-deployment/tree/old-master) branch.

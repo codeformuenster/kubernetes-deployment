@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
 - ./helloworld
 - ./crashes
+- ./traffics

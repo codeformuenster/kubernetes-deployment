@@ -18,7 +18,7 @@ kind: Ingress
 metadata:
   name: shiny
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/cluster-issuer: letsencrypt-c4m
   labels:
     app.kubernetes.io/name: shiny
     app.kubernetes.io/component: webserver
@@ -61,10 +61,10 @@ spec:
     spec:
       containers:
       - name: shiny
-        image: quay.io/codeformuenster/crashes-shiny:4.9.9
+        image: quay.io/codeformuenster/crashes-shiny:v6.7.2
         resources:
           requests:
-            memory: "1024Mi"
+            memory: "350Mi"
             cpu: "640m"
         ports:
         - containerPort: 3838
@@ -87,4 +87,3 @@ metadata:
 data:
   .Renviron: |
     POSTGRES_HOST=postgis
-    FATHOM_SITEID=ESCBJ

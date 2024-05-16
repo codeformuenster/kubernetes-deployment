@@ -3,10 +3,12 @@ kind: Kustomization
 
 namespace: c4m-crashes
 
-commonLabels:
-  app.kubernetes.io/part-of: crashes
-
 resources:
 - ../../base/namespace
 - ./postgis.yaml
 - ./shiny.yaml
+
+labels:
+- includeSelectors: true
+  pairs:
+    app.kubernetes.io/part-of: crashfals

@@ -4,7 +4,8 @@ kind: Kustomization
 commonAnnotations:
   sourceRepo: https://github.com/codeformuenster/kubernetes-deployment
 
-buildMetadata: [originAnnotations]
+buildMetadata:
+- originAnnotations
 
 resources:
 - ../apps

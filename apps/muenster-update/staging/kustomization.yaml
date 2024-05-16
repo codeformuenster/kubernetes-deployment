@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: c4m-muenster-jetzt-staging
 
 resources:
-- ../
 - ../../../base/namespace-pss-restricted
 - muenster-jetzt-staging.enc.yaml
 - sync.yaml

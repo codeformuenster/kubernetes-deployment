@@ -1,3 +1,0 @@
-port: "12000"
-endpoint: "/example"
-method: "POST"

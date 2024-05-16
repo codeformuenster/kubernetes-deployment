@@ -1,8 +1,0 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-ingress-controller
-spec:
-  template:
-    spec:
-      hostNetwork: true

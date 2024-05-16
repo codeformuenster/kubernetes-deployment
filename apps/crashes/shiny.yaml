@@ -77,6 +77,9 @@ spec:
             cpu: "640m"
         ports:
         - containerPort: 3838
+        env:
+        - name: TMPDIR
+          value: /tmp/shiny
         securityContext:
           allowPrivilegeEscalation: false
           capabilities:
@@ -92,19 +95,20 @@ spec:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron
           subPath: .Renviron
-        - name: varlogshinyserver
+        - name: shiny-tmp
           mountPath: /var/log/shiny-server
-        - name: varlibshinyserver
+          subPath: log
+        - name: shiny-tmp
           mountPath: /var/lib/shiny-server
+          subPath: lib
+        - name: shiny-tmp
+          mountPath: /tmp/shiny
+          subPath: tmp
       volumes:
       - name: renviron-file
         configMap:
           name: renviron
-      - name: varlogshinyserver
-        emptyDir:
-          medium: Memory
-          sizeLimit: 100Mi
-      - name: varlibshinyserver
+      - name: shiny-tmp
         emptyDir:
           medium: Memory
           sizeLimit: 100Mi

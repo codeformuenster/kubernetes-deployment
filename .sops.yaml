@@ -1,0 +1,5 @@
+creation_rules:
+- encrypted_regex: ^(data|stringData)$
+  path_regex: apps/*/*
+  age: >-
+    age1nzqaqzm7wfz04ld5esukhkghmayzt8xmnrjlau0rdcycjlu53pesgew089

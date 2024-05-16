@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-- ./helloworld
-- ./crashes
-- ./traffics
-- ./muenster-update
+- ./gitrepo.yaml
+- ./image-automations.yaml
+- ./staging
+- ./production

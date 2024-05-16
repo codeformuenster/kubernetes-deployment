@@ -1,0 +1,57 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: muenster-jetzt-staging
+spec:
+  interval: 1h
+  targetNamespace: c4m-muenster-jetzt-staging
+  sourceRef:
+    kind: GitRepository
+    name: codeformuenster-muenster-jetzt
+    namespace: flux-system
+  path: "."
+  prune: true
+  images:
+  - name: docker.io/codeformuenster/muenster-jetzt-frontend
+    newTag: master-37865cb-1702974266 # {"$imagepolicy": "flux-system:muenster-jetzt-frontend-staging:tag"}
+  - name: docker.io/codeformuenster/muenster-jetzt-api
+    newTag: master-37865cb-1702974204 # {"$imagepolicy": "flux-system:muenster-jetzt-api-staging:tag"}
+  - name: docker.io/codeformuenster/muenster-jetzt-api-static
+    newTag: master-37865cb-1702974212 # {"$imagepolicy": "flux-system:muenster-jetzt-api-static-staging:tag"}
+  patches:
+  - patch: |
+      - op: add
+        path: /spec/ingressClassName
+        value: traefik
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1cluster-issuer
+        value: letsencrypt-c4m
+    target:
+      kind: Ingress
+  - patch: |
+      - op: add
+        path: /spec/rules/0/host
+        value: api.staging.muenster-update.de
+      - op: add
+        path: /spec/tls
+        value: [{ hosts: [api.staging.muenster-update.de], secretName: api-tls }]
+    target:
+      kind: Ingress
+      name: backend
+  - patch: |
+      - op: add
+        path: /spec/rules/0/host
+        value: staging.muenster-update.de
+      - op: add
+        path: /spec/tls
+        value: [{ hosts: [staging.muenster-update.de], secretName: frontend-tls }]
+    target:
+      kind: Ingress
+      name: frontend
+  - patch: |
+      - op: add
+        path: /spec/template/metadata/labels/host
+        value: api.staging.muenster-update.de
+    target:
+      kind: Deployment
+      name: backend-api

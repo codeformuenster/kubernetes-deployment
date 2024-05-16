@@ -1,0 +1,83 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: muenster-jetzt-api-container-image
+  namespace: flux-system
+spec:
+  image: docker.io/codeformuenster/muenster-jetzt-api
+  interval: 30m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: muenster-jetzt-api-static-container-image
+  namespace: flux-system
+spec:
+  image: docker.io/codeformuenster/muenster-jetzt-api-static
+  interval: 30m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: muenster-jetzt-frontend-container-image
+  namespace: flux-system
+spec:
+  image: docker.io/codeformuenster/muenster-jetzt-frontend
+  interval: 30m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: muenster-jetzt-api-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-jetzt-api-container-image
+  policy:
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    extract: '$timestamp'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: muenster-jetzt-api-static-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-jetzt-api-static-container-image
+  policy:
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    extract: '$timestamp'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: muenster-jetzt-frontend-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-jetzt-frontend-container-image
+  policy:
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    extract: '$timestamp'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: muenster-jetzt-production
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-jetzt-frontend-container-image
+  policy:
+    semver:
+      range: ">=v0.1.0"

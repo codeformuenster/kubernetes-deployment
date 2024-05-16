@@ -13,6 +13,13 @@ spec:
     app.kubernetes.io/component: webserver
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shiny-crashes
+automountServiceAccountToken: false
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -59,6 +66,8 @@ spec:
         app.kubernetes.io/name: shiny
         app.kubernetes.io/component: webserver
     spec:
+      automountServiceAccountToken: false
+      serviceAccountName: shiny-crashes
       containers:
       - name: shiny
         image: quay.io/codeformuenster/crashes-shiny:v6.7.2
@@ -68,14 +77,37 @@ spec:
             cpu: "640m"
         ports:
         - containerPort: 3838
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 998
+          runAsNonRoot: true
+          runAsUser: 998
+          seccompProfile:
+            type: RuntimeDefault
         volumeMounts:
         - name: renviron-file
           mountPath: /srv/shiny-server/.Renviron
           subPath: .Renviron
+        - name: varlogshinyserver
+          mountPath: /var/log/shiny-server
+        - name: varlibshinyserver
+          mountPath: /var/lib/shiny-server
       volumes:
       - name: renviron-file
         configMap:
           name: renviron
+      - name: varlogshinyserver
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi
+      - name: varlibshinyserver
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi
 ---
 apiVersion: v1
 kind: ConfigMap

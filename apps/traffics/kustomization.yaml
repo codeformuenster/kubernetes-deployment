@@ -4,5 +4,5 @@ kind: Kustomization
 namespace: c4m-traffics
 
 resources:
-- ../../base/namespace
+- ../../base/namespace-pss-restricted
 - shiny.yaml

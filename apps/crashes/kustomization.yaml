@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: c4m-crashes
 
 resources:
-- ../../base/namespace
+- ../../base/namespace-pss-restricted
 - ./postgis.yaml
 - ./shiny.yaml
 

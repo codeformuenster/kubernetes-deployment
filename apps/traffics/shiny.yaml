@@ -17,6 +17,14 @@ spec:
     app.kubernetes.io/part-of: traffics
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shiny-traffics
+  namespace: traffics
+automountServiceAccountToken: false
+
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -69,12 +77,39 @@ spec:
         app.kubernetes.io/component: webserver
         app.kubernetes.io/part-of: traffics
     spec:
+      automountServiceAccountToken: false
+      serviceAccountName: shiny-traffics
       containers:
       - name: shiny
         image: codeformuenster/traffic-dynamics-shiny:v0.6.4
         ports:
         - containerPort: 3838
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 998
+          runAsNonRoot: true
+          runAsUser: 998
+          seccompProfile:
+            type: RuntimeDefault
         resources:
           requests:
             memory: "200Mi"
             cpu: "640m"
+        volumeMounts:
+        - name: varlogshinyserver
+          mountPath: /var/log/shiny-server
+        - name: varlibshinyserver
+          mountPath: /var/lib/shiny-server
+      volumes:
+      - name: varlogshinyserver
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi
+      - name: varlibshinyserver
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi

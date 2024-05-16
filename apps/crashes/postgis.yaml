@@ -15,10 +15,19 @@ spec:
     app.kubernetes.io/component: database
 
 ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: postgis-crashes
+automountServiceAccountToken: false
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgis
+  annotations:
+    "ignore-check.kube-linter.io/no-read-only-root-fs": "writable fs is required"
   labels:
     app.kubernetes.io/name: postgis
     app.kubernetes.io/component: database
@@ -37,6 +46,8 @@ spec:
         app.kubernetes.io/component: database
     spec:
       terminationGracePeriodSeconds: 10
+      automountServiceAccountToken: false
+      serviceAccountName: postgis-crashes
       containers:
       - name: postgis
         image: quay.io/codeformuenster/verkehrsunfaelle:2019-11-15
@@ -47,5 +58,15 @@ spec:
           requests:
             memory: "360Mi"
             cpu: "100m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 70
+          runAsNonRoot: true
+          runAsUser: 70
+          seccompProfile:
+            type: RuntimeDefault
           # limits:
           #   cpu: "5000m"

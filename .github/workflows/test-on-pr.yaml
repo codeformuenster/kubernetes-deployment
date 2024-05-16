@@ -3,22 +3,15 @@ on: pull_request
 
 jobs:
   lint:
-    name: "Lint '${{ matrix.directory }}' kustomization"
+    name: "Lint kustomization"
     runs-on: ubuntu-latest
-    strategy:
-       fail-fast: false
-       matrix:
-        directory:
-        - sources/crashes
-        - sources/traffics
-
     steps:
       - name: 'checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Build and validate ${{ matrix.directory }} kustomizations
-        uses: ubergesundheit/kube-check-action@v1.0.2
+      - name: Build and validate kustomization
+        uses: ubergesundheit/kube-check-action@main
         with:
-          kustomize_build_input: ${{ matrix.directory }}
-          kube-linter_flags: "--config ${{ matrix.directory }}/.kube-linter.yaml"
-          kubeconform_flags: "-strict -kubernetes-version 1.24.10"
+          kustomize_build_input: sync
+          kube-linter_flags: "--config .kube-linter.yaml"
+          kubeconform_flags: "-strict -kubernetes-version 1.28.9 -schema-location 'https://raw.githubusercontent.com/ubergesundheit/kube-check-action/main/kubeconform-schemas/{{.ResourceKind}}.json' -schema-location default"

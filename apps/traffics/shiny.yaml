@@ -79,9 +79,14 @@ spec:
     spec:
       automountServiceAccountToken: false
       serviceAccountName: shiny-traffics
+      securityContext:
+        fsGroup: 998
       containers:
       - name: shiny
         image: codeformuenster/traffic-dynamics-shiny:v0.6.4
+        env:
+        - name: TMPDIR
+          value: /tmp/shiny
         ports:
         - containerPort: 3838
         securityContext:
@@ -100,16 +105,17 @@ spec:
             memory: "200Mi"
             cpu: "640m"
         volumeMounts:
-        - name: varlogshinyserver
+        - name: shiny-tmp
           mountPath: /var/log/shiny-server
-        - name: varlibshinyserver
+          subPath: log
+        - name: shiny-tmp
           mountPath: /var/lib/shiny-server
+          subPath: lib
+        - name: shiny-tmp
+          mountPath: /tmp
+          subPath: tmp
       volumes:
-      - name: varlogshinyserver
-        emptyDir:
-          medium: Memory
-          sizeLimit: 100Mi
-      - name: varlibshinyserver
+      - name: shiny-tmp
         emptyDir:
           medium: Memory
           sizeLimit: 100Mi

@@ -1,0 +1,15 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: codeformuenster-muenster-jetzt
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://github.com/codeformuenster/muenster-jetzt.git
+  ref:
+    branch: master
+  ignore: |
+    # exclude all
+    /*
+    # include deployment dir
+    !/deployment/base

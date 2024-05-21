@@ -1,0 +1,121 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shiny
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  ports:
+  - port: 3838
+    protocol: TCP
+  selector:
+    app.kubernetes.io/name: shiny
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: shiny-traffics
+  namespace: traffics
+automountServiceAccountToken: false
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shiny
+  namespace: traffics
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-c4m
+  labels:
+    app.kubernetes.io/name: shiny
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  rules:
+  - host: traffics.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: shiny
+            port:
+              number: 3838
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - traffics.codeformuenster.org
+    secretName: traffics-tls
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shiny
+  namespace: traffics
+  labels:
+    app.kubernetes.io/name: shiny
+    app.kubernetes.io/component: webserver
+    app.kubernetes.io/part-of: traffics
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: shiny
+      app.kubernetes.io/component: webserver
+      app.kubernetes.io/part-of: traffics
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: shiny
+        app.kubernetes.io/component: webserver
+        app.kubernetes.io/part-of: traffics
+    spec:
+      automountServiceAccountToken: false
+      serviceAccountName: shiny-traffics
+      securityContext:
+        fsGroup: 998
+      containers:
+      - name: shiny
+        image: codeformuenster/traffic-dynamics-shiny:v0.6.4
+        env:
+        - name: TMPDIR
+          value: /tmp/shiny
+        ports:
+        - containerPort: 3838
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 998
+          runAsNonRoot: true
+          runAsUser: 998
+          seccompProfile:
+            type: RuntimeDefault
+        resources:
+          requests:
+            memory: "200Mi"
+            cpu: "640m"
+        volumeMounts:
+        - name: shiny-tmp
+          mountPath: /var/log/shiny-server
+          subPath: log
+        - name: shiny-tmp
+          mountPath: /var/lib/shiny-server
+          subPath: lib
+        - name: shiny-tmp
+          mountPath: /tmp
+          subPath: tmp
+      volumes:
+      - name: shiny-tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 100Mi

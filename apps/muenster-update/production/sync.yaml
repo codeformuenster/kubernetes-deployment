@@ -1,0 +1,57 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: muenster-jetzt-production
+spec:
+  interval: 1h
+  targetNamespace: c4m-muenster-jetzt-production
+  sourceRef:
+    kind: GitRepository
+    name: codeformuenster-muenster-jetzt
+    namespace: flux-system
+  path: "."
+  prune: true
+  images:
+  - name: docker.io/codeformuenster/muenster-jetzt-frontend
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+  - name: docker.io/codeformuenster/muenster-jetzt-api
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+  - name: docker.io/codeformuenster/muenster-jetzt-api-static
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+  patches:
+  - patch: |
+      - op: add
+        path: /spec/ingressClassName
+        value: traefik
+      - op: replace
+        path: /metadata/annotations/cert-manager.io~1cluster-issuer
+        value: letsencrypt-c4m
+    target:
+      kind: Ingress
+  - patch: |
+      - op: add
+        path: /spec/rules/0/host
+        value: api.muenster-update.de
+      - op: add
+        path: /spec/tls
+        value: [{ hosts: [api.muenster-update.de], secretName: api-tls }]
+    target:
+      kind: Ingress
+      name: backend
+  - patch: |
+      - op: add
+        path: /spec/rules/0/host
+        value: muenster-update.de
+      - op: add
+        path: /spec/tls
+        value: [{ hosts: [muenster-update.de], secretName: frontend-tls }]
+    target:
+      kind: Ingress
+      name: frontend
+  - patch: |
+      - op: add
+        path: /spec/template/metadata/labels/host
+        value: api.muenster-update.de
+    target:
+      kind: Deployment
+      name: backend-api

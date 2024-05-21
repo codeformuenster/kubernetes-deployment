@@ -14,4 +14,4 @@ jobs:
         with:
           kustomize_build_input: sync
           kube-linter_flags: "--config .kube-linter.yaml"
-          kubeconform_flags: "-strict -kubernetes-version 1.28.9 -schema-location 'https://raw.githubusercontent.com/ubergesundheit/kube-check-action/main/kubeconform-schemas/{{.ResourceKind}}.json' -schema-location default"
+          kubeconform_flags: "-strict -kubernetes-version 1.28.9 -schema-location 'https://raw.githubusercontent.com/ubergesundheit/kube-check-action/main/kubeconform-schemas/{{.ResourceKind}}.json' -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' -schema-location default"

@@ -1,0 +1,67 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: remikalbe-overpass-api
+spec:
+  interval: 320m
+  url:  https://remikalbe.github.io/overpass-api-helm-chart
+
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: overpass-api
+spec:
+  chart:
+    spec:
+      chart: overpass-api
+      interval: 90m0s
+      sourceRef:
+        kind: HelmRepository
+        name: remikalbe-overpass-api
+      version: 0.3.4
+  interval: 30m0s
+  releaseName: overpass-api
+  targetNamespace: overpass
+  # https://github.com/RemiKalbe/overpass-api-helm-chart/blob/overpass-api-0.3.4/charts/overpass-api-chart/values.yaml
+  values:
+    overpassMeta: "no"
+    updateJob:
+      schedule: "15 12 1 1 1"
+      planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.bz2"
+      diffUrl: "https://planet.openstreetmap.org/replication/hour/"
+      updateFrequency: "hour"
+      rulesLoad: 1
+    apiService:
+      replicaCount: 1
+    persistence:
+      enabled: true
+      accessMode: ReadWriteMany
+      size: 10Gi
+      storageClass: "hcloud-volumes"
+      annotations: {}
+    resources:
+      limits:
+        cpu: 1
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+
+    #
+    # Ingress Configuration
+    #
+    ingress:
+      enabled: true
+      className: "traefik"
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt-c4m
+      hosts:
+      - host: overpass-ms.codeformuenster.org
+        paths:
+        - path: /
+          pathType: ImplementationSpecific
+      tls:
+      - hosts:
+        - overpass-ms.codeformuenster.org
+        secretName: overpass-api-tls

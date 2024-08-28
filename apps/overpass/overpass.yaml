@@ -36,7 +36,7 @@ spec:
       replicaCount: 1
     persistence:
       enabled: true
-      accessMode: ReadWriteMany
+      accessMode: ReadWriteOnce
       size: 10Gi
       storageClass: "hcloud-volumes"
       annotations: {}

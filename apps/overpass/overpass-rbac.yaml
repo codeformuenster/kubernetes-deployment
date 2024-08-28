@@ -10,6 +10,8 @@ metadata:
     app.kubernetes.io/name: overpass-api
     app.kubernetes.io/version: 0.7.62
     helm.sh/chart: overpass-api-0.3.4
+    meta.helm.sh/release-name: overpass-api
+    meta.helm.sh/release-namespace: overpass
     helm.toolkit.fluxcd.io/name: overpass-api
     helm.toolkit.fluxcd.io/namespace: overpass
   name: overpass-api-sa
@@ -23,6 +25,8 @@ metadata:
     app.kubernetes.io/name: overpass-api
     app.kubernetes.io/version: 0.7.62
     helm.sh/chart: overpass-api-0.3.4
+    meta.helm.sh/release-name: overpass-api
+    meta.helm.sh/release-namespace: overpass
     helm.toolkit.fluxcd.io/name: overpass-api
     helm.toolkit.fluxcd.io/namespace: overpass
   name: overpass-api-role
@@ -53,6 +57,8 @@ metadata:
     app.kubernetes.io/name: overpass-api
     app.kubernetes.io/version: 0.7.62
     helm.sh/chart: overpass-api-0.3.4
+    meta.helm.sh/release-name: overpass-api
+    meta.helm.sh/release-namespace: overpass
     helm.toolkit.fluxcd.io/name: overpass-api
     helm.toolkit.fluxcd.io/namespace: overpass
   name: overpass-api-rolebinding

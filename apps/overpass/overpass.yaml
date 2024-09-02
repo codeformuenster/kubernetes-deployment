@@ -1,12 +1,12 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: remikalbe-overpass-api
-spec:
-  interval: 320m
-  url:  https://remikalbe.github.io/overpass-api-helm-chart
-
----
+#apiVersion: source.toolkit.fluxcd.io/v1
+#kind: HelmRepository
+#metadata:
+#  name: remikalbe-overpass-api
+#spec:
+#  interval: 320m
+#  url:  https://remikalbe.github.io/overpass-api-helm-chart
+#
+#---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -18,7 +18,8 @@ spec:
       interval: 90m0s
       sourceRef:
         kind: HelmRepository
-        name: remikalbe-overpass-api
+        name: codeberg-gerald
+        namespace: flux-system
       version: 0.3.4
   interval: 30m0s
   releaseName: overpass-api

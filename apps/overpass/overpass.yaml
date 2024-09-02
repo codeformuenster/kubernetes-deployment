@@ -27,8 +27,11 @@ spec:
   values:
     overpassMeta: "no"
     updateJob:
+      image:
+        repository: codeberg.org/gerald/kube-overpass-api
       schedule: "15 12 1 1 1"
-      planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.bz2"
+      #planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.bz2"
+      planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.pbf"
       diffUrl: "https://planet.openstreetmap.org/replication/hour/"
       updateFrequency: "hour"
       rulesLoad: 1

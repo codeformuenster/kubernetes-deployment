@@ -37,6 +37,8 @@ spec:
       rulesLoad: 1
     apiService:
       replicaCount: 1
+      image:
+        repository: codeberg.org/gerald/kube-overpass-api
     persistence:
       enabled: true
       accessMode: ReadWriteOnce

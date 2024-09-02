@@ -57,7 +57,7 @@ spec:
     # Ingress Configuration
     #
     ingress:
-      enabled: true
+      enabled: false
       className: "traefik"
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt-c4m

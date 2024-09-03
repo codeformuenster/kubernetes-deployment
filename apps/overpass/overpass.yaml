@@ -34,7 +34,7 @@ spec:
       #planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.bz2"
       planetUrl: "https://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-latest.osm.pbf"
       diffUrl: "http://download.geofabrik.de/europe/germany/nordrhein-westfalen/muenster-regbez-updates/"
-      updateFrequency: "hour"
+      updateFrequency: "auto"
       rulesLoad: 1
     apiService:
       replicaCount: 1

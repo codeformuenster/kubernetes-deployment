@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/instance: overpass-api
+    app.kubernetes.io/name: overpass-api
+    app.kubernetes.io/version: 0.7.62
+  name: overpass-api-sa
+automountServiceAccountToken: false

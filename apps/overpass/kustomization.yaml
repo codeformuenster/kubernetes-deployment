@@ -5,5 +5,7 @@ namespace: overpass
 
 resources:
 - ../../base/namespace
-#- overpass-rbac.yaml
-- overpass.yaml
+- sa.yaml
+- svc.yaml
+- pvc.yaml
+- deploy.yaml

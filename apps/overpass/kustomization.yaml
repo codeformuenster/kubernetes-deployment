@@ -9,3 +9,4 @@ resources:
 - svc.yaml
 - pvc.yaml
 - deploy.yaml
+- ingress.yaml

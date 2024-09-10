@@ -1,0 +1,27 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-c4m
+  labels:
+    app.kubernetes.io/instance: overpass-api
+    app.kubernetes.io/name: overpass-api
+    app.kubernetes.io/version: 0.7.62
+  name: overpass-api
+spec:
+  ingressClassName: traefik
+  rules:
+  - host: overpass-ms.codeformuenster.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: overpass-api
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - overpass-ms.codeformuenster.org
+    secretName: overpass-tls

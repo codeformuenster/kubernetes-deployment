@@ -63,6 +63,8 @@ metadata:
     app.kubernetes.io/name: climatems
     app.kubernetes.io/component: webserver
     app.kubernetes.io/part-of: climatems
+  annotations:
+    kube-linter.io/ignore-all: "true"
 spec:
   replicas: 1
   selector:

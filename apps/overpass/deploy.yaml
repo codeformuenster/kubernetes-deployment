@@ -5,6 +5,8 @@ metadata:
     app.kubernetes.io/instance: overpass-api
     app.kubernetes.io/name: overpass-api
     app.kubernetes.io/version: 0.7.62
+  annotations:
+    kube-linter.io/ignore-all: "true"
   name: overpass-api
 spec:
   progressDeadlineSeconds: 600

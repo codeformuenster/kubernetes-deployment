@@ -63,8 +63,6 @@ metadata:
     app.kubernetes.io/name: climatems
     app.kubernetes.io/component: webserver
     app.kubernetes.io/part-of: climatems
-  annotations:
-    kube-linter.io/ignore-all: "true"
 spec:
   replicas: 1
   selector:
@@ -81,6 +79,8 @@ spec:
     spec:
       automountServiceAccountToken: false
       serviceAccountName: climatems-climatems
+      securityContext:
+        fsGroup: 1000
       containers:
       - name: climatems
         image: ghcr.io/codeformuenster/climatems:v0.1.0
@@ -90,3 +90,14 @@ spec:
           requests:
             memory: "100Mi"
             cpu: "200m"
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault

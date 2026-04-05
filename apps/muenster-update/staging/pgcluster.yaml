@@ -19,12 +19,12 @@ spec:
   - name: backend
     selector:
       matchLabels:
-        app.kubernetes.io/app: muenster-update
+        app.kubernetes.io/app: muenster-jetzt
         app.kubernetes.io/component: api
   - name: crawler
     selector:
       matchLabels:
-        app.kubernetes.io/app: muenster-update
+        app.kubernetes.io/app: muenster-jetzt
         app.kubernetes.io/component: crawler
   postgresql:
     pg_hba:

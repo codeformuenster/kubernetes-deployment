@@ -1,9 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: c4m-muenster-jetzt-staging
+namespace: c4m-muenster-update-staging
 
 resources:
 - ../../../base/namespace-pss-restricted
-- muenster-jetzt-staging.enc.yaml
+- muenster-update-staging.enc.yaml
+- pgcluster.yaml
 - sync.yaml

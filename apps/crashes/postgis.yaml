@@ -51,6 +51,9 @@ spec:
       containers:
       - name: postgis
         image: quay.io/codeformuenster/verkehrsunfaelle:2019-11-15
+        env:
+        - name: POSTGRES_HOST_AUTH_METHOD
+          value: trust
         ports:
         - name: postgres
           containerPort: 5432

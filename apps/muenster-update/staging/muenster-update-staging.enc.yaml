@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: backend-api
+type: Opaque
+stringData:
+    DJANGO_SECRET_KEY: ENC[AES256_GCM,data:5Ia6Cvyv3BC4zVm+aMns/5NvKzEizg8BHWS/AM4/3phPP4H60uvjkYHcwwtpXxKVbj0=,iv:BPxeNmgyAdbijWYn2AWvCXtC3z+ge3ac1hB9rrINGQs=,tag:xJj+M7t5HChz5NioCOT5JQ==,type:str]
+    MUENSTERLAND_API_TOKEN: ENC[AES256_GCM,data:g8WSpqLDRzeAJKHWljaaHBzDZLiOqnxlcuKSUya+eJ0=,iv:OX+6ZIy23dbL3s9ivzxe4lOYRHEzERJBh2puqTGjm54=,tag:u4unGQ/+Euz4EWZ4YqsINg==,type:str]
+    DATENPORTAL_USER: ENC[AES256_GCM,data:t3TNxy9G9QfyLuaWCak=,iv:TBlPjScbuemn2mKLORLfPfqu06EQ06qHPAwzOYG1QZ8=,tag:XUYdWhoF+/urMzLnf6zKnQ==,type:str]
+    DATENPORTAL_PASSWORD: ENC[AES256_GCM,data:0Li8KUvEf0nF,iv:hVPSne6uHYt75dnCjgvGnvnQGXQyLN7XMl9fytozj9U=,tag:SwMdzKnlRkvKYFU5G/iBPg==,type:str]
+sops:
+    age:
+        - recipient: age1nzqaqzm7wfz04ld5esukhkghmayzt8xmnrjlau0rdcycjlu53pesgew089
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiRi9JZGhsZEVHcms2VnJY
+            bkk5YThBMmNqWmtZZ2VuSCs5dVdNeUxRaXpFCnFTZi9RaGpsQjRQejNzNURTUU5l
+            a1hseWErTGFMc3FuZ3pvUG0rRm9aSHcKLS0tIGdVa2h5V21BY29YUFZsZnR5MHdE
+            TnhaUENsMjVnMExkNmd4SGw5c1JmOEUKDRolGxHXK1nhYoyZlwMU5s65MkJR0KJ4
+            92OVUMiMxZYJR/Y1+dj0p9yAcFGL50mp4MaC+WOdSFO+kIbu8ictUw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-04-05T14:17:26Z"
+    mac: ENC[AES256_GCM,data:JFlzFKhQDQpypRB5Wnf/wsM+ujYG8mZQZIqt9F5m9dPs+H5uJ4GZipN1GI2Je0Zzz+vTLm5VjeVIrFI5nUTgTGr3js9esW/BXZE+qIDIherv2m+I3g+h0GRMlMbtH9ndpCoqtJ/GI20HQL1u/iWoA+WlWCoCZfri75TVkDpdRL0=,iv:dqJwkZNp++qpkZLoh2fawr1Axowa6BjfbHNgGXuslK8=,tag:KDAXWc2n7jptIkOXeAcF9w==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.12.2

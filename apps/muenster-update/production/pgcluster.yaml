@@ -1,0 +1,38 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: pg-ms-update-production
+  labels:
+    lab481.de/pg_dump: "false"
+spec:
+  instances: 1
+  enablePDB: false
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.3-system-trixie
+  storage:
+    size: 1Gi
+  bootstrap:
+    initdb:
+      encoding: UTF8
+      localeCollate: en_US.UTF-8
+      localeCType: en_US.UTF-8
+  podSelectorRefs:
+  - name: backend
+    selector:
+      matchLabels:
+        app.kubernetes.io/app: muenster-update
+        app.kubernetes.io/component: api
+  - name: crawler
+    selector:
+      matchLabels:
+        app.kubernetes.io/app: muenster-update
+        app.kubernetes.io/component: crawler
+  postgresql:
+    pg_hba:
+    - host app app ${podselector:backend} scram-sha-256
+    - host app app ${podselector:crawler} scram-sha-256
+    # Workaround until https://github.com/cloudnative-pg/cloudnative-pg/issues/10371
+    # is resolved
+    - host all all all reject
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"]

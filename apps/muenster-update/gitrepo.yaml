@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: codeformuenster-muenster-jetzt
+  name: codeformuenster-muenster-update
   namespace: flux-system
 spec:
   interval: 1h

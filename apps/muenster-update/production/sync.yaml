@@ -1,23 +1,25 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: muenster-jetzt-production
+  name: muenster-update-production
 spec:
   interval: 1h
-  targetNamespace: c4m-muenster-jetzt-production
+  targetNamespace: c4m-muenster-update-production
   sourceRef:
     kind: GitRepository
-    name: codeformuenster-muenster-jetzt
+    name: codeformuenster-muenster-update
     namespace: flux-system
   path: "."
   prune: true
   images:
   - name: docker.io/codeformuenster/muenster-jetzt-frontend
-    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-update-production:tag"}
   - name: docker.io/codeformuenster/muenster-jetzt-api
-    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-update-production:tag"}
   - name: docker.io/codeformuenster/muenster-jetzt-api-static
-    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-jetzt-production:tag"}
+    newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-update-production:tag"}
+  commonLabels:
+    app.kubernetes.io/app: muenster-update
   patches:
   - patch: |
       - op: add
@@ -55,3 +57,111 @@ spec:
     target:
       kind: Deployment
       name: backend-api
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: backend-api
+      spec:
+        template:
+          spec:
+            initContainers:
+            - name: migrations
+              env:
+              - name: DB_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: host
+              - name: DB_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: port
+              - name: DB_NAME
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: dbname
+              - name: DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: user
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: password
+            containers:
+            - name: backend-api
+              env:
+              - name: DB_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: host
+              - name: DB_PORT
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: port
+              - name: DB_NAME
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: dbname
+              - name: DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: user
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: pg-ms-update-production-app
+                    key: password
+    target:
+      kind: Deployment
+      name: backend-api
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: crawler
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                - name: crawler
+                  env:
+                  - name: DB_HOST
+                    valueFrom:
+                      secretKeyRef:
+                        name: pg-ms-update-production-app
+                        key: host
+                  - name: DB_PORT
+                    valueFrom:
+                      secretKeyRef:
+                        name: pg-ms-update-production-app
+                        key: port
+                  - name: DB_NAME
+                    valueFrom:
+                      secretKeyRef:
+                        name: pg-ms-update-production-app
+                        key: dbname
+                  - name: DB_USER
+                    valueFrom:
+                      secretKeyRef:
+                        name: pg-ms-update-production-app
+                        key: user
+                  - name: DB_PASSWORD
+                    valueFrom:
+                      secretKeyRef:
+                        name: pg-ms-update-production-app
+                        key: password
+    target:
+      kind: CronJob
+      name: crawler

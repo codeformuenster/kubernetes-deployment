@@ -18,8 +18,9 @@ spec:
     newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-update-production:tag"}
   - name: docker.io/codeformuenster/muenster-jetzt-api-static
     newTag: v0.2.1 # {"$imagepolicy": "flux-system:muenster-update-production:tag"}
-  commonLabels:
-    app.kubernetes.io/app: muenster-update
+  commonMetadata:
+    labels:
+      app.kubernetes.io/app: muenster-update
   patches:
   - patch: |
       - op: add

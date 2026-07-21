@@ -1,4 +1,4 @@
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: muenster-update-api-container-image
@@ -7,7 +7,7 @@ spec:
   image: docker.io/codeformuenster/muenster-jetzt-api
   interval: 30m0s
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: muenster-update-api-static-container-image
@@ -16,7 +16,7 @@ spec:
   image: docker.io/codeformuenster/muenster-jetzt-api-static
   interval: 30m0s
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
   name: muenster-update-frontend-container-image
@@ -25,7 +25,7 @@ spec:
   image: docker.io/codeformuenster/muenster-jetzt-frontend
   interval: 30m0s
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: muenster-update-api-staging
@@ -40,7 +40,7 @@ spec:
     pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: muenster-update-api-static-staging
@@ -55,7 +55,7 @@ spec:
     pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: muenster-update-frontend-staging
@@ -70,7 +70,7 @@ spec:
     pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: muenster-update-production

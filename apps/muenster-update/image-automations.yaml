@@ -37,7 +37,7 @@ spec:
     alphabetical:
       order: asc
   filterTags:
-    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -52,7 +52,7 @@ spec:
     alphabetical:
       order: asc
   filterTags:
-    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -67,7 +67,7 @@ spec:
     alphabetical:
       order: asc
   filterTags:
-    pattern: '^master-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
     extract: '$timestamp'
 ---
 apiVersion: image.toolkit.fluxcd.io/v1

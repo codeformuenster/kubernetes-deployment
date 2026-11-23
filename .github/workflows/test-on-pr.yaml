@@ -1,5 +1,12 @@
 name: 'check manifests'
-on: pull_request
+
+on: 
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
 
 jobs:
   lint:
@@ -7,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'checkout'
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Build and validate kustomization
         uses: ubergesundheit/kube-check-action@main

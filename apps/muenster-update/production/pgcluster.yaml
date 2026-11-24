@@ -7,7 +7,7 @@ metadata:
 spec:
   instances: 1
   enablePDB: false
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.3-system-trixie
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-202611160820-system-trixie
   storage:
     size: 1Gi
   bootstrap:

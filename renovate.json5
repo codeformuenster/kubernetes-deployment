@@ -24,6 +24,26 @@
       matchPackageNames: ['ghcr.io/cloudnative-pg/postgresql'],
       matchUpdateTypes: ['major'],
       dependencyDashboardApproval: true,
+    },
+    {
+      "matchPackageNames": [
+        "ghcr.io/cloudnative-pg/postgresql"
+      ],
+      "matchFileNames": [
+        "apps/muenster-update/production/pgcluster.yaml"
+      ],
+      "groupName": "CloudNativePG PostgreSQL production",
+      "groupSlug": "cloudnative-pg-postgresql-production"
+    },
+    {
+      "matchPackageNames": [
+        "ghcr.io/cloudnative-pg/postgresql"
+      ],
+      "matchFileNames": [
+        "apps/muenster-update/staging/pgcluster.yaml"
+      ],
+      "groupName": "CloudNativePG PostgreSQL staging",
+      "groupSlug": "cloudnative-pg-postgresql-staging"
     }
   ]
 }

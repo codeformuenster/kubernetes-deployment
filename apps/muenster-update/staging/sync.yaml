@@ -13,7 +13,7 @@ spec:
   prune: true
   images:
   - name: docker.io/codeformuenster/muenster-jetzt-frontend
-    newTag: main-a2a8f07-1795601320 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
+    newTag: main-0f9d939-1795607658 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
   - name: docker.io/codeformuenster/muenster-jetzt-api
     newTag: main-8b3cb2e-1795608041 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
   - name: docker.io/codeformuenster/muenster-jetzt-api-static

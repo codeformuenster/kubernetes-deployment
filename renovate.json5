@@ -34,7 +34,7 @@
       ],
       "groupName": "CloudNativePG PostgreSQL production",
       "groupSlug": "cloudnative-pg-postgresql-production",
-      "commitMessageTopic": "Postgresql muenster-update production"
+      "commitMessageTopic": "[PRODUCTION] muenster-update PostgreSQL"
     },
     {
       "matchPackageNames": [
@@ -45,7 +45,7 @@
       ],
       "groupName": "CloudNativePG PostgreSQL staging",
       "groupSlug": "cloudnative-pg-postgresql-staging",
-      "commitMessageTopic": "Postgresql muenster-update staging"
+      "commitMessageTopic": "[STAGING] muenster-update PostgreSQL"
     }
   ]
 }

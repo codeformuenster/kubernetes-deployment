@@ -1,68 +1,20 @@
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
-  name: muenster-update-api-container-image
+  name: muenster-update-container-image
   namespace: flux-system
 spec:
-  image: docker.io/codeformuenster/muenster-jetzt-api
-  interval: 30m0s
----
-apiVersion: image.toolkit.fluxcd.io/v1
-kind: ImageRepository
-metadata:
-  name: muenster-update-api-static-container-image
-  namespace: flux-system
-spec:
-  image: docker.io/codeformuenster/muenster-jetzt-api-static
-  interval: 30m0s
----
-apiVersion: image.toolkit.fluxcd.io/v1
-kind: ImageRepository
-metadata:
-  name: muenster-update-frontend-container-image
-  namespace: flux-system
-spec:
-  image: docker.io/codeformuenster/muenster-jetzt-frontend
+  image: ghcr.io/codeformuenster/muenster-update/api
   interval: 30m0s
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
-  name: muenster-update-api-staging
+  name: muenster-update-staging
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: muenster-update-api-container-image
-  policy:
-    alphabetical:
-      order: asc
-  filterTags:
-    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
-    extract: '$timestamp'
----
-apiVersion: image.toolkit.fluxcd.io/v1
-kind: ImagePolicy
-metadata:
-  name: muenster-update-api-static-staging
-  namespace: flux-system
-spec:
-  imageRepositoryRef:
-    name: muenster-update-api-static-container-image
-  policy:
-    alphabetical:
-      order: asc
-  filterTags:
-    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
-    extract: '$timestamp'
----
-apiVersion: image.toolkit.fluxcd.io/v1
-kind: ImagePolicy
-metadata:
-  name: muenster-update-frontend-staging
-  namespace: flux-system
-spec:
-  imageRepositoryRef:
-    name: muenster-update-frontend-container-image
+    name: muenster-update-container-image
   policy:
     alphabetical:
       order: asc
@@ -77,7 +29,7 @@ metadata:
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: muenster-update-frontend-container-image
+    name: muenster-update-container-image
   policy:
     semver:
       range: ">=v0.1.0"

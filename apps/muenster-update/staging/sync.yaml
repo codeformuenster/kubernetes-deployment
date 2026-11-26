@@ -12,11 +12,11 @@ spec:
   path: "."
   prune: true
   images:
-  - name: docker.io/codeformuenster/muenster-jetzt-frontend
+  - name: ghcr.io/codeformuenster/muenster-update/frontend
     newTag: main-842a69d-1795684516 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
-  - name: docker.io/codeformuenster/muenster-jetzt-api
+  - name: ghcr.io/codeformuenster/muenster-update/api
     newTag: main-842a69d-1795684463 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
-  - name: docker.io/codeformuenster/muenster-jetzt-api-static
+  - name: ghcr.io/codeformuenster/muenster-update/api-static
     newTag: main-842a69d-1795684476 # {"$imagepolicy": "flux-system:muenster-update-api-static-staging:tag"}
   commonMetadata:
     labels:

@@ -13,11 +13,11 @@ spec:
   prune: true
   images:
   - name: ghcr.io/codeformuenster/muenster-update/frontend
-    newTag: main-842a69d-1795684516 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
+    newTag: main-df41473-1795724377 # {"$imagepolicy": "flux-system:muenster-update-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api
-    newTag: main-842a69d-1795684463 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
+    newTag: main-df41473-1795724377 # {"$imagepolicy": "flux-system:muenster-update-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api-static
-    newTag: main-842a69d-1795684476 # {"$imagepolicy": "flux-system:muenster-update-api-static-staging:tag"}
+    newTag: main-df41473-1795724377 # {"$imagepolicy": "flux-system:muenster-update-staging:tag"}
   commonMetadata:
     labels:
       app.kubernetes.io/app: muenster-update

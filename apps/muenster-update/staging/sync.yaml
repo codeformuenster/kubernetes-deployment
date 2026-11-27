@@ -13,7 +13,7 @@ spec:
   prune: true
   images:
   - name: ghcr.io/codeformuenster/muenster-update/frontend
-    newTag: main-df41473-1795724424 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
+    newTag: main-91d228a-1795799015 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api
     newTag: main-91d228a-1795798971 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api-static

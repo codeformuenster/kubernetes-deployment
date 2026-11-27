@@ -1,20 +1,50 @@
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
-  name: muenster-update-container-image
+  name: muenster-update-api
   namespace: flux-system
 spec:
   image: ghcr.io/codeformuenster/muenster-update/api
   interval: 30m0s
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: muenster-update-api-static
+  namespace: flux-system
+spec:
+  image: ghcr.io/codeformuenster/muenster-update/api-static
+  interval: 30m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: muenster-update-api-frontend
+  namespace: flux-system
+spec:
+  image: ghcr.io/codeformuenster/muenster-update/frontend
+  interval: 30m0s
+---
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
-  name: muenster-update-staging
+  name: muenster-update-production
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: muenster-update-container-image
+    name: muenster-update-api
+  policy:
+    semver:
+      range: ">=v0.1.0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: muenster-update-api-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-update-api
   policy:
     alphabetical:
       order: asc
@@ -25,11 +55,29 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
-  name: muenster-update-production
+  name: muenster-update-api-static-staging
   namespace: flux-system
 spec:
   imageRepositoryRef:
-    name: muenster-update-container-image
+    name: muenster-update-api-static
   policy:
-    semver:
-      range: ">=v0.1.0"
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    extract: '$timestamp'
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: muenster-update-frontend-staging
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: muenster-update-frontend
+  policy:
+    alphabetical:
+      order: asc
+  filterTags:
+    pattern: '^main-[a-fA-F0-9]{7}-(?P<timestamp>\d{10,})$'
+    extract: '$timestamp'

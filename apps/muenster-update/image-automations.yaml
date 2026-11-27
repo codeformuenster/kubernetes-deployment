@@ -19,7 +19,7 @@ spec:
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
 metadata:
-  name: muenster-update-api-frontend
+  name: muenster-update-frontend
   namespace: flux-system
 spec:
   image: ghcr.io/codeformuenster/muenster-update/frontend

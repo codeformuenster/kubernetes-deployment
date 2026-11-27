@@ -15,7 +15,7 @@ spec:
   - name: ghcr.io/codeformuenster/muenster-update/frontend
     newTag: main-df41473-1795724424 # {"$imagepolicy": "flux-system:muenster-update-frontend-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api
-    newTag: main-df41473-1795724377 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
+    newTag: main-91d228a-1795798971 # {"$imagepolicy": "flux-system:muenster-update-api-staging:tag"}
   - name: ghcr.io/codeformuenster/muenster-update/api-static
     newTag: main-91d228a-1795799017 # {"$imagepolicy": "flux-system:muenster-update-api-static-staging:tag"}
   commonMetadata:
